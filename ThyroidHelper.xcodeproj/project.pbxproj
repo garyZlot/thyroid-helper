@@ -6,36 +6,59 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 689F16DA2E5C9C670047ABAB /* Assets.xcassets */; };
+		689F16E52E5C9C670047ABAB /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16DD2E5C9C670047ABAB /* Item.swift */; };
+		689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */; };
+		689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16E82E5C9C880047ABAB /* CheckupRecord.swift */; };
+		689F16EC2E5C9CF80047ABAB /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16EB2E5C9CF60047ABAB /* CloudKitManager.swift */; };
+		689F16EE2E5C9D1F0047ABAB /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16ED2E5C9D1D0047ABAB /* AuthenticationManager.swift */; };
+		689F16F12E5C9D590047ABAB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16F02E5C9D570047ABAB /* ContentView.swift */; };
+		689F16F32E5C9D720047ABAB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16F22E5C9D700047ABAB /* LoginView.swift */; };
+		689F16F52E5C9D8C0047ABAB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16F42E5C9D8A0047ABAB /* MainTabView.swift */; };
+		689F16F72E5C9DB00047ABAB /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16F62E5C9DAE0047ABAB /* HomeView.swift */; };
+		689F16F92E5C9DCE0047ABAB /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16F82E5C9DCC0047ABAB /* TrendsView.swift */; };
+		689F16FB2E5C9DEB0047ABAB /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16FA2E5C9DE90047ABAB /* RecordsView.swift */; };
+		689F16FD2E5C9E040047ABAB /* AddRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16FC2E5C9E030047ABAB /* AddRecordView.swift */; };
+		689F16FF2E5C9E220047ABAB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16FE2E5C9E1F0047ABAB /* ProfileView.swift */; };
+		689F17062E5C9E7C0047ABAB /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F17052E5C9E7A0047ABAB /* NotificationSettingsView.swift */; };
+		689F17082E5C9E860047ABAB /* DataExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F17072E5C9E850047ABAB /* DataExportView.swift */; };
+		689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F17092E5C9E8C0047ABAB /* AboutView.swift */; };
+		689F170C2E5C9F0F0047ABAB /* ThyroidIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */; };
+		689F170F2E5CA11D0047ABAB /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689F170E2E5CA11D0047ABAB /* Charts.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		689F16C42E5C97B50047ABAB /* ThyroidHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThyroidHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		689F16DA2E5C9C670047ABAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		689F16DC2E5C9C670047ABAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		689F16DD2E5C9C670047ABAB /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThyroidHelper.entitlements; sourceTree = "<group>"; };
+		689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidHelperApp.swift; sourceTree = "<group>"; };
+		689F16E82E5C9C880047ABAB /* CheckupRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckupRecord.swift; sourceTree = "<group>"; };
+		689F16EB2E5C9CF60047ABAB /* CloudKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
+		689F16ED2E5C9D1D0047ABAB /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		689F16F02E5C9D570047ABAB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		689F16F22E5C9D700047ABAB /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		689F16F42E5C9D8A0047ABAB /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		689F16F62E5C9DAE0047ABAB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		689F16F82E5C9DCC0047ABAB /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
+		689F16FA2E5C9DE90047ABAB /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
+		689F16FC2E5C9E030047ABAB /* AddRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecordView.swift; sourceTree = "<group>"; };
+		689F16FE2E5C9E1F0047ABAB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		689F17052E5C9E7A0047ABAB /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		689F17072E5C9E850047ABAB /* DataExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportView.swift; sourceTree = "<group>"; };
+		689F17092E5C9E8C0047ABAB /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidIndicator.swift; sourceTree = "<group>"; };
+		689F170E2E5CA11D0047ABAB /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		689F16D12E5C97B70047ABAB /* Exceptions for "ThyroidHelper" folder in "ThyroidHelper" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 689F16C32E5C97B50047ABAB /* ThyroidHelper */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		689F16C62E5C97B50047ABAB /* ThyroidHelper */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				689F16D12E5C97B70047ABAB /* Exceptions for "ThyroidHelper" folder in "ThyroidHelper" target */,
-			);
-			path = ThyroidHelper;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		689F16C12E5C97B50047ABAB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				689F170F2E5CA11D0047ABAB /* Charts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +68,8 @@
 		689F16BB2E5C97B50047ABAB = {
 			isa = PBXGroup;
 			children = (
-				689F16C62E5C97B50047ABAB /* ThyroidHelper */,
+				689F16E02E5C9C670047ABAB /* ThyroidHelper */,
+				689F170D2E5CA11D0047ABAB /* Frameworks */,
 				689F16C52E5C97B50047ABAB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +80,73 @@
 				689F16C42E5C97B50047ABAB /* ThyroidHelper.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		689F16E02E5C9C670047ABAB /* ThyroidHelper */ = {
+			isa = PBXGroup;
+			children = (
+				689F16EF2E5C9D480047ABAB /* Views */,
+				689F16EA2E5C9CEC0047ABAB /* Services */,
+				689F16E72E5C9C780047ABAB /* Models */,
+				689F16DA2E5C9C670047ABAB /* Assets.xcassets */,
+				689F16DC2E5C9C670047ABAB /* Info.plist */,
+				689F16DD2E5C9C670047ABAB /* Item.swift */,
+				689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */,
+				689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */,
+			);
+			path = ThyroidHelper;
+			sourceTree = "<group>";
+		};
+		689F16E72E5C9C780047ABAB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */,
+				689F16E82E5C9C880047ABAB /* CheckupRecord.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		689F16EA2E5C9CEC0047ABAB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				689F16ED2E5C9D1D0047ABAB /* AuthenticationManager.swift */,
+				689F16EB2E5C9CF60047ABAB /* CloudKitManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		689F16EF2E5C9D480047ABAB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				689F17042E5C9E6E0047ABAB /* Settings */,
+				689F16FE2E5C9E1F0047ABAB /* ProfileView.swift */,
+				689F16FC2E5C9E030047ABAB /* AddRecordView.swift */,
+				689F16FA2E5C9DE90047ABAB /* RecordsView.swift */,
+				689F16F82E5C9DCC0047ABAB /* TrendsView.swift */,
+				689F16F62E5C9DAE0047ABAB /* HomeView.swift */,
+				689F16F42E5C9D8A0047ABAB /* MainTabView.swift */,
+				689F16F22E5C9D700047ABAB /* LoginView.swift */,
+				689F16F02E5C9D570047ABAB /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		689F17042E5C9E6E0047ABAB /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				689F17092E5C9E8C0047ABAB /* AboutView.swift */,
+				689F17072E5C9E850047ABAB /* DataExportView.swift */,
+				689F17052E5C9E7A0047ABAB /* NotificationSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		689F170D2E5CA11D0047ABAB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				689F170E2E5CA11D0047ABAB /* Charts.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -72,9 +163,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				689F16C62E5C97B50047ABAB /* ThyroidHelper */,
 			);
 			name = ThyroidHelper;
 			packageProductDependencies = (
@@ -122,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +221,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				689F17082E5C9E860047ABAB /* DataExportView.swift in Sources */,
+				689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */,
+				689F16F12E5C9D590047ABAB /* ContentView.swift in Sources */,
+				689F16F32E5C9D720047ABAB /* LoginView.swift in Sources */,
+				689F17062E5C9E7C0047ABAB /* NotificationSettingsView.swift in Sources */,
+				689F16EE2E5C9D1F0047ABAB /* AuthenticationManager.swift in Sources */,
+				689F16F72E5C9DB00047ABAB /* HomeView.swift in Sources */,
+				689F16EC2E5C9CF80047ABAB /* CloudKitManager.swift in Sources */,
+				689F16FF2E5C9E220047ABAB /* ProfileView.swift in Sources */,
+				689F16FD2E5C9E040047ABAB /* AddRecordView.swift in Sources */,
+				689F16FB2E5C9DEB0047ABAB /* RecordsView.swift in Sources */,
+				689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */,
+				689F16E52E5C9C670047ABAB /* Item.swift in Sources */,
+				689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */,
+				689F16F92E5C9DCE0047ABAB /* TrendsView.swift in Sources */,
+				689F170C2E5C9F0F0047ABAB /* ThyroidIndicator.swift in Sources */,
+				689F16F52E5C9D8C0047ABAB /* MainTabView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +261,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -185,6 +292,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

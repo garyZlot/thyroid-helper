@@ -6,5 +6,9 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+    <key>NSCameraUsageDescription</key>
+    <string>用于拍照识别检查报告</string>
+    <key>NSNotificationAlwaysAndWhenInUseUsageDescription</key>
+    <string>用于发送复查提醒</string>
 </dict>
 </plist>
