@@ -231,9 +231,36 @@ struct AddRecordView: View {
         }
     }
     
+//    private func saveRecord() {
+//        let record = CheckupRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
+//        for (name, input) in indicators {
+//            let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
+//            let indicator = ThyroidIndicator(
+//                name: name,
+//                value: input.doubleValue,
+//                unit: input.unit,
+//                normalRange: input.normalRange,
+//                status: status
+//            )
+//            indicator.record = record
+//            record.indicators.append(indicator)
+//        }
+//        modelContext.insert(record)
+//        try? modelContext.save()
+//        dismiss()
+//    }
+    
     private func saveRecord() {
+        print("开始保存记录...")
+        print("检查日期: \(selectedDate)")
+        print("检查类型: \(selectedType.rawValue)")
+        print("备注: \(notes)")
+        
         let record = CheckupRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
+        
+        // 记录指标数据
         for (name, input) in indicators {
+            print("指标 \(name): 值=\(input.value), 单位=\(input.unit), 正常范围=\(input.normalRange)")
             let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
             let indicator = ThyroidIndicator(
                 name: name,
@@ -245,9 +272,27 @@ struct AddRecordView: View {
             indicator.record = record
             record.indicators.append(indicator)
         }
+        
         modelContext.insert(record)
-        try? modelContext.save()
-        dismiss()
+        
+        do {
+            try modelContext.save()
+            print("✅ 记录保存成功! ID: \(record.id)")
+            
+            // 打印保存的记录详情
+            print("保存的记录详情:")
+            print(" - 日期: \(record.date)")
+            print(" - 类型: \(record.type.rawValue)")
+            print(" - 指标数量: \(record.indicators.count)")
+            for indicator in record.indicators {
+                print("   - \(indicator.name): \(indicator.value) \(indicator.unit) (\(indicator.status.rawValue))")
+            }
+            
+            dismiss()
+        } catch {
+            print("❌ 保存失败: \(error.localizedDescription)")
+            // 这里可以添加用户提示，例如使用Alert
+        }
     }
 }
 

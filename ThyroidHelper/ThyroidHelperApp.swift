@@ -12,12 +12,19 @@ import SwiftData
 struct ThyroidHelperApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            CheckupRecord.self,
+            ThyroidIndicator.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            
+            // 打印数据库位置（仅调试用）
+            let url = modelConfiguration.url
+            print("数据库位置: \(url)")
+            
+            return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
