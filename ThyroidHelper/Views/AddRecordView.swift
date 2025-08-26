@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import Vision
+import AVFoundation
+import PhotosUI
 
 struct AddRecordView: View {
     @Environment(\.modelContext) private var modelContext
@@ -15,8 +18,16 @@ struct AddRecordView: View {
     @State private var selectedType = CheckupRecord.CheckupType.comprehensive
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
-    @State private var showingCamera = false
-    @State private var ocrMode = false
+    
+    // 图片相关状态
+    @State private var showingImagePicker = false
+    @State private var showingSourceActionSheet = false
+    @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
+    @State private var capturedImage: UIImage?
+    @State private var showingOCRResult = false
+    
+    // 手动输入状态
+    @State private var showManualInput = false
     
     struct IndicatorInput {
         var value: String = ""
@@ -40,41 +51,79 @@ struct AddRecordView: View {
                 }
                 
                 Section("录入方式") {
-                    HStack(spacing: 20) {
+                    VStack(spacing: 0) {
+                        // ✅ 图片识别按钮
                         Button(action: {
-                            ocrMode = true
-                            showingCamera = true
+                            print("点击了图片识别")
+                            showingSourceActionSheet = true
                         }) {
-                            VStack(spacing: 8) {
+                            HStack {
                                 Image(systemName: "camera.fill")
                                     .font(.title2)
-                                Text("拍照识别")
+                                    .foregroundColor(.blue)
+                                Text("图片识别")
+                                    .font(.body)
+                                    .foregroundColor(.blue)
+                                Spacer()
+                                Image(systemName: "chevron.right")
                                     .font(.caption)
+                                    .foregroundColor(.blue)
                             }
-                            .foregroundColor(.blue)
-                            .padding()
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(12)
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
                         }
-                        .disabled(true) // OCR功能暂时禁用，需要Vision框架实现
+                        .buttonStyle(PlainButtonStyle())
                         
-                        Button(action: { ocrMode = false }) {
-                            VStack(spacing: 8) {
+                        Divider()
+                        
+                        // ✅ 手动输入按钮
+                        Button(action: {
+                            print("点击了手动输入")
+                            showManualInput = true
+                            // 确保指标已经初始化
+                            if indicators.isEmpty {
+                                setupDefaultIndicators()
+                            }
+                        }) {
+                            HStack {
                                 Image(systemName: "hand.point.up.left.fill")
                                     .font(.title2)
+                                    .foregroundColor(.green)
                                 Text("手动输入")
+                                    .font(.body)
+                                    .foregroundColor(.green)
+                                Spacer()
+                                Image(systemName: "chevron.right")
                                     .font(.caption)
+                                    .foregroundColor(.green)
                             }
-                            .foregroundColor(ocrMode ? .secondary : .green)
-                            .padding()
-                            .background((ocrMode ? Color.gray : Color.green).opacity(0.1))
-                            .cornerRadius(12)
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .frame(maxWidth: .infinity)
+                }
+                .actionSheet(isPresented: $showingSourceActionSheet) {
+                    ActionSheet(
+                        title: Text("选择图片来源"),
+                        buttons: [
+                            .default(Text("拍照")) {
+                                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                                    imagePickerSource = .camera
+                                    showingImagePicker = true
+                                }
+                            },
+                            .default(Text("从相册选择")) {
+                                imagePickerSource = .photoLibrary
+                                showingImagePicker = true
+                            },
+                            .cancel()
+                        ]
+                    )
                 }
                 
-                if !ocrMode {
+                // ✅ 显示手动输入字段（当用户点击手动输入或已有数据时显示）
+                if showManualInput || !indicators.isEmpty {
                     Section("检查数值") {
                         ForEach(selectedType.defaultIndicators, id: \.self) { indicatorName in
                             IndicatorInputRow(
@@ -84,6 +133,15 @@ struct AddRecordView: View {
                                     set: { indicators[indicatorName] = $0 }
                                 )
                             )
+                        }
+                        
+                        // 添加一个清除按钮，让用户可以隐藏输入字段
+                        if showManualInput && indicators.values.allSatisfy({ $0.value.isEmpty }) {
+                            Button("隐藏输入字段") {
+                                showManualInput = false
+                                indicators.removeAll()
+                            }
+                            .foregroundColor(.secondary)
                         }
                     }
                 }
@@ -106,10 +164,47 @@ struct AddRecordView: View {
                 }
             }
             .onAppear {
-                setupDefaultIndicators()
+                // 页面加载时不自动显示输入字段，等待用户选择输入方式
             }
-            .onChange(of: selectedType) { _, newType in
-                setupDefaultIndicators()
+            .onChange(of: selectedType) { _, _ in
+                // 切换检查类型时，如果已经在手动输入模式，则更新指标
+                if showManualInput {
+                    setupDefaultIndicators()
+                }
+            }
+            
+            // ✅ 弹出相机/相册
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(image: $capturedImage, sourceType: imagePickerSource)
+            }
+            
+            // ✅ OCR 结果展示
+            .sheet(isPresented: $showingOCRResult) {
+                if let image = capturedImage {
+                    OCRResultView(capturedImage: image) { extractedData in
+                        handleOCRResult(extractedData)
+                    }
+                }
+            }
+            
+            // ✅ 图片变化时进入 OCR 结果
+            .onChange(of: capturedImage) { _, newImage in
+                if newImage != nil {
+                    showingOCRResult = true
+                }
+            }
+        }
+    }
+    
+    private func handleOCRResult(_ extractedData: [String: Double]) {
+        // OCR 识别成功后，确保显示输入字段
+        showManualInput = true
+        
+        for (indicatorName, value) in extractedData {
+            if let defaultInput = indicators[indicatorName] {
+                var updatedInput = defaultInput
+                updatedInput.value = String(format: "%.2f", value)
+                indicators[indicatorName] = updatedInput
             }
         }
     }
@@ -127,24 +222,17 @@ struct AddRecordView: View {
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
         switch name {
-        case "TSH":
-            return IndicatorInput(unit: "mIU/L", normalRange: "0.27-4.2")
-        case "FT3":
-            return IndicatorInput(unit: "pmol/L", normalRange: "3.1-6.8")
-        case "FT4":
-            return IndicatorInput(unit: "pmol/L", normalRange: "12-22")
-        case "TG":
-            return IndicatorInput(unit: "ng/mL", normalRange: "3.5-77")
-        case "TPO":
-            return IndicatorInput(unit: "IU/mL", normalRange: "<34")
-        default:
-            return IndicatorInput(unit: "", normalRange: "")
+        case "TSH": return IndicatorInput(unit: "mIU/L", normalRange: "0.27-4.2")
+        case "FT3": return IndicatorInput(unit: "pmol/L", normalRange: "3.1-6.8")
+        case "FT4": return IndicatorInput(unit: "pmol/L", normalRange: "12-22")
+        case "TG":  return IndicatorInput(unit: "ng/mL", normalRange: "3.5-77")
+        case "TPO": return IndicatorInput(unit: "IU/mL", normalRange: "<34")
+        default:    return IndicatorInput(unit: "", normalRange: "")
         }
     }
     
     private func saveRecord() {
         let record = CheckupRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
-        
         for (name, input) in indicators {
             let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
             let indicator = ThyroidIndicator(
@@ -157,12 +245,12 @@ struct AddRecordView: View {
             indicator.record = record
             record.indicators.append(indicator)
         }
-        
         modelContext.insert(record)
         try? modelContext.save()
         dismiss()
     }
 }
+
 
 struct IndicatorInputRow: View {
     let name: String

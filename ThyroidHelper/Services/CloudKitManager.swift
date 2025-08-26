@@ -36,6 +36,9 @@ class CloudKitManager: ObservableObject {
                 case .restricted, .couldNotDetermine:
                     self?.isSignedInToiCloud = false
                     self?.syncStatus = "iCloud不可用"
+                case .temporarilyUnavailable:
+                    self?.isSignedInToiCloud = false
+                    self?.syncStatus = "iCloud暂时不可用，请在设置中验证您的凭据"
                 @unknown default:
                     self?.isSignedInToiCloud = false
                 }
