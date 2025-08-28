@@ -2,24 +2,23 @@
 //  ThyroidIndicator.swift
 //  ThyroidHelper
 //
-//  Created by gdlium2p on 2025/8/25.
-//
 
 import SwiftData
 import Foundation
 
 @Model
 class ThyroidIndicator {
-    var name: String
-    var value: Double
-    var unit: String
-    var normalRange: String
-    var status: IndicatorStatus
+    // 所有属性都需要有默认值
+    var name: String = ""
+    var value: Double = 0.0
+    var unit: String = ""
+    var normalRange: String = ""
+    var status: IndicatorStatus = IndicatorStatus.normal
     
-    // 反向关系
-    var record: CheckupRecord?
+    // 反向关系，设为可选
+    var checkupRecord: CheckupRecord? = nil
     
-    init(name: String, value: Double, unit: String, normalRange: String, status: IndicatorStatus) {
+    init(name: String, value: Double, unit: String, normalRange: String, status: IndicatorStatus = .normal) {
         self.name = name
         self.value = value
         self.unit = unit
@@ -28,15 +27,15 @@ class ThyroidIndicator {
     }
     
     enum IndicatorStatus: String, CaseIterable, Codable {
+        case low = "偏低"
         case normal = "正常"
         case high = "偏高"
-        case low = "偏低"
         
         var color: String {
             switch self {
+            case .low: return "blue"
             case .normal: return "green"
             case .high: return "red"
-            case .low: return "blue"
             }
         }
     }

@@ -269,8 +269,8 @@ struct AddRecordView: View {
                 normalRange: input.normalRange,
                 status: status
             )
-            indicator.record = record
-            record.indicators.append(indicator)
+            indicator.checkupRecord = record
+            record.indicators?.append(indicator)
         }
         
         modelContext.insert(record)
@@ -283,8 +283,8 @@ struct AddRecordView: View {
             print("保存的记录详情:")
             print(" - 日期: \(record.date)")
             print(" - 类型: \(record.type.rawValue)")
-            print(" - 指标数量: \(record.indicators.count)")
-            for indicator in record.indicators {
+            print(" - 指标数量: \((record.indicators ?? []).count)")
+            for indicator in (record.indicators ?? []) {
                 print("   - \(indicator.name): \(indicator.value) \(indicator.unit) (\(indicator.status.rawValue))")
             }
             

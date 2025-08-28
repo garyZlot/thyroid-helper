@@ -73,25 +73,26 @@ struct RecordRowView: View {
                 Spacer()
                 
                 HStack(spacing: 4) {
-                    let abnormalCount = record.indicators.filter { $0.status != .normal }.count
-                    if abnormalCount > 0 {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(.orange)
-                            .font(.caption)
-                        Text("\(abnormalCount)")
-                            .font(.caption2)
-                            .foregroundColor(.orange)
-                    } else {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
-                            .font(.caption)
+                    if let abnormalCount = record.indicators?.filter { $0.status != .normal }.count {
+                        if abnormalCount > 0 {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.orange)
+                                .font(.caption)
+                            Text("\(abnormalCount)")
+                                .font(.caption2)
+                                .foregroundColor(.orange)
+                        } else {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .font(.caption)
+                        }
                     }
                 }
             }
             
             // 指标概览
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
-                ForEach(record.indicators.prefix(6).sorted(by: { $0.name < $1.name }), id: \.name) { indicator in
+                ForEach((record.indicators ?? []).prefix(6).sorted(by: { $0.name < $1.name }), id: \.name) { indicator in
                     VStack(spacing: 2) {
                         Text(indicator.name)
                             .font(.caption2)

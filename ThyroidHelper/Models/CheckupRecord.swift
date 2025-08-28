@@ -10,19 +10,21 @@ import Foundation
 
 @Model
 class CheckupRecord {
-    @Attribute(.unique) var id: String
-    var date: Date
-    var type: CheckupType
-    var notes: String?
+    // 移除@Attribute(.unique)，因为CloudKit不支持唯一约束
+    var id: String = ""
+    var date: Date = Date()
+    var type: CheckupType = CheckupType.comprehensive
+    var notes: String? = nil
     
-    // 关系：一对多
-    @Relationship(deleteRule: .cascade) var indicators: [ThyroidIndicator] = []
+    // 关系：一对多，设为可选
+    @Relationship(deleteRule: .cascade) var indicators: [ThyroidIndicator]? = []
     
     init(date: Date, type: CheckupType, notes: String? = nil) {
         self.id = UUID().uuidString
         self.date = date
         self.type = type
         self.notes = notes
+        self.indicators = []
     }
     
     enum CheckupType: String, CaseIterable, Codable {
@@ -42,4 +44,3 @@ class CheckupRecord {
         }
     }
 }
-

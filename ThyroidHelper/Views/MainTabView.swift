@@ -83,8 +83,8 @@ struct MainTabView: View {
         for (name, value, unit, range) in indicators {
             let status = ThyroidIndicator.determineStatus(value: value, normalRange: range)
             let indicator = ThyroidIndicator(name: name, value: value, unit: unit, normalRange: range, status: status)
-            indicator.record = record
-            record.indicators.append(indicator)
+            indicator.checkupRecord = record
+            record.indicators?.append(indicator)
         }
         
         return record

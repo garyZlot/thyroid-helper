@@ -51,7 +51,7 @@ struct TrendsView: View {
     
     private func getTrendData(for indicatorName: String) -> [(Date, Double)] {
         return records.compactMap { record in
-            guard let indicator = record.indicators.first(where: { $0.name == indicatorName }) else {
+            guard let indicator = (record.indicators ?? []).first(where: { $0.name == indicatorName }) else {
                 return nil
             }
             return (record.date, indicator.value)
