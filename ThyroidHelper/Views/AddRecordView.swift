@@ -301,17 +301,23 @@ struct IndicatorInputRow: View {
     let name: String
     @Binding var input: AddRecordView.IndicatorInput
     
+    // 使用扩展获取完整显示名称
+    private var displayName: String {
+        let tempIndicator = ThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        return tempIndicator.fullDisplayName
+    }
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(name)
+                Text(displayName)
                     .font(.headline)
                 
                 Text("参考: \(input.normalRange)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .frame(width: 80, alignment: .leading)
+            .frame(width: 120, alignment: .leading)
             
             Spacer()
             
