@@ -67,26 +67,25 @@ struct TrendChartCard: View {
         )
     }
     
-    // 计算合适的日期显示间隔
-    private var dateAxisValues: [Date] {
-        guard !data.isEmpty else { return [] }
-        
-        let sortedDates = data.map(\.0).sorted()
-        let dateCount = sortedDates.count
-        
-        // 根据数据点数量决定显示间隔
-        let interval: Int
-        if dateCount <= 3 {
-            interval = 1  // 显示所有
-        } else if dateCount <= 6 {
-            interval = 2  // 显示一半
-        } else {
-            interval = max(3, dateCount / 4)  // 最多显示4-5个标签
+    // 计算扩展后的日期范围（前后各扩展一个月）
+    private var extendedDateRange: (start: Date, end: Date) {
+        guard !data.isEmpty else {
+            let now = Date()
+            let calendar = Calendar.current
+            let start = calendar.date(byAdding: .month, value: -1, to: now)!
+            let end = calendar.date(byAdding: .month, value: 1, to: now)!
+            return (start, end)
         }
         
-        return stride(from: 0, to: dateCount, by: interval).compactMap { index in
-            index < sortedDates.count ? sortedDates[index] : nil
-        }
+        let dates = data.map { $0.0 }
+        let minDate = dates.min()!
+        let maxDate = dates.max()!
+        
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .month, value: -1, to: minDate)!
+        let end = calendar.date(byAdding: .month, value: 1, to: maxDate)!
+        
+        return (start, end)
     }
     
     var body: some View {
@@ -119,74 +118,77 @@ struct TrendChartCard: View {
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(8)
             } else if #available(iOS 16.0, *) {
-                Chart {
-                    ForEach(Array(data.enumerated()), id: \.offset) { index, point in
-                        LineMark(
-                            x: .value("日期", point.0),
-                            y: .value("数值", point.1)
-                        )
-                        .foregroundStyle(config.color)
-                        .symbol(Circle().strokeBorder(lineWidth: 2))
-                        .symbolSize(60)
+                // 使用 GeometryReader 获取图表尺寸
+                GeometryReader { geometry in
+                    Chart {
+                        ForEach(Array(data.enumerated()), id: \.offset) { index, point in
+                            LineMark(
+                                x: .value("日期", point.0),
+                                y: .value("数值", point.1)
+                            )
+                            .foregroundStyle(config.color)
+                            .symbol(Circle().strokeBorder(lineWidth: 2))
+                            .symbolSize(60)
+                            
+                            PointMark(
+                                x: .value("日期", point.0),
+                                y: .value("数值", point.1)
+                            )
+                            .foregroundStyle(config.color)
+                            .symbolSize(30)
+                        }
                         
-                        PointMark(
-                            x: .value("日期", point.0),
-                            y: .value("数值", point.1)
-                        )
-                        .foregroundStyle(config.color)
-                        .symbolSize(30)
+                        // 正常范围背景区域
+                        if let range = config.normalRange {
+                            RectangleMark(
+                                yStart: .value("下限", range.0),
+                                yEnd: .value("上限", range.1)
+                            )
+                            .foregroundStyle(.green.opacity(0.1))
+                            
+                            // 参考线 - 简化标注
+                            RuleMark(y: .value("下限", range.0))
+                                .foregroundStyle(.red.opacity(0.6))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                            
+                            RuleMark(y: .value("上限", range.1))
+                                .foregroundStyle(.red.opacity(0.6))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                        }
                     }
-                    
-                    // 正常范围背景区域
-                    if let range = config.normalRange {
-                        RectangleMark(
-                            yStart: .value("下限", range.0),
-                            yEnd: .value("上限", range.1)
-                        )
-                        .foregroundStyle(.green.opacity(0.1))
-                        
-                        // 参考线 - 简化标注
-                        RuleMark(y: .value("下限", range.0))
-                            .foregroundStyle(.red.opacity(0.6))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 2]))
-                        
-                        RuleMark(y: .value("上限", range.1))
-                            .foregroundStyle(.red.opacity(0.6))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                    .chartXScale(domain: extendedDateRange.start...extendedDateRange.end)
+                    .chartYAxisLabel(config.unit, position: .leading)
+                    .chartXAxis {
+                        // 隐藏X轴刻度标签
+                        AxisMarks(values: .automatic(desiredCount: 0))
                     }
-                }
-                .frame(height: 200)
-                .chartYAxisLabel(config.unit, position: .leading)
-                .chartXAxis {
-                    AxisMarks(values: dateAxisValues) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel {
-                            // 自定义标签格式
-                            if let date = value.as(Date.self) {
-                                Text(DateFormatter.shortDate.string(from: date))
-                                    .font(.caption2)
-                                    .rotationEffect(.degrees(-45))
+                    .chartYAxis {
+                        AxisMarks(position: .leading) { value in
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel() {
+                                if let doubleValue = value.as(Double.self) {
+                                    Text(String(format: "%.1f", doubleValue))
+                                        .font(.caption2)
+                                }
                             }
                         }
                     }
-                }
-                .chartYAxis {
-                    AxisMarks(position: .leading) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel() {
-                            if let doubleValue = value.as(Double.self) {
-                                Text(String(format: "%.1f", doubleValue))
-                                    .font(.caption2)
-                            }
-                        }
+                    .chartPlotStyle { plotArea in
+                        plotArea
+                            .background(.clear)
+                            .padding(.bottom, 40) // 增加底部内边距以避免标签被截断
                     }
+                    .overlay(
+                        // 添加日期标签覆盖层
+                        DateLabelsOverlay(
+                            data: data,
+                            extendedDateRange: extendedDateRange,
+                            geometry: geometry
+                        )
+                    )
                 }
-                .chartPlotStyle { plotArea in
-                    plotArea
-                        .background(.clear)
-                }
+                .frame(height: 240) // 增加高度以容纳日期标签
             } else {
                 // iOS 15 及以下的备选方案
                 VStack {
@@ -216,6 +218,35 @@ struct TrendChartCard: View {
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+}
+
+// 日期标签覆盖层
+struct DateLabelsOverlay: View {
+    let data: [(Date, Double)]
+    let extendedDateRange: (start: Date, end: Date)
+    let geometry: GeometryProxy
+    
+    var body: some View {
+        ZStack {
+            ForEach(Array(data.enumerated()), id: \.offset) { index, point in
+                // 计算日期标签的位置
+                let xPosition = positionForDate(point.0, in: geometry.size.width)
+                Text(DateFormatter.shortDateWithYear.string(from: point.0))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .rotationEffect(.degrees(-45))
+                    .position(x: xPosition, y: geometry.size.height - 15) // 放在图表底部
+            }
+        }
+    }
+    
+    // 计算日期在图表中的X位置
+    private func positionForDate(_ date: Date, in width: CGFloat) -> CGFloat {
+        let totalDuration = extendedDateRange.end.timeIntervalSince(extendedDateRange.start)
+        let timeFromStart = date.timeIntervalSince(extendedDateRange.start)
+        let positionRatio = timeFromStart / totalDuration
+        return positionRatio * width
     }
 }
 
@@ -252,11 +283,11 @@ struct TrendAnalysis: View {
     }
 }
 
-// 扩展DateFormatter，添加简短日期格式
+// 扩展DateFormatter，添加日期格式
 extension DateFormatter {
-    static let shortDate: DateFormatter = {
+    static let shortDateWithYear: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "M/d"  // 简短格式：月/日
+        formatter.dateFormat = "yyyy/M/d"  // 格式：年/月/日
         return formatter
     }()
 }
