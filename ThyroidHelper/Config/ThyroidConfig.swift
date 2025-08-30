@@ -20,6 +20,15 @@ struct ThyroidConfig {
         "A-TG": IndicatorSetting(unit: "IU/mL", normalRange: (0, 4.5)),
         "A-TPO": IndicatorSetting(unit: "IU/mL", normalRange: (0, 60))
     ]
+    
+    /// 动态设置指标的小数位数
+    public static func decimalPlaces(for indicator: String) -> Int {
+        switch indicator {
+        case "TSH": return 3
+        case "FT3", "FT4", "A-TG", "A-TPO": return 2
+        default: return 2
+        }
+    }
 }
 
 /// 指标配置结构体

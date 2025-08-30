@@ -200,11 +200,21 @@ struct AddRecordView: View {
         // OCR 识别成功后，确保显示输入字段
         showManualInput = true
         
+        // 如果indicators为空，初始化默认指标
+        if indicators.isEmpty {
+            setupDefaultIndicators()
+        }
+        
         for (indicatorName, value) in extractedData {
             if let defaultInput = indicators[indicatorName] {
                 var updatedInput = defaultInput
                 updatedInput.value = String(format: "%.2f", value)
                 indicators[indicatorName] = updatedInput
+            } else {
+                // 如果指标不在默认列表中，添加新的IndicatorInput
+                let setting = ThyroidConfig.indicatorSettings[indicatorName] ?? IndicatorSetting(unit: "", normalRange: (0, 0))
+                var newInput = IndicatorInput(value: String(format: "%.2f", value), unit: setting.unit, normalRange: setting.normalRangeString)
+                indicators[indicatorName] = newInput
             }
         }
     }

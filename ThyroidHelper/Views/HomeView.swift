@@ -145,7 +145,7 @@ struct IndicatorCard: View {
                 .font(.caption)
                 .fontWeight(.medium)
             
-            Text(indicator.value, format: .number.precision(.fractionLength(2)))
+            Text(indicator.value, format: .number.precision(.fractionLength(ThyroidConfig.decimalPlaces(for: indicator.name))))
                 .font(.title3)
                 .fontWeight(.bold)
             

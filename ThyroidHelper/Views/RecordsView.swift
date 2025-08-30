@@ -119,7 +119,7 @@ struct RecordRowView: View {
                             .font(.caption2)
                             .fontWeight(.medium)
                         
-                        Text(indicator.value, format: .number.precision(.fractionLength(1)))
+                        Text(indicator.value, format: .number.precision(.fractionLength(ThyroidConfig.decimalPlaces(for: indicator.name))))
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundColor(colorForStatus(indicator.status))
@@ -209,7 +209,7 @@ struct EditRecordView: View {
                 }
                 
                 Section("检查数值") {
-                    ForEach(standardIndicatorOrder, id: \.self) { indicatorName in
+                    ForEach(ThyroidConfig.standardOrder, id: \.self) { indicatorName in
                         IndicatorEditRow(
                             name: indicatorName,
                             input: Binding(
@@ -243,8 +243,6 @@ struct EditRecordView: View {
         }
     }
     
-    private let standardIndicatorOrder = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
-    
     private var canSave: Bool {
         !indicators.isEmpty && indicators.values.allSatisfy { $0.isValid }
     }
@@ -254,15 +252,16 @@ struct EditRecordView: View {
         
         // 从现有记录中加载数据
         for indicator in (record.indicators ?? []).sortedByMedicalOrder() {
+            let decimalPlaces = ThyroidConfig.decimalPlaces(for: indicator.name)
             indicators[indicator.name] = IndicatorInput(
-                value: String(format: "%.2f", indicator.value),
+                value: String(format: "%.\(decimalPlaces)f", indicator.value),
                 unit: indicator.unit,
                 normalRange: indicator.normalRange
             )
         }
         
         // 确保所有标准指标都存在（如果缺少则添加默认值）
-        for indicatorName in standardIndicatorOrder {
+        for indicatorName in ThyroidConfig.standardOrder {
             if indicators[indicatorName] == nil {
                 indicators[indicatorName] = defaultIndicatorInput(for: indicatorName)
             }

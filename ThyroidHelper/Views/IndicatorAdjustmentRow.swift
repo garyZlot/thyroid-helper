@@ -35,11 +35,7 @@ struct IndicatorAdjustmentRow: View {
     
     // 动态设置小数位数
     private var decimalPlaces: Int {
-        switch indicator {
-        case "TSH": return 3
-        case "FT3", "FT4", "A-TG", "A-TPO": return 2
-        default: return 2
-        }
+        ThyroidConfig.decimalPlaces(for: indicator)
     }
     
     var body: some View {
