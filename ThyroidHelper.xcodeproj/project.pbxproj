@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2FB2053D2E63148900BD4D6F /* ThyroidConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */; };
 		68426F772E5D7EB2008B17BA /* OCRServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* OCRServices.swift */; };
 		68426F792E5D7FCD008B17BA /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F782E5D7FCB008B17BA /* CameraView.swift */; };
 		68426F7B2E5D7FF5008B17BA /* OCRResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7A2E5D7FF3008B17BA /* OCRResultView.swift */; };
@@ -15,7 +16,6 @@
 		68426F812E5D8084008B17BA /* RawTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F802E5D8081008B17BA /* RawTextView.swift */; };
 		68426F832E5DC552008B17BA /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F822E5DC547008B17BA /* ImagePicker.swift */; };
 		689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 689F16DA2E5C9C670047ABAB /* Assets.xcassets */; };
-		689F16E52E5C9C670047ABAB /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16DD2E5C9C670047ABAB /* Item.swift */; };
 		689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */; };
 		689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16E82E5C9C880047ABAB /* CheckupRecord.swift */; };
 		689F16EC2E5C9CF80047ABAB /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16EB2E5C9CF60047ABAB /* CloudKitManager.swift */; };
@@ -37,6 +37,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidConfig.swift; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* OCRServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServices.swift; sourceTree = "<group>"; };
 		68426F782E5D7FCB008B17BA /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		68426F7A2E5D7FF3008B17BA /* OCRResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRResultView.swift; sourceTree = "<group>"; };
@@ -47,7 +48,6 @@
 		689F16C42E5C97B50047ABAB /* ThyroidHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThyroidHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		689F16DA2E5C9C670047ABAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		689F16DC2E5C9C670047ABAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		689F16DD2E5C9C670047ABAB /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ThyroidHelper.entitlements; sourceTree = "<group>"; };
 		689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidHelperApp.swift; sourceTree = "<group>"; };
 		689F16E82E5C9C880047ABAB /* CheckupRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckupRecord.swift; sourceTree = "<group>"; };
@@ -81,6 +81,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2FB2053B2E63147400BD4D6F /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		689F16BB2E5C97B50047ABAB = {
 			isa = PBXGroup;
 			children = (
@@ -101,12 +109,12 @@
 		689F16E02E5C9C670047ABAB /* ThyroidHelper */ = {
 			isa = PBXGroup;
 			children = (
+				2FB2053B2E63147400BD4D6F /* Config */,
 				689F16EF2E5C9D480047ABAB /* Views */,
 				689F16EA2E5C9CEC0047ABAB /* Services */,
 				689F16E72E5C9C780047ABAB /* Models */,
 				689F16DA2E5C9C670047ABAB /* Assets.xcassets */,
 				689F16DC2E5C9C670047ABAB /* Info.plist */,
-				689F16DD2E5C9C670047ABAB /* Item.swift */,
 				689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */,
 				689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */,
 			);
@@ -261,12 +269,12 @@
 				689F16FD2E5C9E040047ABAB /* AddRecordView.swift in Sources */,
 				689F16FB2E5C9DEB0047ABAB /* RecordsView.swift in Sources */,
 				689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */,
-				689F16E52E5C9C670047ABAB /* Item.swift in Sources */,
 				68426F792E5D7FCD008B17BA /* CameraView.swift in Sources */,
 				689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */,
 				68426F772E5D7EB2008B17BA /* OCRServices.swift in Sources */,
 				689F16F92E5C9DCE0047ABAB /* TrendsView.swift in Sources */,
 				68426F7F2E5D8063008B17BA /* IndicatorAdjustmentRow.swift in Sources */,
+				2FB2053D2E63148900BD4D6F /* ThyroidConfig.swift in Sources */,
 				68426F832E5DC552008B17BA /* ImagePicker.swift in Sources */,
 				689F170C2E5C9F0F0047ABAB /* ThyroidIndicator.swift in Sources */,
 				689F16F52E5C9D8C0047ABAB /* MainTabView.swift in Sources */,

@@ -45,6 +45,15 @@ struct IndicatorAdjustmentRow: View {
         !adjustment.isEmpty && adjustment != String(originalValue)
     }
     
+    // 动态设置小数位数
+    private var decimalPlaces: Int {
+        switch indicator {
+        case "TSH": return 3  // TSH需要3位小数
+        case "FT3", "FT4", "A-TG", "A-TPO": return 2  // 其他指标保留2位小数
+        default: return 2
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 16) {
@@ -85,7 +94,8 @@ struct IndicatorAdjustmentRow: View {
                                         .font(.caption)
                                 }
                                 
-                                Text(displayValue, format: .number.precision(.fractionLength(2)))
+                                // 动态设置精度
+                                Text(displayValue, format: .number.precision(.fractionLength(decimalPlaces)))
                                     .font(.title3)
                                     .fontWeight(.semibold)
                                     .foregroundColor(isAdjusted ? .blue : .primary)
@@ -109,7 +119,7 @@ struct IndicatorAdjustmentRow: View {
             // 调整状态提示
             if isAdjusted {
                 HStack {
-                    Text("原识别值: \(originalValue, format: .number.precision(.fractionLength(2)))")
+                    Text("原识别值: \(originalValue, format: .number.precision(.fractionLength(decimalPlaces)))")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     

@@ -97,18 +97,30 @@ class OCRService: ObservableObject {
             return
         }
         
-        // 提取所有识别到的文本
-        let recognizedStrings = observations.compactMap { observation in
+        // 按观察值排序：从上到下（按递减maxY，因为y=1是顶部），然后从左到右（按递增minX）
+        let sortedObservations = observations.sorted { a, b in
+            let aBox = a.boundingBox
+            let bBox = b.boundingBox
+            
+            // 如果在不同“行”（y差值>阈值，例如0.01用于归一化坐标）
+            if abs(aBox.midY - bBox.midY) > 0.01 {
+                return aBox.maxY > bBox.maxY  // 更高maxY优先（从上到下）
+            } else {
+                return aBox.minX < bBox.minX  // 同一行：从左到右
+            }
+        }
+
+        // 现在使用sortedObservations代替observations
+        let recognizedStrings = sortedObservations.compactMap { observation in
             return observation.topCandidates(1).first?.string
         }
-        
         recognizedText = recognizedStrings.joined(separator: "\n")
         
         // 从识别的文本中提取指标数值
-        extractIndicators(from: recognizedText)
+        extractIndicators(from: recognizedText, observations: sortedObservations)
     }
     
-    private func extractIndicators(from text: String) {
+    private func extractIndicators(from text: String, observations: [VNRecognizedTextObservation]) {
         extractedIndicators.removeAll()
         
         print("🔍 开始从文本中提取指标:")
@@ -122,62 +134,67 @@ class OCRService: ObservableObject {
         print("📝 分割后的行: \(lines)")
         
         // 使用位置匹配方法提取指标
-        extractByPositionMatching(lines: lines)
+        extractByPositionMatching(lines: lines, observations: observations)
+        
+        // 如果未提取到足够指标，尝试顺序匹配
+        if extractedIndicators.count < 5 { // 假设有5个指标：FT3, FT4, TSH, A-TG, A-TPO
+            extractBySequentialMatching(lines: lines)
+        }
         
         print("📊 最终提取到的指标: \(extractedIndicators)")
     }
-    
+
     // 基于位置匹配的指标提取方法
-    private func extractByPositionMatching(lines: [String]) {
-        // 定义指标映射
+    private func extractByPositionMatching(lines: [String], observations: [VNRecognizedTextObservation]) {
         let indicatorMap: [String: String] = [
             "FT3": "FT3",
             "FT4": "FT4",
             "TSH": "TSH",
-            "A-TPO": "TPO",
-            "TPO": "TPO",
-            "A-TG": "TG",
-            "TG": "TG"
+            "A-TG": "A-TG",
+            "A-TPO": "A-TPO"
         ]
-        
-        // 查找指标名称的位置，然后在后续行中查找对应的数值
+
+        // 按行号和边界框匹配
         for (index, line) in lines.enumerated() {
             print("🔍 检查行 \(index): '\(line)'")
             
-            // 检查当前行是否包含指标名称
             for (key, indicator) in indicatorMap {
                 if line.contains(key) {
                     print("📍 找到指标 \(key) 在行 \(index)")
                     
-                    // 在当前行及后续几行中查找数值
-                    for valueIndex in index..<min(index + 10, lines.count) {
-                        let valueLine = lines[valueIndex]
-                        if let value = extractFirstNumber(from: valueLine) {
-                            // 验证这个数值是否合理（避免提取到无关的数字）
-                            if isReasonableThyroidValue(value: value, indicator: indicator) {
-                                extractedIndicators[indicator] = value
-                                print("✅ 成功提取 \(indicator): \(value) (从行 \(valueIndex): '\(valueLine)')")
-                                break
+                    // 查找对应观察值的边界框
+                    if let observation = observations.first(where: { $0.topCandidates(1).first?.string == line }) {
+                        let indicatorBox = observation.boundingBox
+                        
+                        // 在后续行中查找值（按x坐标右侧）
+                        for valueIndex in (index + 1)..<min(index + 10, lines.count) {
+                            let valueLine = lines[valueIndex]
+                            if let valueObservation = observations.first(where: { $0.topCandidates(1).first?.string == valueLine }),
+                               let value = extractFirstNumber(from: valueLine) {
+                                let valueBox = valueObservation.boundingBox
+                                
+                                // 检查值是否在指标右侧（x坐标增加）且y坐标接近
+                                if valueBox.minX > indicatorBox.maxX && abs(valueBox.midY - indicatorBox.midY) < 0.05 {
+                                    if isReasonableThyroidValue(value: value, indicator: indicator) {
+                                        extractedIndicators[indicator] = value
+                                        print("✅ 成功提取 \(indicator): \(value) (从行 \(valueIndex): '\(valueLine)')")
+                                        break
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        
-        // 如果位置匹配失败，尝试基于已知结果值的顺序匹配
-        if extractedIndicators.count < 3 {
-            extractBySequentialMatching(lines: lines)
-        }
     }
-    
+
     // 基于顺序的匹配（根据常见的检查报告顺序）
     private func extractBySequentialMatching(lines: [String]) {
         print("🔄 尝试顺序匹配方法")
         
         // 提取所有数值行
         var numberLines: [(index: Int, value: Double, line: String)] = []
-        
         for (index, line) in lines.enumerated() {
             if let value = extractFirstNumber(from: line) {
                 numberLines.append((index: index, value: value, line: line))
@@ -185,10 +202,8 @@ class OCRService: ObservableObject {
             }
         }
         
-        // 根据OCR识别的结果，按顺序匹配常见的甲状腺指标
-        // 从截图看，顺序应该是: FT3(5.27), FT4(21.10), TSH(0.565), TPO(81.20), TG(<1.3)
+        // 按常见顺序匹配甲状腺指标
         let expectedOrder = ["FT3", "FT4", "TSH", "A-TPO", "A-TG"]
-        
         for (i, indicator) in expectedOrder.enumerated() {
             if i < numberLines.count && extractedIndicators[indicator] == nil {
                 let numberInfo = numberLines[i]
@@ -199,12 +214,10 @@ class OCRService: ObservableObject {
             }
         }
     }
-    
-    // 从文本中提取第一个数值（处理<1.3这种情况）
+
+    // 从文本中提取第一个数值（处理<、>、+等情况）
     private func extractFirstNumber(from text: String) -> Double? {
-        // 匹配数字，包括带<或>符号的
-        let pattern = "([<>]?[0-9]+\\.?[0-9]*)"
-        
+        let pattern = "([<>]?[0-9]+\\.?[0-9]*[+-]?)"
         do {
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let range = NSRange(location: 0, length: text.utf16.count)
@@ -212,36 +225,33 @@ class OCRService: ObservableObject {
             if let match = regex.firstMatch(in: text, options: [], range: range),
                let valueRange = Range(match.range(at: 1), in: text) {
                 var valueString = String(text[valueRange]).trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                // 处理<符号（将<1.3当作1.3处理）
-                if valueString.hasPrefix("<") {
-                    valueString = String(valueString.dropFirst())
-                } else if valueString.hasPrefix(">") {
+                if valueString.hasSuffix("+") || valueString.hasSuffix("-") {
+                    valueString = String(valueString.dropLast())
+                }
+                if valueString.hasPrefix("<") || valueString.hasPrefix(">") {
                     valueString = String(valueString.dropFirst())
                 }
-                
                 return Double(valueString)
             }
         } catch {
             print("正则表达式错误: \(error)")
         }
-        
         return nil
     }
-    
+
     // 验证数值是否为合理的甲状腺指标值
     private func isReasonableThyroidValue(value: Double, indicator: String) -> Bool {
         switch indicator {
         case "TSH":
-            return value >= 0.001 && value <= 100  // TSH通常在0.1-10之间
+            return value >= 0.001 && value <= 100
         case "FT3":
-            return value >= 1.0 && value <= 20     // FT3通常在2-8之间
+            return value >= 1.0 && value <= 20
         case "FT4":
-            return value >= 5.0 && value <= 50     // FT4通常在10-25之间
+            return value >= 5.0 && value <= 50
         case "A-TPO":
-            return value >= 0 && value <= 1000     // TPO抗体可能很高
+            return value >= 0 && value <= 1000
         case "A-TG":
-            return value >= 0 && value <= 100      // TG抗体通常较低
+            return value >= 0 && value <= 100
         default:
             return value >= 0 && value <= 1000
         }

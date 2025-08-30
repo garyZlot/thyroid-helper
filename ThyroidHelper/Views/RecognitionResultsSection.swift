@@ -36,7 +36,7 @@ struct RecognitionResultsSection: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text("请确保图片清晰，包含TSH、TG等指标数值")
+                    Text("请确保图片清晰，包含FT3、FT4、TSH、A-TG、A-TPO等指标数值")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -46,9 +46,13 @@ struct RecognitionResultsSection: View {
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(12)
             } else {
-                // 指标列表
+                // 指标列表，按standardOrder排序
                 LazyVStack(spacing: 12) {
-                    ForEach(Array(extractedIndicators.keys.sorted()), id: \.self) { indicator in
+                    ForEach(Array(extractedIndicators.keys).sorted { first, second in
+                        let firstIndex = ThyroidConfig.standardOrder.firstIndex(of: first) ?? ThyroidConfig.standardOrder.count
+                        let secondIndex = ThyroidConfig.standardOrder.firstIndex(of: second) ?? ThyroidConfig.standardOrder.count
+                        return firstIndex < secondIndex
+                    }, id: \.self) { indicator in
                         IndicatorAdjustmentRow(
                             indicator: indicator,
                             originalValue: extractedIndicators[indicator] ?? 0,

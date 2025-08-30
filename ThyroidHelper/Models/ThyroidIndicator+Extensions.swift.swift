@@ -8,14 +8,11 @@
 import Foundation
 
 extension Array where Element == ThyroidIndicator {
-    /// 标准甲状腺指标显示顺序
-    private static let standardOrder = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
-    
     /// 按照标准医学顺序排序指标
     func sortedByMedicalOrder() -> [ThyroidIndicator] {
         return self.sorted { first, second in
-            let firstIndex = Self.standardOrder.firstIndex(of: first.name) ?? Self.standardOrder.count
-            let secondIndex = Self.standardOrder.firstIndex(of: second.name) ?? Self.standardOrder.count
+            let firstIndex = ThyroidConfig.standardOrder.firstIndex(of: first.name) ?? ThyroidConfig.standardOrder.count
+            let secondIndex = ThyroidConfig.standardOrder.firstIndex(of: second.name) ?? ThyroidConfig.standardOrder.count
             return firstIndex < secondIndex
         }
     }
@@ -24,8 +21,7 @@ extension Array where Element == ThyroidIndicator {
 extension ThyroidIndicator {
     /// 获取指标的标准显示顺序索引
     var displayOrderIndex: Int {
-        let standardOrder = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
-        return standardOrder.firstIndex(of: self.name) ?? standardOrder.count
+        ThyroidConfig.standardOrder.firstIndex(of: self.name) ?? ThyroidConfig.standardOrder.count
     }
     
     /// 指标的完整显示名称

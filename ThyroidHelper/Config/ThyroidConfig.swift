@@ -1,0 +1,34 @@
+//
+//  ThyroidConfig.swift
+//  ThyroidHelper
+//
+//  Created by gdlium2p on 2025/8/30.
+//
+
+import Foundation
+
+/// 甲状腺相关配置
+struct ThyroidConfig {
+    /// 标准甲状腺指标显示顺序
+    public static let standardOrder: [String] = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
+    
+    /// 指标的配置信息
+    public static let indicatorSettings: [String: IndicatorSetting] = [
+        "FT3": IndicatorSetting(unit: "pmol/L", normalRange: (2.77, 6.31)),
+        "FT4": IndicatorSetting(unit: "pmol/L", normalRange: (10.44, 24.38)),
+        "TSH": IndicatorSetting(unit: "μIU/mL", normalRange: (0.380, 4.340)),
+        "A-TG": IndicatorSetting(unit: "IU/mL", normalRange: (0, 4.5)),
+        "A-TPO": IndicatorSetting(unit: "IU/mL", normalRange: (0, 60))
+    ]
+}
+
+/// 指标配置结构体
+struct IndicatorSetting {
+    let unit: String
+    let normalRange: (lower: Double, upper: Double)
+    
+    /// 格式化为字符串表示
+    var normalRangeString: String {
+        "\(normalRange.lower)-\(normalRange.upper)"
+    }
+}
