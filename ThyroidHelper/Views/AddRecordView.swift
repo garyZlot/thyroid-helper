@@ -117,7 +117,7 @@ struct AddRecordView: View {
                                 imagePickerSource = .photoLibrary
                                 showingImagePicker = true
                             },
-                            .cancel()
+                            .cancel(Text("取消"))
                         ]
                     )
                 }
