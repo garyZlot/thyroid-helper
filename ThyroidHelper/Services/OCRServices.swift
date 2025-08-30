@@ -33,15 +33,15 @@ class OCRService: ObservableObject {
             "游离甲状腺素[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "游离T4[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)"
         ],
-        "TG": [
+        "A-TG": [
             "TG[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
-            "甲状腺球蛋白[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
+            "甲状腺球蛋白自身抗体[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "Thyroglobulin[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "A-TG[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)"
         ],
-        "TPO": [
+        "A-TPO": [
             "TPO[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
-            "甲状腺过氧化物酶抗体[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
+            "甲状腺过氧化物酶自身抗体[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "抗TPO[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "TPOAb[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)",
             "A-TPO[\\s\\S]*?([<>]?[0-9]+\\.?[0-9]*)"
@@ -187,7 +187,7 @@ class OCRService: ObservableObject {
         
         // 根据OCR识别的结果，按顺序匹配常见的甲状腺指标
         // 从截图看，顺序应该是: FT3(5.27), FT4(21.10), TSH(0.565), TPO(81.20), TG(<1.3)
-        let expectedOrder = ["FT3", "FT4", "TSH", "TPO", "TG"]
+        let expectedOrder = ["FT3", "FT4", "TSH", "A-TPO", "A-TG"]
         
         for (i, indicator) in expectedOrder.enumerated() {
             if i < numberLines.count && extractedIndicators[indicator] == nil {
@@ -238,9 +238,9 @@ class OCRService: ObservableObject {
             return value >= 1.0 && value <= 20     // FT3通常在2-8之间
         case "FT4":
             return value >= 5.0 && value <= 50     // FT4通常在10-25之间
-        case "TPO":
+        case "A-TPO":
             return value >= 0 && value <= 1000     // TPO抗体可能很高
-        case "TG":
+        case "A-TG":
             return value >= 0 && value <= 100      // TG抗体通常较低
         default:
             return value >= 0 && value <= 1000

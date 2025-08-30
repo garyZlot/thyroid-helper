@@ -16,31 +16,49 @@ struct TrendsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
+                    // FT3 趋势
+                    TrendChartCard(
+                        title: "游离三碘甲状腺原氨酸 (FT3)",
+                        unit: "pmol/L",
+                        data: getTrendData(for: "FT3"),
+                        color: .blue,
+                        normalRange: (2.77, 6.31)
+                    )
+                    
+                    // FT4 趋势
+                    TrendChartCard(
+                        title: "游离甲状腺素 (FT4)",
+                        unit: "pmol/L",
+                        data: getTrendData(for: "FT4"),
+                        color: .purple,
+                        normalRange: (10.44, 24.38)
+                    )
+                    
                     // TSH 趋势
                     TrendChartCard(
-                        title: "TSH 趋势",
-                        unit: "mIU/L",
+                        title: "促甲状腺激素 (TSH)",
+                        unit: "μIU/mL",
                         data: getTrendData(for: "TSH"),
-                        color: .blue,
-                        normalRange: (0.27, 4.2)
+                        color: .indigo,
+                        normalRange: (0.380, 4.340)
                     )
                     
-                    // TG 趋势
+                    // A-TG 趋势
                     TrendChartCard(
-                        title: "甲状腺球蛋白 (TG)",
-                        unit: "ng/mL",
-                        data: getTrendData(for: "TG"),
-                        color: .green,
-                        normalRange: (3.5, 77)
-                    )
-                    
-                    // TPO 趋势
-                    TrendChartCard(
-                        title: "甲状腺过氧化物酶抗体 (TPO)",
+                        title: "甲状腺球蛋白自身抗体 (A-TG)",
                         unit: "IU/mL",
-                        data: getTrendData(for: "TPO"),
+                        data: getTrendData(for: "A-TG"),
+                        color: .green,
+                        normalRange: (0, 4.5)
+                    )
+                    
+                    // A-TPO 趋势
+                    TrendChartCard(
+                        title: "甲状腺过氧化物酶自身抗体 (A-TPO)",
+                        unit: "IU/mL",
+                        data: getTrendData(for: "A-TPO"),
                         color: .orange,
-                        normalRange: (0, 34)
+                        normalRange: (0, 60)
                     )
                 }
                 .padding()

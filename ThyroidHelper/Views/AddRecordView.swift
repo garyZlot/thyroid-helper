@@ -222,11 +222,11 @@ struct AddRecordView: View {
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
         switch name {
-        case "TSH": return IndicatorInput(unit: "mIU/L", normalRange: "0.27-4.2")
-        case "FT3": return IndicatorInput(unit: "pmol/L", normalRange: "3.1-6.8")
-        case "FT4": return IndicatorInput(unit: "pmol/L", normalRange: "12-22")
-        case "TG":  return IndicatorInput(unit: "ng/mL", normalRange: "3.5-77")
-        case "TPO": return IndicatorInput(unit: "IU/mL", normalRange: "<34")
+        case "TSH": return IndicatorInput(unit: "μIU/mL", normalRange: "0.380-4.340")
+        case "FT3": return IndicatorInput(unit: "pmol/L", normalRange: "2.77-6.31")
+        case "FT4": return IndicatorInput(unit: "pmol/L", normalRange: "10.44-24.38")
+        case "A-TG":  return IndicatorInput(unit: "IU/mL", normalRange: "0-4.5")
+        case "A-TPO": return IndicatorInput(unit: "IU/mL", normalRange: "0-60")
         default:    return IndicatorInput(unit: "", normalRange: "")
         }
     }

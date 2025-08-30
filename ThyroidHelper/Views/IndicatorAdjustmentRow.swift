@@ -16,21 +16,20 @@ struct IndicatorAdjustmentRow: View {
     
     private var unit: String {
         switch indicator {
-        case "TSH": return "mIU/L"
+        case "TSH": return "μIU/mL"
         case "FT3", "FT4": return "pmol/L"
-        case "TG": return "ng/mL"
-        case "TPO": return "IU/mL"
+        case "A-TG", "A-TPO": return "IU/mL"
         default: return ""
         }
     }
     
     private var normalRange: String {
         switch indicator {
-        case "TSH": return "0.27-4.2"
-        case "FT3": return "3.1-6.8"
-        case "FT4": return "12-22"
-        case "TG": return "3.5-77"
-        case "TPO": return "<34"
+        case "TSH": return "0.380-4.340"
+        case "FT3": return "2.77-6.31"
+        case "FT4": return "10.44-24.38"
+        case "A-TG": return "0-4.5"
+        case "A-TPO": return "0-60"
         default: return ""
         }
     }

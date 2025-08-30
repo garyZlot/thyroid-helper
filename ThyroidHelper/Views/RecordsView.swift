@@ -92,7 +92,7 @@ struct RecordRowView: View {
             
             // 指标概览
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
-                ForEach((record.indicators ?? []).prefix(6).sorted(by: { $0.name < $1.name }), id: \.name) { indicator in
+                ForEach((record.indicators ?? []).sortedByMedicalOrder(), id: \.name) { indicator in
                     VStack(spacing: 2) {
                         Text(indicator.name)
                             .font(.caption2)

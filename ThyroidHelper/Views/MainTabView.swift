@@ -55,19 +55,21 @@ struct MainTabView: View {
             createSampleRecord(
                 daysAgo: 30,
                 indicators: [
-                    ("TSH", 0.565, "mIU/L", "0.27-4.2"),
+                    ("TSH", 0.565, "μIU/mL", "0.27-4.2"),
                     ("FT3", 4.8, "pmol/L", "3.1-6.8"),
                     ("FT4", 18.2, "pmol/L", "12-22"),
-                    ("TG", 2.84, "ng/mL", "3.5-77"),
-                    ("TPO", 81.20, "IU/mL", "<34")
+                    ("A-TG", 2.84, "IU/mL", "3.5-77"),
+                    ("A-TPO", 81.20, "IU/mL", "<34")
                 ]
             ),
             createSampleRecord(
                 daysAgo: 210,
                 indicators: [
-                    ("TSH", 0.42, "mIU/L", "0.27-4.2"),
-                    ("TG", 3.2, "ng/mL", "3.5-77"),
-                    ("TPO", 78.5, "IU/mL", "<34")
+                    ("TSH", 0.42, "μIU/mL", "0.27-4.2"),
+                    ("FT3", 4.9, "pmol/L", "3.1-6.8"),
+                    ("FT4", 16.7, "pmol/L", "12-22"),
+                    ("A-TG", 3.2, "IU/mL", "3.5-77"),
+                    ("A-TPO", 78.5, "IU/mL", "<34")
                 ]
             )
         ]

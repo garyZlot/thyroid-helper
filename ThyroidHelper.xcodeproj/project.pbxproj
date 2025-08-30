@@ -33,6 +33,7 @@
 		689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F17092E5C9E8C0047ABAB /* AboutView.swift */; };
 		689F170C2E5C9F0F0047ABAB /* ThyroidIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */; };
 		689F170F2E5CA11D0047ABAB /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689F170E2E5CA11D0047ABAB /* Charts.framework */; };
+		68ECC79B2E627A720031B882 /* ThyroidIndicator+Extensions.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68ECC79A2E627A6F0031B882 /* ThyroidIndicator+Extensions.swift.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,7 @@
 		689F17092E5C9E8C0047ABAB /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidIndicator.swift; sourceTree = "<group>"; };
 		689F170E2E5CA11D0047ABAB /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		68ECC79A2E627A6F0031B882 /* ThyroidIndicator+Extensions.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThyroidIndicator+Extensions.swift.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 		689F16E72E5C9C780047ABAB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				68ECC79A2E627A6F0031B882 /* ThyroidIndicator+Extensions.swift.swift */,
 				689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */,
 				689F16E82E5C9C880047ABAB /* CheckupRecord.swift */,
 			);
@@ -244,6 +247,7 @@
 			files = (
 				689F17082E5C9E860047ABAB /* DataExportView.swift in Sources */,
 				689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */,
+				68ECC79B2E627A720031B882 /* ThyroidIndicator+Extensions.swift.swift in Sources */,
 				689F16F12E5C9D590047ABAB /* ContentView.swift in Sources */,
 				689F16F32E5C9D720047ABAB /* LoginView.swift in Sources */,
 				68426F7D2E5D8040008B17BA /* RecognitionResultsSection.swift in Sources */,

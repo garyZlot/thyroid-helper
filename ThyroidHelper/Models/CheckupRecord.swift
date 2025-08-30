@@ -35,7 +35,7 @@ class CheckupRecord {
         var defaultIndicators: [String] {
             switch self {
             case .comprehensive:
-                return ["TSH", "FT3", "FT4", "TG", "TPO"]
+                return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
             case .thyroglobulin:
                 return ["TG"]
             case .ultrasound:

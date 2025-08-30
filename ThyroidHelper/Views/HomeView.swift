@@ -124,7 +124,7 @@ struct LatestResultCard: View {
             }
             
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
-                ForEach((record.indicators ?? []).sorted(by: { $0.name < $1.name }), id: \.name) { indicator in
+                ForEach((record.indicators ?? []).sortedByMedicalOrder(), id: \.name) { indicator in
                     IndicatorCard(indicator: indicator)
                 }
             }
