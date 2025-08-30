@@ -221,34 +221,13 @@ struct AddRecordView: View {
     }
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
-        switch name {
-        case "TSH": return IndicatorInput(unit: "μIU/mL", normalRange: "0.380-4.340")
-        case "FT3": return IndicatorInput(unit: "pmol/L", normalRange: "2.77-6.31")
-        case "FT4": return IndicatorInput(unit: "pmol/L", normalRange: "10.44-24.38")
-        case "A-TG":  return IndicatorInput(unit: "IU/mL", normalRange: "0-4.5")
-        case "A-TPO": return IndicatorInput(unit: "IU/mL", normalRange: "0-60")
-        default:    return IndicatorInput(unit: "", normalRange: "")
-        }
+        let setting = ThyroidConfig.indicatorSettings[name] ?? IndicatorSetting(unit: "", normalRange: (0, 0))
+        return IndicatorInput(
+            value: "",
+            unit: setting.unit,
+            normalRange: setting.normalRangeString
+        )
     }
-    
-//    private func saveRecord() {
-//        let record = CheckupRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
-//        for (name, input) in indicators {
-//            let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
-//            let indicator = ThyroidIndicator(
-//                name: name,
-//                value: input.doubleValue,
-//                unit: input.unit,
-//                normalRange: input.normalRange,
-//                status: status
-//            )
-//            indicator.record = record
-//            record.indicators.append(indicator)
-//        }
-//        modelContext.insert(record)
-//        try? modelContext.save()
-//        dismiss()
-//    }
     
     private func saveRecord() {
         print("开始保存记录...")
@@ -295,7 +274,6 @@ struct AddRecordView: View {
         }
     }
 }
-
 
 struct IndicatorInputRow: View {
     let name: String

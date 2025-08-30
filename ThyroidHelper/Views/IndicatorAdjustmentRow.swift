@@ -15,23 +15,11 @@ struct IndicatorAdjustmentRow: View {
     @State private var isEditing = false
     
     private var unit: String {
-        switch indicator {
-        case "TSH": return "μIU/mL"
-        case "FT3", "FT4": return "pmol/L"
-        case "A-TG", "A-TPO": return "IU/mL"
-        default: return ""
-        }
+        ThyroidConfig.indicatorSettings[indicator]?.unit ?? ""
     }
     
     private var normalRange: String {
-        switch indicator {
-        case "TSH": return "0.380-4.340"
-        case "FT3": return "2.77-6.31"
-        case "FT4": return "10.44-24.38"
-        case "A-TG": return "0-4.5"
-        case "A-TPO": return "0-60"
-        default: return ""
-        }
+        ThyroidConfig.indicatorSettings[indicator]?.normalRangeString ?? ""
     }
     
     private var displayValue: Double {
@@ -48,8 +36,8 @@ struct IndicatorAdjustmentRow: View {
     // 动态设置小数位数
     private var decimalPlaces: Int {
         switch indicator {
-        case "TSH": return 3  // TSH需要3位小数
-        case "FT3", "FT4", "A-TG", "A-TPO": return 2  // 其他指标保留2位小数
+        case "TSH": return 3
+        case "FT3", "FT4", "A-TG", "A-TPO": return 2
         default: return 2
         }
     }

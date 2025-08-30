@@ -44,33 +44,11 @@ extension ThyroidIndicator {
     
     /// 指标的标准参考范围
     var standardNormalRange: (Double, Double)? {
-        switch self.name {
-        case "FT3":
-            return (2.77, 6.31)
-        case "FT4":
-            return (10.44, 24.38)
-        case "TSH":
-            return (0.380, 4.340)
-        case "A-TG":
-            return (0, 4.5)
-        case "A-TPO":
-            return (0, 60)
-        default:
-            return nil
-        }
+        ThyroidConfig.indicatorSettings[name]?.normalRange
     }
     
     /// 指标的标准单位
     var standardUnit: String {
-        switch self.name {
-        case "FT3", "FT4":
-            return "pmol/L"
-        case "TSH":
-            return "μIU/mL"
-        case "A-TG", "A-TPO":
-            return "IU/mL"
-        default:
-            return self.unit
-        }
+        ThyroidConfig.indicatorSettings[name]?.unit ?? ""
     }
 }

@@ -120,6 +120,7 @@ class OCRService: ObservableObject {
         extractIndicators(from: recognizedText, observations: sortedObservations)
     }
     
+
     private func extractIndicators(from text: String, observations: [VNRecognizedTextObservation]) {
         extractedIndicators.removeAll()
         
@@ -166,8 +167,24 @@ class OCRService: ObservableObject {
                     if let observation = observations.first(where: { $0.topCandidates(1).first?.string == line }) {
                         let indicatorBox = observation.boundingBox
                         
-                        // 在后续行中查找值（按x坐标右侧）
-                        for valueIndex in (index + 1)..<min(index + 10, lines.count) {
+                        // 移除指标名称，提取剩余文本中的数值
+                        var cleanedLine = line
+                        if let range = cleanedLine.range(of: key, options: .caseInsensitive) {
+                            cleanedLine.removeSubrange(range)
+                        }
+                        cleanedLine = cleanedLine.trimmingCharacters(in: .whitespacesAndNewlines)
+                        
+                        // 从清理后的文本提取第一个数值
+                        if let value = extractFirstNumber(from: cleanedLine) {
+                            if isReasonableThyroidValue(value: value, indicator: indicator) {
+                                extractedIndicators[indicator] = value
+                                print("✅ 成功提取 \(indicator): \(value) (从当前行 \(index): '\(cleanedLine)')")
+                                continue // 跳过后续行搜索
+                            }
+                        }
+                        
+                        // 如果当前行没有有效数值，查找后续行
+                        for valueIndex in (index + 1)..<min(index + 3, lines.count) {
                             let valueLine = lines[valueIndex]
                             if let valueObservation = observations.first(where: { $0.topCandidates(1).first?.string == valueLine }),
                                let value = extractFirstNumber(from: valueLine) {
@@ -178,7 +195,7 @@ class OCRService: ObservableObject {
                                     if isReasonableThyroidValue(value: value, indicator: indicator) {
                                         extractedIndicators[indicator] = value
                                         print("✅ 成功提取 \(indicator): \(value) (从行 \(valueIndex): '\(valueLine)')")
-                                        break
+                                        break // 找到值后停止搜索
                                     }
                                 }
                             }
@@ -203,7 +220,7 @@ class OCRService: ObservableObject {
         }
         
         // 按常见顺序匹配甲状腺指标
-        let expectedOrder = ["FT3", "FT4", "TSH", "A-TPO", "A-TG"]
+        let expectedOrder = ThyroidConfig.standardOrder
         for (i, indicator) in expectedOrder.enumerated() {
             if i < numberLines.count && extractedIndicators[indicator] == nil {
                 let numberInfo = numberLines[i]
@@ -217,13 +234,14 @@ class OCRService: ObservableObject {
 
     // 从文本中提取第一个数值（处理<、>、+等情况）
     private func extractFirstNumber(from text: String) -> Double? {
-        let pattern = "([<>]?[0-9]+\\.?[0-9]*[+-]?)"
+        // 简化后的正则表达式：匹配任何数值，不依赖空格
+        let pattern = "[<>]?[0-9]+\\.?[0-9]*[+-]?"
         do {
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let range = NSRange(location: 0, length: text.utf16.count)
             
             if let match = regex.firstMatch(in: text, options: [], range: range),
-               let valueRange = Range(match.range(at: 1), in: text) {
+               let valueRange = Range(match.range, in: text) {
                 var valueString = String(text[valueRange]).trimmingCharacters(in: .whitespacesAndNewlines)
                 if valueString.hasSuffix("+") || valueString.hasSuffix("-") {
                     valueString = String(valueString.dropLast())
