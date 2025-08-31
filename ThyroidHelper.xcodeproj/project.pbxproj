@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F4B1DF62E63EB7A000EE005 /* DoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* DoubleExtension.swift */; };
 		2FB2053D2E63148900BD4D6F /* ThyroidConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */; };
 		68426F772E5D7EB2008B17BA /* OCRServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* OCRServices.swift */; };
 		68426F792E5D7FCD008B17BA /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F782E5D7FCB008B17BA /* CameraView.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F4B1DF52E63EB6D000EE005 /* DoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleExtension.swift; sourceTree = "<group>"; };
 		2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidConfig.swift; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* OCRServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServices.swift; sourceTree = "<group>"; };
 		68426F782E5D7FCB008B17BA /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -81,6 +83,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F4B1DF42E63EB62000EE005 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				2F4B1DF52E63EB6D000EE005 /* DoubleExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		2FB2053B2E63147400BD4D6F /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +119,7 @@
 		689F16E02E5C9C670047ABAB /* ThyroidHelper */ = {
 			isa = PBXGroup;
 			children = (
+				2F4B1DF42E63EB62000EE005 /* Extensions */,
 				2FB2053B2E63147400BD4D6F /* Config */,
 				689F16EF2E5C9D480047ABAB /* Views */,
 				689F16EA2E5C9CEC0047ABAB /* Services */,
@@ -261,6 +272,7 @@
 				68426F7D2E5D8040008B17BA /* RecognitionResultsSection.swift in Sources */,
 				68426F7B2E5D7FF5008B17BA /* OCRResultView.swift in Sources */,
 				68426F812E5D8084008B17BA /* RawTextView.swift in Sources */,
+				2F4B1DF62E63EB7A000EE005 /* DoubleExtension.swift in Sources */,
 				689F17062E5C9E7C0047ABAB /* NotificationSettingsView.swift in Sources */,
 				689F16EE2E5C9D1F0047ABAB /* AuthenticationManager.swift in Sources */,
 				689F16F72E5C9DB00047ABAB /* HomeView.swift in Sources */,
