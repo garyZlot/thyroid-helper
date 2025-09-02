@@ -20,9 +20,10 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 10) {
                     // 复查提醒卡片
                     CheckupReminderCard(latestRecord: latestRecord)
+                        .padding(.vertical, 8)
                     
                     // 最新检查结果
                     if let record = latestRecord {
@@ -59,9 +60,9 @@ struct CheckupReminderCard: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("下次复查提醒")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -113,7 +114,7 @@ struct LatestResultCard: View {
     let record: CheckupRecord
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 6) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("最新检查结果")
                     .font(.headline)
@@ -123,13 +124,14 @@ struct LatestResultCard: View {
                     .foregroundColor(.secondary)
             }
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 6) {
                 ForEach((record.indicators ?? []).sortedByMedicalOrder(), id: \.name) { indicator in
                     IndicatorCard(indicator: indicator)
                 }
             }
         }
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
@@ -140,7 +142,7 @@ struct IndicatorCard: View {
     let indicator: ThyroidIndicator
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 4) {
             Text(indicator.name)
                 .font(.caption)
                 .fontWeight(.medium)
