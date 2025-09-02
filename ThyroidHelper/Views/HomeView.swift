@@ -53,6 +53,21 @@ struct CheckupReminderCard: View {
         return Calendar.current.date(byAdding: .month, value: 6, to: lastDate)
     }
     
+    private var formattedNextCheckupDate: String? {
+        guard let date = nextCheckupDate else { return nil }
+            
+        let formatter = DateFormatter()
+        formatter.locale = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0) } ?? Locale.current
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        
+        if formatter.locale.identifier.starts(with: "zh") {
+            formatter.dateFormat = "yyyy年MM月dd日"
+        }
+        
+        return formatter.string(from: date)
+    }
+    
     private var daysUntilCheckup: Int? {
         guard let nextDate = nextCheckupDate else { return nil }
         let days = Calendar.current.dateComponents([.day], from: Date(), to: nextDate).day
@@ -69,7 +84,13 @@ struct CheckupReminderCard: View {
                     
                     if let days = daysUntilCheckup {
                         if days > 0 {
-                            Text("距离下次检查还有 \(days) 天")
+                            Text("距离下次检查还有")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.9))
+                            + Text("\(days)")
+                                .font(.headline)
+                                .foregroundColor(.orange.opacity(1.0))
+                            + Text(" 天")
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.9))
                         } else {
@@ -84,8 +105,8 @@ struct CheckupReminderCard: View {
                             .foregroundColor(.white.opacity(0.9))
                     }
                     
-                    if let nextDate = nextCheckupDate {
-                        Text(nextDate, style: .date)
+                    if let nextDate = formattedNextCheckupDate {
+                        Text("下次检查日期：\(nextDate)")
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
