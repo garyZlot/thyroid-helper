@@ -47,50 +47,62 @@ struct HomeView: View {
 
 struct CheckupReminderCard: View {
     let latestRecord: CheckupRecord?
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \ReminderSetting.lastUpdated, order: .reverse)
+    private var reminderSettings: [ReminderSetting]
     
-    private var nextCheckupDate: Date? {
-        guard let lastDate = latestRecord?.date else { return nil }
-        return Calendar.current.date(byAdding: .month, value: 6, to: lastDate)
-    }
+    @State private var showingDatePicker = false
+    @State private var showHint = true
+    @State private var refreshID = UUID()
     
-    private var formattedNextCheckupDate: String? {
-        guard let date = nextCheckupDate else { return nil }
-            
-        let formatter = DateFormatter()
-        formatter.locale = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0) } ?? Locale.current
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        
-        if formatter.locale.identifier.starts(with: "zh") {
-            formatter.dateFormat = "yyyy年MM月dd日"
+    // 获取甲状腺复查的设置（默认使用甲功五项）
+    private var thyroidSetting: ReminderSetting {
+        if let existing = reminderSettings.setting(for: .comprehensive) {
+            return existing
         }
         
-        return formatter.string(from: date)
+        // 创建新设置
+        let newSetting = ReminderSetting(checkupType: .comprehensive)
+        modelContext.insert(newSetting)
+        try? modelContext.save()
+        return newSetting
     }
     
-    private var daysUntilCheckup: Int? {
-        guard let nextDate = nextCheckupDate else { return nil }
-        let days = Calendar.current.dateComponents([.day], from: Date(), to: nextDate).day
-        return days
+    // 计算下次复查日期
+    private var nextCheckupDate: Date? {
+        thyroidSetting.nextReminderDate(basedOn: latestRecord?.date)
+    }
+    
+    private func updateView() {
+        refreshID = UUID()
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("下次复查提醒")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                    HStack {
+                        Text("下次复查提醒")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        
+                        if thyroidSetting.isCustomReminderEnabled {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                                .accessibilityLabel("已设置自定义提醒")
+                        }
+                    }
                     
                     if let days = daysUntilCheckup {
                         if days > 0 {
                             Text("距离下次检查还有")
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.9))
-                            + Text("\(days)")
+                            + Text(" \(days) ")
                                 .font(.headline)
-                                .foregroundColor(.orange.opacity(1.0))
-                            + Text(" 天")
+                                .foregroundColor(.orange)
+                            + Text("天")
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.9))
                         } else {
@@ -110,6 +122,14 @@ struct CheckupReminderCard: View {
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
+                    
+                    // 提示文本
+                    if showHint && !thyroidSetting.isCustomReminderEnabled {
+                        Text("点击此处设置自定义提醒")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.top, 4)
+                    }
                 }
                 
                 Spacer()
@@ -119,6 +139,7 @@ struct CheckupReminderCard: View {
                     .foregroundColor(.white)
             }
         }
+        .id(refreshID)
         .padding()
         .background(
             LinearGradient(
@@ -128,6 +149,126 @@ struct CheckupReminderCard: View {
             )
         )
         .cornerRadius(16)
+        .onTapGesture {
+            showingDatePicker = true
+        }
+        .sheet(isPresented: $showingDatePicker) {
+            ReminderDatePickerView(
+                isPresented: $showingDatePicker,
+                reminderSetting: thyroidSetting,
+                showHint: $showHint,
+                onSave: updateView
+            )
+        }
+        .onAppear {
+            // 应用启动3秒后隐藏提示
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation {
+                    showHint = false
+                }
+            }
+        }
+    }
+    
+    // 计算距离复查的天数
+    private var daysUntilCheckup: Int? {
+        guard let nextDate = nextCheckupDate else { return nil }
+        return Calendar.current.dateComponents([.day], from: Date(), to: nextDate).day
+    }
+    
+    // 格式化日期显示
+    private var formattedNextCheckupDate: String? {
+        guard let date = nextCheckupDate else { return nil }
+        
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        
+        if formatter.locale.identifier.starts(with: "zh") {
+            formatter.dateFormat = "yyyy年MM月dd日"
+        }
+        
+        return formatter.string(from: date)
+    }
+}
+
+// 更新日期选择器视图
+struct ReminderDatePickerView: View {
+    @Binding var isPresented: Bool
+    @State var selectedDate: Date
+    @State var isEnabled: Bool
+    let reminderSetting: ReminderSetting
+    @Binding var showHint: Bool
+    var onSave: (() -> Void)?
+    @Environment(\.modelContext) private var modelContext
+    
+    init(isPresented: Binding<Bool>,
+         reminderSetting: ReminderSetting,
+         showHint: Binding<Bool>,
+         onSave: (() -> Void)? = nil) {
+        self._isPresented = isPresented
+        self.reminderSetting = reminderSetting
+        self._selectedDate = State(initialValue: reminderSetting.customReminderDate ?? Date())
+        self._isEnabled = State(initialValue: reminderSetting.isCustomReminderEnabled)
+        self._showHint = showHint
+        self.onSave = onSave
+    }
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section {
+                    Toggle("启用自定义提醒", isOn: $isEnabled)
+                    
+                    if isEnabled {
+                        DatePicker(
+                            "复查日期",
+                            selection: $selectedDate,
+                            in: Date()...,
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(GraphicalDatePickerStyle())
+                    }
+                } header: {
+                    Text("自定义\(reminderSetting.checkupType.displayName)提醒")
+                } footer: {
+                    Text("开启后，将使用您设置的日期作为复查提醒，而不是自动计算的日期。")
+                }
+            }
+            .navigationTitle("设置\(reminderSetting.checkupType.displayName)提醒")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("取消") {
+                        isPresented = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        saveSettings()
+                        isPresented = false
+                    }
+                }
+            }
+        }
+    }
+    
+    private func saveSettings() {
+        reminderSetting.customReminderDate = isEnabled ? selectedDate : nil
+        reminderSetting.isCustomReminderEnabled = isEnabled
+        reminderSetting.lastUpdated = Date()
+        
+        // 保存后隐藏提示
+        showHint = false
+        
+        // 尝试保存到上下文
+        do {
+            try modelContext.save()
+            onSave?()
+        } catch {
+            print("保存提醒设置失败: \(error)")
+        }
     }
 }
 

@@ -16,6 +16,7 @@
 		68426F7F2E5D8063008B17BA /* IndicatorAdjustmentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7E2E5D8061008B17BA /* IndicatorAdjustmentRow.swift */; };
 		68426F812E5D8084008B17BA /* RawTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F802E5D8081008B17BA /* RawTextView.swift */; };
 		68426F832E5DC552008B17BA /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F822E5DC547008B17BA /* ImagePicker.swift */; };
+		689950AE2E6850D60045F733 /* ReminderSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689950AD2E6850D40045F733 /* ReminderSetting.swift */; };
 		689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 689F16DA2E5C9C670047ABAB /* Assets.xcassets */; };
 		689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */; };
 		689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689F16E82E5C9C880047ABAB /* CheckupRecord.swift */; };
@@ -47,6 +48,7 @@
 		68426F7E2E5D8061008B17BA /* IndicatorAdjustmentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorAdjustmentRow.swift; sourceTree = "<group>"; };
 		68426F802E5D8081008B17BA /* RawTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawTextView.swift; sourceTree = "<group>"; };
 		68426F822E5DC547008B17BA /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		689950AD2E6850D40045F733 /* ReminderSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSetting.swift; sourceTree = "<group>"; };
 		689F16C42E5C97B50047ABAB /* ThyroidHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThyroidHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		689F16DA2E5C9C670047ABAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		689F16DC2E5C9C670047ABAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 		689F16E72E5C9C780047ABAB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				689950AD2E6850D40045F733 /* ReminderSetting.swift */,
 				68ECC79A2E627A6F0031B882 /* ThyroidIndicator+Extensions.swift.swift */,
 				689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */,
 				689F16E82E5C9C880047ABAB /* CheckupRecord.swift */,
@@ -267,6 +270,7 @@
 				689F17082E5C9E860047ABAB /* DataExportView.swift in Sources */,
 				689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */,
 				68ECC79B2E627A720031B882 /* ThyroidIndicator+Extensions.swift.swift in Sources */,
+				689950AE2E6850D60045F733 /* ReminderSetting.swift in Sources */,
 				689F16F12E5C9D590047ABAB /* ContentView.swift in Sources */,
 				689F16F32E5C9D720047ABAB /* LoginView.swift in Sources */,
 				68426F7D2E5D8040008B17BA /* RecognitionResultsSection.swift in Sources */,
