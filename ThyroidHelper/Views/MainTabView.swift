@@ -30,6 +30,11 @@ struct MainTabView: View {
                     Label("记录", systemImage: "doc.text.fill")
                 }
             
+            MedicalTimelineView()
+                .tabItem {
+                    Label("档案", systemImage: "clock.fill")
+                }
+            
             ProfileView()
                 .tabItem {
                     Label("我的", systemImage: "person.fill")

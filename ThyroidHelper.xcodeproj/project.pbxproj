@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2F4B1DF62E63EB7A000EE005 /* DoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* DoubleExtension.swift */; };
+		2F7823792E695A5E00CDEF24 /* MedicalHistoryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823782E695A5D00CDEF24 /* MedicalHistoryRecord.swift */; };
+		2F78237B2E695A7500CDEF24 /* MedicalTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78237A2E695A7200CDEF24 /* MedicalTimelineView.swift */; };
 		2FB2053D2E63148900BD4D6F /* ThyroidConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */; };
 		68426F772E5D7EB2008B17BA /* OCRServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* OCRServices.swift */; };
 		68426F792E5D7FCD008B17BA /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F782E5D7FCB008B17BA /* CameraView.swift */; };
@@ -40,6 +42,8 @@
 
 /* Begin PBXFileReference section */
 		2F4B1DF52E63EB6D000EE005 /* DoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleExtension.swift; sourceTree = "<group>"; };
+		2F7823782E695A5D00CDEF24 /* MedicalHistoryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalHistoryRecord.swift; sourceTree = "<group>"; };
+		2F78237A2E695A7200CDEF24 /* MedicalTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTimelineView.swift; sourceTree = "<group>"; };
 		2FB2053C2E63147F00BD4D6F /* ThyroidConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThyroidConfig.swift; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* OCRServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRServices.swift; sourceTree = "<group>"; };
 		68426F782E5D7FCB008B17BA /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -137,6 +141,7 @@
 		689F16E72E5C9C780047ABAB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2F7823782E695A5D00CDEF24 /* MedicalHistoryRecord.swift */,
 				689950AD2E6850D40045F733 /* ReminderSetting.swift */,
 				68ECC79A2E627A6F0031B882 /* ThyroidIndicator+Extensions.swift.swift */,
 				689F170B2E5C9F0E0047ABAB /* ThyroidIndicator.swift */,
@@ -158,6 +163,7 @@
 		689F16EF2E5C9D480047ABAB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2F78237A2E695A7200CDEF24 /* MedicalTimelineView.swift */,
 				68426F822E5DC547008B17BA /* ImagePicker.swift */,
 				68426F802E5D8081008B17BA /* RawTextView.swift */,
 				68426F7E2E5D8061008B17BA /* IndicatorAdjustmentRow.swift */,
@@ -268,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				689F17082E5C9E860047ABAB /* DataExportView.swift in Sources */,
+				2F7823792E695A5E00CDEF24 /* MedicalHistoryRecord.swift in Sources */,
 				689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */,
 				68ECC79B2E627A720031B882 /* ThyroidIndicator+Extensions.swift.swift in Sources */,
 				689950AE2E6850D60045F733 /* ReminderSetting.swift in Sources */,
@@ -282,6 +289,7 @@
 				689F16F72E5C9DB00047ABAB /* HomeView.swift in Sources */,
 				689F16EC2E5C9CF80047ABAB /* CloudKitManager.swift in Sources */,
 				689F16FF2E5C9E220047ABAB /* ProfileView.swift in Sources */,
+				2F78237B2E695A7500CDEF24 /* MedicalTimelineView.swift in Sources */,
 				689F16FD2E5C9E040047ABAB /* AddRecordView.swift in Sources */,
 				689F16FB2E5C9DEB0047ABAB /* RecordsView.swift in Sources */,
 				689F16E92E5C9C890047ABAB /* CheckupRecord.swift in Sources */,

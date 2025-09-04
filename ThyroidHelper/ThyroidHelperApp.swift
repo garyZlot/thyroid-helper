@@ -14,7 +14,8 @@ struct ThyroidHelperApp: App {
         let schema = Schema([
             CheckupRecord.self,
             ThyroidIndicator.self,
-            ReminderSetting.self
+            ReminderSetting.self,
+            MedicalHistoryRecord.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
