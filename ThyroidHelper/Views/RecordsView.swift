@@ -15,31 +15,33 @@ struct RecordsView: View {
     @State private var recordToEdit: CheckupRecord?
     
     var body: some View {
-        NavigationStack {
-            if records.isEmpty {
-                ContentUnavailableView(
-                    "暂无检查记录",
-                    systemImage: "doc.text",
-                    description: Text("添加您的第一条检查记录")
-                )
-            } else {
-                List {
-                    ForEach(records) { record in
-                        RecordRowView(record: record) {
-                            recordToEdit = record
+        NavigationView {
+            Group {
+                if records.isEmpty {
+                    ContentUnavailableView(
+                        "暂无检查记录",
+                        systemImage: "doc.text",
+                        description: Text("添加您的第一条检查记录")
+                    )
+                } else {
+                    List {
+                        ForEach(records) { record in
+                            RecordRowView(record: record) {
+                                recordToEdit = record
+                            }
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                         }
-                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .onDelete(perform: deleteRecords)
                     }
-                    .onDelete(perform: deleteRecords)
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             }
-        }
-        .navigationTitle("检查记录")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showingAddRecord = true }) {
-                    Image(systemName: "plus")
+            .navigationTitle("甲功五项")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingAddRecord = true }) {
+                        Image(systemName: "plus")
+                    }
                 }
             }
         }
@@ -65,15 +67,20 @@ struct RecordRowView: View {
     let record: CheckupRecord
     let onEdit: () -> Void
     
+    // 根据检查类型获取对应的指标配置
+    private var indicatorsForType: [ThyroidIndicator] {
+        let indicatorNames = ThyroidConfig.indicatorsForType(record.type)
+        return (record.indicators ?? [])
+            .filter { indicatorNames.contains($0.name) }
+            .sortedByMedicalOrder()
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(record.type.rawValue)
-                        .font(.headline)
-                    
                     Text(record.date.formatted(date: .abbreviated, time: .omitted))
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
                 
@@ -111,9 +118,9 @@ struct RecordRowView: View {
                 }
             }
             
-            // 指标概览
+            // 指标概览 - 根据检查类型显示对应的指标
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
-                ForEach((record.indicators ?? []).sortedByMedicalOrder(), id: \.name) { indicator in
+                ForEach(indicatorsForType, id: \.name) { indicator in
                     VStack(spacing: 2) {
                         Text(indicator.name)
                             .font(.caption2)
@@ -176,7 +183,6 @@ struct EditRecordView: View {
     let record: CheckupRecord
     
     @State private var selectedDate: Date
-    @State private var selectedType: CheckupRecord.CheckupType
     @State private var notes: String
     @State private var indicators: [String: IndicatorInput] = [:]
     
@@ -191,8 +197,12 @@ struct EditRecordView: View {
     init(record: CheckupRecord) {
         self.record = record
         _selectedDate = State(initialValue: record.date)
-        _selectedType = State(initialValue: record.type)
         _notes = State(initialValue: record.notes ?? "")
+    }
+    
+    // 根据记录类型获取对应的指标
+    private var indicatorsForType: [String] {
+        ThyroidConfig.indicatorsForType(record.type)
     }
     
     var body: some View {
@@ -200,16 +210,10 @@ struct EditRecordView: View {
             Form {
                 Section("检查信息") {
                     DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
-                    
-                    Picker("检查类型", selection: $selectedType) {
-                        ForEach(CheckupRecord.CheckupType.allCases, id: \.self) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
                 }
                 
-                Section("检查数值") {
-                    ForEach(ThyroidConfig.standardOrder, id: \.self) { indicatorName in
+                Section {
+                    ForEach(indicatorsForType, id: \.self) { indicatorName in
                         IndicatorEditRow(
                             name: indicatorName,
                             input: Binding(
@@ -225,7 +229,7 @@ struct EditRecordView: View {
                         .lineLimit(3...6)
                 }
             }
-            .navigationTitle("编辑记录")
+            .navigationTitle(record.type.rawValue) // 使用检查类型作为导航栏标题
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -244,7 +248,10 @@ struct EditRecordView: View {
     }
     
     private var canSave: Bool {
-        !indicators.isEmpty && indicators.values.allSatisfy { $0.isValid }
+        indicatorsForType.allSatisfy { indicatorName in
+            guard let input = indicators[indicatorName] else { return false }
+            return input.isValid
+        }
     }
     
     private func setupIndicatorsFromRecord() {
@@ -260,8 +267,8 @@ struct EditRecordView: View {
             )
         }
         
-        // 确保所有标准指标都存在（如果缺少则添加默认值）
-        for indicatorName in ThyroidConfig.standardOrder {
+        // 确保当前类型的所有指标都存在（如果缺少则添加默认值）
+        for indicatorName in indicatorsForType {
             if indicators[indicatorName] == nil {
                 indicators[indicatorName] = defaultIndicatorInput(for: indicatorName)
             }
@@ -283,7 +290,6 @@ struct EditRecordView: View {
     private func saveChanges() {
         // 更新记录基本信息
         record.date = selectedDate
-        record.type = selectedType
         record.notes = notes.isEmpty ? nil : notes
         
         // 清除现有指标
@@ -294,13 +300,13 @@ struct EditRecordView: View {
         }
         record.indicators = []
         
-        // 添加新指标
-        for (name, input) in indicators {
-            guard input.isValid else { continue }
+        // 添加新指标（只保存当前类型对应的指标）
+        for indicatorName in indicatorsForType {
+            guard let input = indicators[indicatorName], input.isValid else { continue }
             
             let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
             let indicator = ThyroidIndicator(
-                name: name,
+                name: indicatorName,
                 value: input.doubleValue,
                 unit: input.unit,
                 normalRange: input.normalRange,

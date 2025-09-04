@@ -29,6 +29,15 @@ struct ThyroidConfig {
         default: return 2
         }
     }
+    
+    public static func indicatorsForType(_ type: CheckupRecord.CheckupType) -> [String] {
+        switch type {
+        case .comprehensive:
+            return standardOrder
+        default:
+            return []
+        }
+    }
 }
 
 /// 指标配置结构体
