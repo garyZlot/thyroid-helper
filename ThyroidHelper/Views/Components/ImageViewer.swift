@@ -28,21 +28,25 @@ struct ImageViewer: View {
                 TabView(selection: $currentIndex) {
                     ForEach(Array(imageDatas.enumerated()), id: \.offset) { index, imageData in
                         if let uiImage = UIImage(data: imageData) {
-                            ZoomableImageView(image: uiImage)
-                                .tag(index)
+                            GeometryReader { geometry in
+                                ZoomableImageView(image: uiImage)
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
+                                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                            }
+                            .tag(index)
+                            .gesture(
+                                DragGesture()
+                                    .onEnded { gesture in
+                                        let threshold: CGFloat = 50
+                                        if gesture.translation.height > threshold {
+                                            dismiss()
+                                        }
+                                    }
+                            )
                         }
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .gesture(
-                    DragGesture()
-                        .onEnded { gesture in
-                            let threshold: CGFloat = 50
-                            if gesture.translation.height > threshold {
-                                dismiss()
-                            }
-                        }
-                )
             }
             
             // 顶部工具栏
@@ -92,23 +96,6 @@ struct ImageViewer: View {
                 .padding()
                 
                 Spacer()
-                
-                // 底部页面指示器（多图时显示）
-                if imageDatas.count > 1 {
-                    HStack(spacing: 8) {
-                        ForEach(0..<imageDatas.count, id: \.self) { index in
-                            Circle()
-                                .fill(currentIndex == index ? Color.white : Color.gray)
-                                .frame(width: 8, height: 8)
-                                .onTapGesture {
-                                    withAnimation {
-                                        currentIndex = index
-                                    }
-                                }
-                        }
-                    }
-                    .padding(.bottom, 40)
-                }
             }
         }
         .statusBarHidden()
@@ -152,58 +139,94 @@ struct ZoomableImageView: View {
     @State private var lastOffset: CGSize = .zero
     
     var body: some View {
-        GeometryReader { geometry in
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .scaleEffect(scale)
-                .offset(offset)
-                .gesture(
-                    SimultaneousGesture(
-                        MagnificationGesture()
-                            .onChanged { value in
-                                scale = max(1.0, min(value, 5.0))
-                            }
-                            .onEnded { _ in
-                                if scale < 1.0 {
-                                    withAnimation {
-                                        scale = 1.0
-                                        offset = .zero
-                                    }
+        Image(uiImage: image)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .scaleEffect(scale)
+            .offset(offset)
+            .gesture(
+                SimultaneousGesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            scale = max(1.0, min(value, 5.0))
+                        }
+                        .onEnded { _ in
+                            if scale < 1.0 {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    scale = 1.0
+                                    offset = .zero
+                                    lastOffset = .zero
                                 }
-                            },
-                        
-                        DragGesture()
-                            .onChanged { value in
+                            }
+                        },
+                    
+                    DragGesture()
+                        .onChanged { value in
+                            if scale > 1.0 {
                                 offset = CGSize(
                                     width: lastOffset.width + value.translation.width,
                                     height: lastOffset.height + value.translation.height
                                 )
                             }
-                            .onEnded { _ in
+                        }
+                        .onEnded { _ in
+                            if scale > 1.0 {
                                 lastOffset = offset
                                 
-                                // 边界检查
-                                let maxOffset = (scale - 1) * min(geometry.size.width, geometry.size.height) / 2
-                                offset = CGSize(
-                                    width: min(max(offset.width, -maxOffset), maxOffset),
-                                    height: min(max(offset.height, -maxOffset), maxOffset)
+                                // 边界检查和修正
+                                let imageSize = getImageDisplaySize()
+                                let maxOffsetX = max(0, (imageSize.width * scale - UIScreen.main.bounds.width) / 2)
+                                let maxOffsetY = max(0, (imageSize.height * scale - UIScreen.main.bounds.height) / 2)
+                                
+                                let clampedOffset = CGSize(
+                                    width: min(max(offset.width, -maxOffsetX), maxOffsetX),
+                                    height: min(max(offset.height, -maxOffsetY), maxOffsetY)
                                 )
-                                lastOffset = offset
+                                
+                                if clampedOffset != offset {
+                                    withAnimation(.easeOut(duration: 0.3)) {
+                                        offset = clampedOffset
+                                        lastOffset = clampedOffset
+                                    }
+                                } else {
+                                    lastOffset = offset
+                                }
                             }
-                    )
-                )
-                .onTapGesture(count: 2) {
-                    withAnimation {
-                        if scale > 1.0 {
-                            scale = 1.0
-                            offset = .zero
-                            lastOffset = .zero
-                        } else {
-                            scale = 2.0
                         }
+                )
+            )
+            .onTapGesture(count: 2) {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    if scale > 1.0 {
+                        scale = 1.0
+                        offset = .zero
+                        lastOffset = .zero
+                    } else {
+                        scale = 2.0
+                        // 重置偏移以确保缩放后居中
+                        offset = .zero
+                        lastOffset = .zero
                     }
                 }
+            }
+    }
+    
+    private func getImageDisplaySize() -> CGSize {
+        let screenSize = UIScreen.main.bounds.size
+        let imageSize = image.size
+        let aspectRatio = imageSize.width / imageSize.height
+        let screenAspectRatio = screenSize.width / screenSize.height
+        
+        if aspectRatio > screenAspectRatio {
+            // 图片更宽，以宽度为准
+            let displayWidth = screenSize.width
+            let displayHeight = displayWidth / aspectRatio
+            return CGSize(width: displayWidth, height: displayHeight)
+        } else {
+            // 图片更高，以高度为准
+            let displayHeight = screenSize.height
+            let displayWidth = displayHeight * aspectRatio
+            return CGSize(width: displayWidth, height: displayHeight)
         }
     }
 }
