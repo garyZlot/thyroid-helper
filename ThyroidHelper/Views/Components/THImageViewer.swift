@@ -189,6 +189,7 @@ class THPageViewController: UIPageViewController, UIPageViewControllerDataSource
         
         let vc = UIViewController()
         vc.view.backgroundColor = .black
+        vc.view.tag = index
         
         let zoomable = THZoomableImageView(image: uiImage)
         zoomable.translatesAutoresizingMaskIntoConstraints = false
@@ -226,9 +227,7 @@ class THPageViewController: UIPageViewController, UIPageViewControllerDataSource
     }
     
     private func findIndex(for vc: UIViewController) -> Int? {
-        guard let zoomable = vc.view.subviews.first as? THZoomableImageView,
-              let image = zoomable.image else { return nil }
-        return imageDatas.firstIndex { UIImage(data: $0)?.pngData() == image.pngData() }
+        return vc.view.tag
     }
 }
 

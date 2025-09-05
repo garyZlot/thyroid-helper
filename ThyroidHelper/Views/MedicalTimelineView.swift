@@ -91,42 +91,60 @@ struct TimelineRowView: View {
                 // 图片网格
                 let allImages = record.allImageDatas
                 if !allImages.isEmpty {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: min(3, allImages.count)), spacing: 8) {
-                        ForEach(Array(allImages.prefix(9).enumerated()), id: \.offset) { index, imageData in
-                            if let uiImage = UIImage(data: imageData) {
-                                Button {
-                                    selectedImageIndex = index
-                                    showingImageViewer = true
-                                } label: {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: allImages.count == 1 ? 200 : 100)
-                                        .clipped()
-                                        .cornerRadius(8)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
+                    if allImages.count == 1, let imageData = allImages.first, let uiImage = UIImage(data: imageData) {
+                        // 单张大图
+                        Button {
+                            selectedImageIndex = 0
+                            showingImageViewer = true
+                        } label: {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 200, height: 200)
+                                .clipped()
+                                .cornerRadius(8)
                         }
-                        
-                        // 如果图片超过9张，显示更多指示器
-                        if allImages.count > 9 {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.gray.opacity(0.3))
-                                .frame(height: 100)
-                                .overlay(
-                                    VStack {
-                                        Image(systemName: "photo.stack")
-                                            .font(.title2)
-                                        Text("+\(allImages.count - 9)")
-                                            .font(.caption)
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        // 多张固定 3 列网格
+                        let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
+                        LazyVGrid(columns: columns, spacing: 8) {
+                            ForEach(Array(allImages.prefix(9).enumerated()), id: \.offset) { index, imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    Button {
+                                        selectedImageIndex = index
+                                        showingImageViewer = true
+                                    } label: {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 100, height: 100)
+                                            .clipped()
+                                            .cornerRadius(8)
                                     }
-                                    .foregroundColor(.secondary)
-                                )
-                                .onTapGesture {
-                                    selectedImageIndex = 9
-                                    showingImageViewer = true
+                                    .buttonStyle(PlainButtonStyle())
                                 }
+                            }
+                            
+                            // 超过9张显示更多
+                            if allImages.count > 9 {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.gray.opacity(0.3))
+                                    .aspectRatio(1, contentMode: .fit)
+                                    .overlay(
+                                        VStack {
+                                            Image(systemName: "photo.stack")
+                                                .font(.title2)
+                                            Text("+\(allImages.count - 9)")
+                                                .font(.caption)
+                                        }
+                                        .foregroundColor(.secondary)
+                                    )
+                                    .onTapGesture {
+                                        selectedImageIndex = 9
+                                        showingImageViewer = true
+                                    }
+                            }
                         }
                     }
                 }
@@ -143,8 +161,10 @@ struct TimelineRowView: View {
         }
         .padding(.vertical, 8)
         .fullScreenCover(isPresented: $showingImageViewer) {
-            THImageViewer(imageDatas: record.allImageDatas,
-                              initialIndex: selectedImageIndex)
+            THImageViewer(
+                imageDatas: record.allImageDatas,
+                initialIndex: selectedImageIndex
+            )
             .ignoresSafeArea()
         }
     }
