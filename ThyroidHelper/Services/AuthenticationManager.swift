@@ -49,6 +49,18 @@ class AuthenticationManager: NSObject, ObservableObject {
     }
     
     func checkExistingAuthentication() {
+        #if targetEnvironment(simulator)
+        // 模拟器里直接读取 UserDefaults，假装是已登录
+        if let userID = UserDefaults.standard.string(forKey: "userID") {
+            self.isAuthenticated = true
+            self.user = AuthenticatedUser(
+                userID: userID,
+                fullName: UserDefaults.standard.string(forKey: "fullName"),
+                email: UserDefaults.standard.string(forKey: "email")
+            )
+        }
+        #else
+        // 真机才去查证书状态
         if let userID = UserDefaults.standard.string(forKey: "userID") {
             let provider = ASAuthorizationAppleIDProvider()
             provider.getCredentialState(forUserID: userID) { [weak self] state, error in
@@ -69,5 +81,7 @@ class AuthenticationManager: NSObject, ObservableObject {
                 }
             }
         }
+        #endif
     }
+
 }
