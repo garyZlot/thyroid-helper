@@ -143,7 +143,8 @@ struct TimelineRowView: View {
         }
         .padding(.vertical, 8)
         .fullScreenCover(isPresented: $showingImageViewer) {
-            ImageViewer(imageDatas: record.allImageDatas, initialIndex: selectedImageIndex)
+            THImageViewer(imageDatas: record.allImageDatas,
+                              initialIndex: selectedImageIndex)
         }
     }
 }
