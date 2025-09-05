@@ -145,6 +145,7 @@ struct TimelineRowView: View {
         .fullScreenCover(isPresented: $showingImageViewer) {
             THImageViewer(imageDatas: record.allImageDatas,
                               initialIndex: selectedImageIndex)
+            .ignoresSafeArea()
         }
     }
 }
