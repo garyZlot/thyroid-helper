@@ -344,7 +344,7 @@ struct THAddRecordView: View {
                 indicators[indicatorName] = updatedInput
             } else {
                 let setting = THConfig.indicatorSettings[indicatorName] ?? IndicatorSetting(unit: "", normalRange: (0, 0))
-                var newInput = IndicatorInput(value: String(format: "%.2f", value), unit: setting.unit, normalRange: setting.normalRangeString)
+                let newInput = IndicatorInput(value: String(format: "%.2f", value), unit: setting.unit, normalRange: setting.normalRangeString)
                 indicators[indicatorName] = newInput
             }
         }

@@ -14,9 +14,7 @@ extension THThyroidPanelRecord.CheckupType {
         case .comprehensive:
             return DateComponents(month: 6)
         case .thyroglobulin:
-            return DateComponents(month: 3)
-        case .ultrasound:
-            return DateComponents(year: 1)
+            return DateComponents(month: 6)
         }
     }
     

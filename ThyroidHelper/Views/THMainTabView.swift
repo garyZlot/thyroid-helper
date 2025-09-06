@@ -27,7 +27,7 @@ struct THMainTabView: View {
             
             THTyroidPanelView()
                 .tabItem {
-                    Label("记录", systemImage: "doc.text.fill")
+                    Label("指标", systemImage: "doc.text.fill")
                 }
             
             THMedicalTimelineView()
