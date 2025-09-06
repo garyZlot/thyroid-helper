@@ -34,8 +34,8 @@ struct THConfig {
         switch type {
         case .thyroidFunction5:
             return standardOrder
-        default:
-            return []
+        case .thyroglobulin:
+            return ["TG"]
         }
     }
 }

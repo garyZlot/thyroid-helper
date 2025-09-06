@@ -23,7 +23,7 @@ struct THAddRecordView: View {
     let mode: RecordMode
     
     @State private var selectedDate = Date()
-    @State private var selectedType = THThyroidPanelRecord.CheckupType.thyroidFunction5
+    @State private var thyroidPanelType: THThyroidPanelRecord.CheckupType = .thyroidFunction5
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
     
@@ -35,7 +35,6 @@ struct THAddRecordView: View {
     
     // OCR 相关状态
     @StateObject private var ocrService = THMedicalRecordOCRService()
-    @State private var thyroidOCRService = THThyroidPanelOCRService()
     
     // 图片相关状态
     @State private var showingImagePicker = false
@@ -68,7 +67,7 @@ struct THAddRecordView: View {
                     
                     if mode == .thyroidData {
                         // 甲状腺检查类型
-                        Picker("检查类型", selection: $selectedType) {
+                        Picker("检查类型", selection: $thyroidPanelType) {
                             ForEach(THThyroidPanelRecord.CheckupType.allCases, id: \.self) { type in
                                 Text(type.rawValue).tag(type)
                             }
@@ -223,7 +222,7 @@ struct THAddRecordView: View {
                 // 甲状腺数据输入
                 if mode == .thyroidData && (showManualInput || !indicators.isEmpty) {
                     Section("检查数值") {
-                        ForEach(selectedType.defaultIndicators, id: \.self) { indicatorName in
+                        ForEach(thyroidPanelType.indicators, id: \.self) { indicatorName in
                             IndicatorInputRow(
                                 name: indicatorName,
                                 input: Binding(
@@ -282,7 +281,8 @@ struct THAddRecordView: View {
             .sheet(isPresented: $showingOCRResult) {
                 if let image = capturedImage {
                     if mode == .thyroidData {
-                        THOCRResultView(capturedImage: image) { extractedData in
+                        THOCRResultView(capturedImage: image,
+                                        indicatorType: thyroidPanelType) { extractedData in
                             handleThyroidOCRResult(extractedData)
                         }
                     }
@@ -360,7 +360,7 @@ struct THAddRecordView: View {
     
     private func setupDefaultIndicators() {
         indicators.removeAll()
-        for indicatorName in selectedType.defaultIndicators {
+        for indicatorName in thyroidPanelType.indicators {
             indicators[indicatorName] = defaultIndicatorInput(for: indicatorName)
         }
     }
@@ -371,7 +371,7 @@ struct THAddRecordView: View {
     }
     
     private func saveThyroidRecord() {
-        let record = THThyroidPanelRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
+        let record = THThyroidPanelRecord(date: selectedDate, type: thyroidPanelType, notes: notes.isEmpty ? nil : notes)
         
         for (name, input) in indicators {
             let status = THThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)

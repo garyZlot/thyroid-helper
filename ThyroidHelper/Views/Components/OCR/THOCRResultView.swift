@@ -8,13 +8,24 @@
 import SwiftUI
 
 struct THOCRResultView: View {
-    @StateObject private var ocrService = THThyroidPanelOCRService()
+    @StateObject private var ocrService: THThyroidPanelOCRService
     let capturedImage: UIImage
+    let indicatorType: THThyroidPanelRecord.CheckupType
     let onConfirm: ([String: Double]) -> Void
     @Environment(\.dismiss) var dismiss
     
     @State private var manualAdjustments: [String: String] = [:]
     @State private var showingRawText = false
+    
+    init(capturedImage: UIImage,
+         indicatorType: THThyroidPanelRecord.CheckupType,
+         onConfirm: @escaping ([String: Double]) -> Void) {
+        self.capturedImage = capturedImage
+        self.indicatorType = indicatorType
+        self.onConfirm = onConfirm
+        _ocrService = StateObject(wrappedValue: THThyroidPanelOCRService(indicatorKeys: indicatorType.indicators))
+    }
+
     
     var body: some View {
         NavigationStack {

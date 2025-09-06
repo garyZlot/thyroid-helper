@@ -31,7 +31,7 @@ class THThyroidPanelRecord {
         case thyroidFunction5 = "甲功五项"
         case thyroglobulin = "甲状腺球蛋白"
         
-        var defaultIndicators: [String] {
+        var indicators: [String] {
             switch self {
             case .thyroidFunction5:
                 return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
