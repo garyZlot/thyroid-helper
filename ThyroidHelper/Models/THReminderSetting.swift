@@ -8,7 +8,7 @@
 import SwiftData
 import Foundation
 
-extension THCheckupRecord.CheckupType {
+extension THThyroidPanelRecord.CheckupType {
     var defaultInterval: DateComponents {
         switch self {
         case .comprehensive:
@@ -30,7 +30,7 @@ extension THCheckupRecord.CheckupType {
 class THReminderSetting {
     // Add default values for CloudKit compatibility
     var id: UUID = UUID()
-    var checkupType: THCheckupRecord.CheckupType = THCheckupRecord.CheckupType.comprehensive
+    var checkupType: THThyroidPanelRecord.CheckupType = THThyroidPanelRecord.CheckupType.comprehensive
     var customReminderDate: Date?
     var isCustomReminderEnabled: Bool = false
     var isActive: Bool = true
@@ -38,7 +38,7 @@ class THReminderSetting {
     
     init(
         id: UUID = UUID(),
-        checkupType: THCheckupRecord.CheckupType,
+        checkupType: THThyroidPanelRecord.CheckupType,
         customReminderDate: Date? = nil,
         isCustomReminderEnabled: Bool = false,
         isActive: Bool = true,
@@ -65,7 +65,7 @@ class THReminderSetting {
 
 // 辅助扩展
 extension Array where Element == THReminderSetting {
-    func setting(for type: THCheckupRecord.CheckupType) -> THReminderSetting? {
+    func setting(for type: THThyroidPanelRecord.CheckupType) -> THReminderSetting? {
         first(where: { $0.checkupType == type })
     }
 }

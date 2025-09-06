@@ -23,13 +23,13 @@ struct THAddRecordView: View {
     let mode: RecordMode
     
     @State private var selectedDate = Date()
-    @State private var selectedType = THCheckupRecord.CheckupType.comprehensive
+    @State private var selectedType = THThyroidPanelRecord.CheckupType.comprehensive
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
     
     // 医疗档案相关状态
     @State private var medicalTitle = ""
-    @State private var medicalRecordType: THMedicalHistoryRecord.RecordType = .ultrasound
+    @State private var medicalRecordType: THMedicalTimelineRecord.RecordType = .ultrasound
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data] = []
     
@@ -77,7 +77,7 @@ struct THAddRecordView: View {
                     } else {
                         // 医疗档案类型
                         Picker("检查类型", selection: $medicalRecordType) {
-                            ForEach(THMedicalHistoryRecord.RecordType.allCases, id: \.self) { type in
+                            ForEach(THMedicalTimelineRecord.RecordType.allCases, id: \.self) { type in
                                 Label(type.rawValue, systemImage: type.icon)
                                     .tag(type)
                             }
@@ -371,7 +371,7 @@ struct THAddRecordView: View {
     }
     
     private func saveThyroidRecord() {
-        let record = THCheckupRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
+        let record = THThyroidPanelRecord(date: selectedDate, type: selectedType, notes: notes.isEmpty ? nil : notes)
         
         for (name, input) in indicators {
             let status = THThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
@@ -397,9 +397,10 @@ struct THAddRecordView: View {
     }
     
     private func saveMedicalRecord() {
-        let record = THMedicalHistoryRecord(
+        let record = THMedicalTimelineRecord(
             date: selectedDate,
             title: medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle,
+            type: medicalRecordType,
             imageData: selectedImageDatas.first, // 向后兼容
             imageDatas: selectedImageDatas,
             notes: notes

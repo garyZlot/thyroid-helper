@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class THCheckupRecord {
+class THThyroidPanelRecord {
     // 移除@Attribute(.unique)，因为CloudKit不支持唯一约束
     var id: String = ""
     var date: Date = Date()
@@ -30,7 +30,6 @@ class THCheckupRecord {
     enum CheckupType: String, CaseIterable, Codable {
         case comprehensive = "甲功五项"
         case thyroglobulin = "甲状腺球蛋白"
-        case ultrasound = "甲状腺B超"
         
         var defaultIndicators: [String] {
             switch self {
@@ -38,8 +37,6 @@ class THCheckupRecord {
                 return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
             case .thyroglobulin:
                 return ["TG"]
-            case .ultrasound:
-                return []
             }
         }
     }

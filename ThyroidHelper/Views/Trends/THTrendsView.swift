@@ -10,7 +10,7 @@ import Charts
 import _SwiftData_SwiftUI
 
 struct THTrendsView: View {
-    @Query(sort: \THCheckupRecord.date, order: .forward) private var records: [THCheckupRecord]
+    @Query(sort: \THThyroidPanelRecord.date, order: .forward) private var records: [THThyroidPanelRecord]
     
     // 使用标准指标顺序
     private let standardIndicators = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]

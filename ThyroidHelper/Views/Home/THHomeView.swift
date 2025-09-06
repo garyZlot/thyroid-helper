@@ -10,10 +10,10 @@ import SwiftData
 
 struct THHomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
+    @Query(sort: \THThyroidPanelRecord.date, order: .reverse) private var records: [THThyroidPanelRecord]
     @State private var showingAddRecord = false
     
-    var latestRecord: THCheckupRecord? {
+    var latestRecord: THThyroidPanelRecord? {
         records.first
     }
     
@@ -46,7 +46,7 @@ struct THHomeView: View {
 }
 
 struct CheckupReminderCard: View {
-    let latestRecord: THCheckupRecord?
+    let latestRecord: THThyroidPanelRecord?
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \THReminderSetting.lastUpdated, order: .reverse)
     private var reminderSettings: [THReminderSetting]
@@ -274,7 +274,7 @@ struct ReminderDatePickerView: View {
 }
 
 struct LatestResultCard: View {
-    let record: THCheckupRecord
+    let record: THThyroidPanelRecord
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {

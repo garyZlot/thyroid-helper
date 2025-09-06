@@ -11,8 +11,9 @@ import PhotosUI
 
 struct THMedicalTimelineView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THMedicalHistoryRecord.date, order: .reverse) private var records: [THMedicalHistoryRecord]
+    @Query(sort: \THMedicalTimelineRecord.date, order: .reverse) private var records: [THMedicalTimelineRecord]
     @State private var showingAddRecord = false
+    @State private var recordToEdit: THMedicalTimelineRecord?
     
     var body: some View {
         NavigationView {
@@ -26,7 +27,9 @@ struct THMedicalTimelineView: View {
                 } else {
                     List {
                         ForEach(records) { record in
-                            TimelineRowView(record: record)
+                            TimelineRowView(record: record) {
+                                recordToEdit = record
+                            }
                         }
                         .onDelete(perform: deleteRecords)
                     }
@@ -44,7 +47,10 @@ struct THMedicalTimelineView: View {
                 }
             }
             .sheet(isPresented: $showingAddRecord) {
-                THAddRecordView(mode: .medicalRecord) 
+                THAddRecordView(mode: .medicalRecord)
+            }
+            .sheet(item: $recordToEdit) { record in
+                THMedicalRecordEditView(record: record)
             }
         }
     }
@@ -59,7 +65,8 @@ struct THMedicalTimelineView: View {
 }
 
 struct TimelineRowView: View {
-    let record: THMedicalHistoryRecord
+    let record: THMedicalTimelineRecord
+    let onEdit: () -> Void
     @State private var showingImageViewer = false
     @State private var selectedImageIndex = 0
     
@@ -77,15 +84,30 @@ struct TimelineRowView: View {
             
             // 内容
             VStack(alignment: .leading, spacing: 8) {
-                // 时间和标题
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(record.date, style: .date)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                // 时间和标题，以及编辑按钮
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(record.date, style: .date)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Text(record.title)
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                    }
                     
-                    Text(record.title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                    Spacer()
+                    
+                    // 编辑按钮
+                    Button(action: onEdit) {
+                        Image(systemName: "pencil")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .clipShape(Circle())
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 // 图片网格
@@ -170,7 +192,256 @@ struct TimelineRowView: View {
     }
 }
 
+// MARK: - 医疗档案编辑视图
+struct THMedicalRecordEditView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    
+    let record: THMedicalTimelineRecord
+    
+    @State private var selectedDate: Date
+    @State private var medicalTitle: String
+    @State private var medicalRecordType: THMedicalTimelineRecord.RecordType
+    @State private var notes: String
+    @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var selectedImageDatas: [Data]
+    
+    // OCR 相关状态
+    @StateObject private var ocrService = THMedicalRecordOCRService()
+    
+    // 图片相关状态
+    @State private var showingImagePicker = false
+    @State private var showingSourceActionSheet = false
+    @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
+    @State private var capturedImage: UIImage?
+    
+    init(record: THMedicalTimelineRecord) {
+        self.record = record
+        _selectedDate = State(initialValue: record.date)
+        _medicalTitle = State(initialValue: record.title)
+        _medicalRecordType = State(initialValue: record.recordType)
+        _notes = State(initialValue: record.notes)
+        _selectedImageDatas = State(initialValue: record.allImageDatas)
+    }
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("检查信息") {
+                    DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
+                    
+                    Picker("检查类型", selection: $medicalRecordType) {
+                        ForEach(THMedicalTimelineRecord.RecordType.allCases, id: \.self) { type in
+                            Label(type.rawValue, systemImage: type.icon)
+                                .tag(type)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    
+                    TextField("检查标题", text: $medicalTitle, prompt: Text("例如：甲状腺B超检查"))
+                }
+                
+                Section("图片管理") {
+                    VStack(spacing: 0) {
+                        Button(action: {
+                            showingSourceActionSheet = true
+                        }) {
+                            HStack {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.title2)
+                                    .foregroundColor(.blue)
+                                Text("拍照添加")
+                                    .font(.body)
+                                    .foregroundColor(.blue)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        Divider()
+                        
+                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+                            HStack {
+                                Image(systemName: "photo.on.rectangle.angled")
+                                    .font(.title2)
+                                    .foregroundColor(.green)
+                                Text("选择图片")
+                                    .font(.body)
+                                    .foregroundColor(.green)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.green)
+                            }
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                .actionSheet(isPresented: $showingSourceActionSheet) {
+                    ActionSheet(
+                        title: Text("选择图片来源"),
+                        buttons: [
+                            .default(Text("拍照")) {
+                                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                                    imagePickerSource = .camera
+                                    showingImagePicker = true
+                                }
+                            },
+                            .default(Text("从相册选择")) {
+                                imagePickerSource = .photoLibrary
+                                showingImagePicker = true
+                            },
+                            .cancel(Text("取消"))
+                        ]
+                    )
+                }
+                
+                // OCR识别结果展示
+                if ocrService.isProcessing {
+                    Section("正在识别...") {
+                        HStack {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            Text("正在识别图片内容...")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    }
+                }
+                
+                // 图片预览
+                if !selectedImageDatas.isEmpty {
+                    Section("检查图片") {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(spacing: 12) {
+                                ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
+                                    if let uiImage = UIImage(data: imageData) {
+                                        ZStack(alignment: .topTrailing) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 100, height: 100)
+                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                            
+                                            Button {
+                                                selectedImageDatas.remove(at: index)
+                                            } label: {
+                                                Image(systemName: "xmark.circle.fill")
+                                                    .foregroundColor(.red)
+                                                    .background(Color.white, in: Circle())
+                                            }
+                                            .offset(x: 5, y: -5)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+                }
+                
+                Section("备注") {
+                    TextField("添加备注信息...", text: $notes, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+                
+                // OCR识别的原始文本
+                if !ocrService.recognizedText.isEmpty {
+                    Section("识别内容") {
+                        Text(ocrService.recognizedText)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .textSelection(.enabled)
+                    }
+                }
+            }
+            .navigationTitle("编辑档案记录")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消") { dismiss() }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("保存") {
+                        saveChanges()
+                    }
+                    .disabled(!canSave)
+                }
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                THImagePicker(image: $capturedImage, sourceType: imagePickerSource)
+            }
+            .onChange(of: capturedImage) { _, newImage in
+                if let newImage = newImage {
+                    if let imageData = newImage.jpegData(compressionQuality: 0.8) {
+                        selectedImageDatas.append(imageData)
+                    }
+                    ocrService.processImage(newImage)
+                }
+            }
+            .onChange(of: selectedPhotos) { _, newValue in
+                Task {
+                    for photo in newValue {
+                        if let data = try? await photo.loadTransferable(type: Data.self) {
+                            if !selectedImageDatas.contains(data) {
+                                selectedImageDatas.append(data)
+                            }
+                        }
+                    }
+                    selectedPhotos.removeAll()
+                }
+            }
+            .onChange(of: ocrService.extractedDate) { _, newDate in
+                if let newDate = newDate {
+                    selectedDate = newDate
+                }
+            }
+            .onChange(of: ocrService.extractedTitle) { _, newTitle in
+                if !newTitle.isEmpty {
+                    medicalTitle = newTitle
+                }
+            }
+            .onChange(of: ocrService.extractedNotes) { _, newNotes in
+                if !newNotes.isEmpty {
+                    notes = newNotes
+                }
+            }
+        }
+    }
+    
+    private var canSave: Bool {
+        return !medicalTitle.isEmpty || !selectedImageDatas.isEmpty
+    }
+    
+    private func saveChanges() {
+        // 更新记录信息
+        record.date = selectedDate
+        record.title = medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle
+        record.notes = notes
+        record.recordType = medicalRecordType
+        
+        // 更新图片数据
+        record.imageData = selectedImageDatas.first // 向后兼容
+        record.imageDatas = selectedImageDatas
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            print("❌ 保存医疗档案失败: \(error.localizedDescription)")
+        }
+    }
+}
+
 #Preview {
     THMedicalTimelineView()
-        .modelContainer(for: THMedicalHistoryRecord.self)
+        .modelContainer(for: THMedicalTimelineRecord.self)
 }

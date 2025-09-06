@@ -30,7 +30,7 @@ struct THConfig {
         }
     }
     
-    public static func indicatorsForType(_ type: THCheckupRecord.CheckupType) -> [String] {
+    public static func indicatorsForType(_ type: THThyroidPanelRecord.CheckupType) -> [String] {
         switch type {
         case .comprehensive:
             return standardOrder

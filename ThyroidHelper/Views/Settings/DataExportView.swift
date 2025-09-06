@@ -10,7 +10,7 @@ import SwiftData
 import UIKit
 
 struct DataExportView: View {
-    @Query private var records: [THCheckupRecord]
+    @Query private var records: [THThyroidPanelRecord]
     @State private var exportFormat = "CSV"
     @State private var showingShareSheet = false
     @State private var exportURL: URL?

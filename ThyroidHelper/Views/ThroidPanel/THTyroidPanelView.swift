@@ -1,5 +1,5 @@
 //
-//  THTyroidPanelRecordsView.swift
+//  THTyroidPanelView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,11 +8,11 @@
 import SwiftUI
 import _SwiftData_SwiftUI
 
-struct THTyroidPanelRecordsView: View {
+struct THTyroidPanelView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
+    @Query(sort: \THThyroidPanelRecord.date, order: .reverse) private var records: [THThyroidPanelRecord]
     @State private var showingAddRecord = false
-    @State private var recordToEdit: THCheckupRecord?
+    @State private var recordToEdit: THThyroidPanelRecord?
     
     var body: some View {
         NavigationView {
@@ -64,7 +64,7 @@ struct THTyroidPanelRecordsView: View {
 }
 
 struct RecordRowView: View {
-    let record: THCheckupRecord
+    let record: THThyroidPanelRecord
     let onEdit: () -> Void
     
     // 根据检查类型获取对应的指标配置
@@ -180,7 +180,7 @@ struct EditRecordView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let record: THCheckupRecord
+    let record: THThyroidPanelRecord
     
     @State private var selectedDate: Date
     @State private var notes: String
@@ -194,7 +194,7 @@ struct EditRecordView: View {
         var doubleValue: Double { Double(value) ?? 0 }
     }
     
-    init(record: THCheckupRecord) {
+    init(record: THThyroidPanelRecord) {
         self.record = record
         _selectedDate = State(initialValue: record.date)
         _notes = State(initialValue: record.notes ?? "")

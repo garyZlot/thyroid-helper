@@ -16,7 +16,7 @@ class THThyroidIndicator {
     var status: IndicatorStatus = IndicatorStatus.normal
     
     // 反向关系，设为可选
-    var checkupRecord: THCheckupRecord? = nil
+    var checkupRecord: THThyroidPanelRecord? = nil
     
     init(name: String, value: Double, unit: String, normalRange: String, status: IndicatorStatus = .normal) {
         self.name = name

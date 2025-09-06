@@ -25,7 +25,7 @@ struct THMainTabView: View {
                     Label("趋势", systemImage: "chart.line.uptrend.xyaxis")
                 }
             
-            THTyroidPanelRecordsView()
+            THTyroidPanelView()
                 .tabItem {
                     Label("记录", systemImage: "doc.text.fill")
                 }
@@ -47,7 +47,7 @@ struct THMainTabView: View {
     }
     
     private func addSampleDataIfNeeded() {
-        let descriptor = FetchDescriptor<THCheckupRecord>()
+        let descriptor = FetchDescriptor<THThyroidPanelRecord>()
         let existingRecords = try? modelContext.fetch(descriptor)
         
         if existingRecords?.isEmpty ?? true {
@@ -83,9 +83,9 @@ struct THMainTabView: View {
         try? modelContext.save()
     }
     
-    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THCheckupRecord {
+    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THThyroidPanelRecord {
         let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
-        let record = THCheckupRecord(date: date, type: .comprehensive)
+        let record = THThyroidPanelRecord(date: date, type: .comprehensive)
         
         for (name, value, unit, range) in indicators {
             let status = THThyroidIndicator.determineStatus(value: value, normalRange: range)
