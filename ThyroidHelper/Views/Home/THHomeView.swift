@@ -52,17 +52,17 @@ struct CheckupReminderCard: View {
     private var reminderSettings: [THReminderSetting]
     
     @State private var showingDatePicker = false
-    @State private var showHint = true
+    @State private var showHint = false
     @State private var refreshID = UUID()
     
     // 获取甲状腺复查的设置（默认使用甲功五项）
     private var thyroidSetting: THReminderSetting {
-        if let existing = reminderSettings.setting(for: .comprehensive) {
+        if let existing = reminderSettings.setting(for: .thyroidFunction5) {
             return existing
         }
         
         // 创建新设置
-        let newSetting = THReminderSetting(checkupType: .comprehensive)
+        let newSetting = THReminderSetting(checkupType: .thyroidFunction5)
         modelContext.insert(newSetting)
         try? modelContext.save()
         return newSetting

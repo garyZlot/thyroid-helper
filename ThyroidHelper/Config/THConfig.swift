@@ -32,7 +32,7 @@ struct THConfig {
     
     public static func indicatorsForType(_ type: THThyroidPanelRecord.CheckupType) -> [String] {
         switch type {
-        case .comprehensive:
+        case .thyroidFunction5:
             return standardOrder
         default:
             return []

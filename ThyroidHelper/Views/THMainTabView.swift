@@ -85,7 +85,7 @@ struct THMainTabView: View {
     
     private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THThyroidPanelRecord {
         let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
-        let record = THThyroidPanelRecord(date: date, type: .comprehensive)
+        let record = THThyroidPanelRecord(date: date, type: .thyroidFunction5)
         
         for (name, value, unit, range) in indicators {
             let status = THThyroidIndicator.determineStatus(value: value, normalRange: range)

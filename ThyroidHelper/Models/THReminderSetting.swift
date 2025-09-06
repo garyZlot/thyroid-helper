@@ -11,7 +11,7 @@ import Foundation
 extension THThyroidPanelRecord.CheckupType {
     var defaultInterval: DateComponents {
         switch self {
-        case .comprehensive:
+        case .thyroidFunction5:
             return DateComponents(month: 6)
         case .thyroglobulin:
             return DateComponents(month: 6)
@@ -28,7 +28,7 @@ extension THThyroidPanelRecord.CheckupType {
 class THReminderSetting {
     // Add default values for CloudKit compatibility
     var id: UUID = UUID()
-    var checkupType: THThyroidPanelRecord.CheckupType = THThyroidPanelRecord.CheckupType.comprehensive
+    var checkupType: THThyroidPanelRecord.CheckupType = THThyroidPanelRecord.CheckupType.thyroidFunction5
     var customReminderDate: Date?
     var isCustomReminderEnabled: Bool = false
     var isActive: Bool = true

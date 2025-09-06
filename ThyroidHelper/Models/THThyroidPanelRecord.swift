@@ -13,7 +13,7 @@ class THThyroidPanelRecord {
     // 移除@Attribute(.unique)，因为CloudKit不支持唯一约束
     var id: String = ""
     var date: Date = Date()
-    var type: CheckupType = CheckupType.comprehensive
+    var type: CheckupType = CheckupType.thyroidFunction5
     var notes: String? = nil
     
     // 关系：一对多，设为可选
@@ -28,12 +28,12 @@ class THThyroidPanelRecord {
     }
     
     enum CheckupType: String, CaseIterable, Codable {
-        case comprehensive = "甲功五项"
+        case thyroidFunction5 = "甲功五项"
         case thyroglobulin = "甲状腺球蛋白"
         
         var defaultIndicators: [String] {
             switch self {
-            case .comprehensive:
+            case .thyroidFunction5:
                 return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
             case .thyroglobulin:
                 return ["TG"]

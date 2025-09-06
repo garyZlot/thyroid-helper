@@ -23,7 +23,7 @@ struct THAddRecordView: View {
     let mode: RecordMode
     
     @State private var selectedDate = Date()
-    @State private var selectedType = THThyroidPanelRecord.CheckupType.comprehensive
+    @State private var selectedType = THThyroidPanelRecord.CheckupType.thyroidFunction5
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
     
@@ -68,12 +68,12 @@ struct THAddRecordView: View {
                     
                     if mode == .thyroidData {
                         // 甲状腺检查类型
-                        HStack {
-                            Text("检查类型")
-                            Spacer()
-                            Text(selectedType.rawValue)
-                                .foregroundColor(.secondary)
+                        Picker("检查类型", selection: $selectedType) {
+                            ForEach(THThyroidPanelRecord.CheckupType.allCases, id: \.self) { type in
+                                Text(type.rawValue).tag(type)
+                            }
                         }
+                        .pickerStyle(MenuPickerStyle())
                     } else {
                         // 医疗档案类型
                         Picker("检查类型", selection: $medicalRecordType) {
