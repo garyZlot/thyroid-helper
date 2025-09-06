@@ -1,5 +1,5 @@
 //
-//  ImagePicker.swift
+//  THImagePicker.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 
-struct ImagePicker: UIViewControllerRepresentable {
+struct THImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
@@ -28,8 +28,8 @@ struct ImagePicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
     
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: ImagePicker
-        init(_ parent: ImagePicker) { self.parent = parent }
+        let parent: THImagePicker
+        init(_ parent: THImagePicker) { self.parent = parent }
         
         func imagePickerController(_ picker: UIImagePickerController,
                                    didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

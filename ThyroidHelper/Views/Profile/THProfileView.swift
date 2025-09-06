@@ -8,11 +8,11 @@
 import SwiftUI
 import _SwiftData_SwiftUI
 
-struct ProfileView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
-    @EnvironmentObject var cloudManager: CloudKitManager
+struct THProfileView: View {
+    @EnvironmentObject var authManager: THAuthenticationManager
+    @EnvironmentObject var cloudManager: THCloudKitManager
     @Environment(\.modelContext) private var modelContext
-    @Query private var records: [CheckupRecord]
+    @Query private var records: [THCheckupRecord]
     
     @State private var showingDeleteAlert = false
     

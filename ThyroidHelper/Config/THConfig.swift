@@ -1,5 +1,5 @@
 //
-//  ThyroidConfig.swift
+//  THConfig.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/30.
@@ -8,7 +8,7 @@
 import Foundation
 
 /// 甲状腺相关配置
-struct ThyroidConfig {
+struct THConfig {
     /// 标准甲状腺指标显示顺序
     public static let standardOrder: [String] = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
     
@@ -30,7 +30,7 @@ struct ThyroidConfig {
         }
     }
     
-    public static func indicatorsForType(_ type: CheckupRecord.CheckupType) -> [String] {
+    public static func indicatorsForType(_ type: THCheckupRecord.CheckupType) -> [String] {
         switch type {
         case .comprehensive:
             return standardOrder

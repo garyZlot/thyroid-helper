@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  THLoginView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,8 +8,8 @@
 import SwiftUI
 import _AuthenticationServices_SwiftUI
 
-struct LoginView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+struct THLoginView: View {
+    @EnvironmentObject var authManager: THAuthenticationManager
     
     var body: some View {
         VStack(spacing: 30) {

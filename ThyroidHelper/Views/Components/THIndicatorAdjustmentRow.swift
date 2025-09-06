@@ -1,5 +1,5 @@
 //
-//  IndicatorAdjustmentRow.swift
+//  THIndicatorAdjustmentRow.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct IndicatorAdjustmentRow: View {
+struct THIndicatorAdjustmentRow: View {
     let indicator: String
     let originalValue: Double
     @Binding var adjustment: String
@@ -15,11 +15,11 @@ struct IndicatorAdjustmentRow: View {
     @State private var isEditing = false
     
     private var unit: String {
-        ThyroidConfig.indicatorSettings[indicator]?.unit ?? ""
+        THConfig.indicatorSettings[indicator]?.unit ?? ""
     }
     
     private var normalRange: String {
-        ThyroidConfig.indicatorSettings[indicator]?.normalRangeString ?? ""
+        THConfig.indicatorSettings[indicator]?.normalRangeString ?? ""
     }
     
     private var displayValue: Double {
@@ -35,7 +35,7 @@ struct IndicatorAdjustmentRow: View {
     
     // 动态设置小数位数
     private var decimalPlaces: Int {
-        ThyroidConfig.decimalPlaces(for: indicator)
+        THConfig.decimalPlaces(for: indicator)
     }
     
     var body: some View {

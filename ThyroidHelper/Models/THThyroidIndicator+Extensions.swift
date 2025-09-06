@@ -7,21 +7,21 @@
 
 import Foundation
 
-extension Array where Element == ThyroidIndicator {
+extension Array where Element == THThyroidIndicator {
     /// 按照标准医学顺序排序指标
-    func sortedByMedicalOrder() -> [ThyroidIndicator] {
+    func sortedByMedicalOrder() -> [THThyroidIndicator] {
         return self.sorted { first, second in
-            let firstIndex = ThyroidConfig.standardOrder.firstIndex(of: first.name) ?? ThyroidConfig.standardOrder.count
-            let secondIndex = ThyroidConfig.standardOrder.firstIndex(of: second.name) ?? ThyroidConfig.standardOrder.count
+            let firstIndex = THConfig.standardOrder.firstIndex(of: first.name) ?? THConfig.standardOrder.count
+            let secondIndex = THConfig.standardOrder.firstIndex(of: second.name) ?? THConfig.standardOrder.count
             return firstIndex < secondIndex
         }
     }
 }
 
-extension ThyroidIndicator {
+extension THThyroidIndicator {
     /// 获取指标的标准显示顺序索引
     var displayOrderIndex: Int {
-        ThyroidConfig.standardOrder.firstIndex(of: self.name) ?? ThyroidConfig.standardOrder.count
+        THConfig.standardOrder.firstIndex(of: self.name) ?? THConfig.standardOrder.count
     }
     
     /// 指标的完整显示名称
@@ -44,11 +44,11 @@ extension ThyroidIndicator {
     
     /// 指标的标准参考范围
     var standardNormalRange: (Double, Double)? {
-        ThyroidConfig.indicatorSettings[name]?.normalRange
+        THConfig.indicatorSettings[name]?.normalRange
     }
     
     /// 指标的标准单位
     var standardUnit: String {
-        ThyroidConfig.indicatorSettings[name]?.unit ?? ""
+        THConfig.indicatorSettings[name]?.unit ?? ""
     }
 }

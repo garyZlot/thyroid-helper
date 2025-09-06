@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 
 @MainActor
-class OCRService: ObservableObject {
+class THThyroidPanelOCRService: ObservableObject {
     @Published var recognizedText = ""
     @Published var isProcessing = false
     @Published var extractedIndicators: [String: Double] = [:]
@@ -220,7 +220,7 @@ class OCRService: ObservableObject {
         }
         
         // 按常见顺序匹配甲状腺指标
-        let expectedOrder = ThyroidConfig.standardOrder
+        let expectedOrder = THConfig.standardOrder
         for (i, indicator) in expectedOrder.enumerated() {
             if i < numberLines.count && extractedIndicators[indicator] == nil {
                 let numberInfo = numberLines[i]

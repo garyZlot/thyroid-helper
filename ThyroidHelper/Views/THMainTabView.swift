@@ -8,34 +8,34 @@
 import SwiftUI
 import SwiftData
 
-struct MainTabView: View {
+struct THMainTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject var authManager: AuthenticationManager
-    @EnvironmentObject var cloudManager: CloudKitManager
+    @EnvironmentObject var authManager: THAuthenticationManager
+    @EnvironmentObject var cloudManager: THCloudKitManager
     
     var body: some View {
         TabView {
-            HomeView()
+            THHomeView()
                 .tabItem {
                     Label("首页", systemImage: "house.fill")
                 }
             
-            TrendsView()
+            THTrendsView()
                 .tabItem {
                     Label("趋势", systemImage: "chart.line.uptrend.xyaxis")
                 }
             
-            RecordsView()
+            THTyroidPanelRecordsView()
                 .tabItem {
                     Label("记录", systemImage: "doc.text.fill")
                 }
             
-            MedicalTimelineView()
+            THMedicalTimelineView()
                 .tabItem {
                     Label("档案", systemImage: "clock.fill")
                 }
             
-            ProfileView()
+            THProfileView()
                 .tabItem {
                     Label("我的", systemImage: "person.fill")
                 }
@@ -47,7 +47,7 @@ struct MainTabView: View {
     }
     
     private func addSampleDataIfNeeded() {
-        let descriptor = FetchDescriptor<CheckupRecord>()
+        let descriptor = FetchDescriptor<THCheckupRecord>()
         let existingRecords = try? modelContext.fetch(descriptor)
         
         if existingRecords?.isEmpty ?? true {
@@ -83,13 +83,13 @@ struct MainTabView: View {
         try? modelContext.save()
     }
     
-    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> CheckupRecord {
+    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THCheckupRecord {
         let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
-        let record = CheckupRecord(date: date, type: .comprehensive)
+        let record = THCheckupRecord(date: date, type: .comprehensive)
         
         for (name, value, unit, range) in indicators {
-            let status = ThyroidIndicator.determineStatus(value: value, normalRange: range)
-            let indicator = ThyroidIndicator(name: name, value: value, unit: unit, normalRange: range, status: status)
+            let status = THThyroidIndicator.determineStatus(value: value, normalRange: range)
+            let indicator = THThyroidIndicator(name: name, value: value, unit: unit, normalRange: range, status: status)
             indicator.checkupRecord = record
             record.indicators?.append(indicator)
         }

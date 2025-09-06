@@ -1,5 +1,5 @@
 //
-//  MedicalTimelineView.swift
+//  THMedicalTimelineView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/4.
@@ -9,9 +9,9 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-struct MedicalTimelineView: View {
+struct THMedicalTimelineView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \MedicalHistoryRecord.date, order: .reverse) private var records: [MedicalHistoryRecord]
+    @Query(sort: \THMedicalHistoryRecord.date, order: .reverse) private var records: [THMedicalHistoryRecord]
     @State private var showingAddRecord = false
     
     var body: some View {
@@ -44,7 +44,7 @@ struct MedicalTimelineView: View {
                 }
             }
             .sheet(isPresented: $showingAddRecord) {
-                AddRecordView(mode: .medicalRecord) 
+                THAddRecordView(mode: .medicalRecord) 
             }
         }
     }
@@ -59,7 +59,7 @@ struct MedicalTimelineView: View {
 }
 
 struct TimelineRowView: View {
-    let record: MedicalHistoryRecord
+    let record: THMedicalHistoryRecord
     @State private var showingImageViewer = false
     @State private var selectedImageIndex = 0
     
@@ -171,6 +171,6 @@ struct TimelineRowView: View {
 }
 
 #Preview {
-    MedicalTimelineView()
-        .modelContainer(for: MedicalHistoryRecord.self)
+    THMedicalTimelineView()
+        .modelContainer(for: THMedicalHistoryRecord.self)
 }

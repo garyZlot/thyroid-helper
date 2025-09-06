@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  THHomeView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,12 +8,12 @@
 import SwiftUI
 import SwiftData
 
-struct HomeView: View {
+struct THHomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CheckupRecord.date, order: .reverse) private var records: [CheckupRecord]
+    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
     
-    var latestRecord: CheckupRecord? {
+    var latestRecord: THCheckupRecord? {
         records.first
     }
     
@@ -39,30 +39,30 @@ struct HomeView: View {
             }
             .navigationTitle("甲状腺助手")
             .sheet(isPresented: $showingAddRecord) {
-                AddRecordView()
+                THAddRecordView()
             }
         }
     }
 }
 
 struct CheckupReminderCard: View {
-    let latestRecord: CheckupRecord?
+    let latestRecord: THCheckupRecord?
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \ReminderSetting.lastUpdated, order: .reverse)
-    private var reminderSettings: [ReminderSetting]
+    @Query(sort: \THReminderSetting.lastUpdated, order: .reverse)
+    private var reminderSettings: [THReminderSetting]
     
     @State private var showingDatePicker = false
     @State private var showHint = true
     @State private var refreshID = UUID()
     
     // 获取甲状腺复查的设置（默认使用甲功五项）
-    private var thyroidSetting: ReminderSetting {
+    private var thyroidSetting: THReminderSetting {
         if let existing = reminderSettings.setting(for: .comprehensive) {
             return existing
         }
         
         // 创建新设置
-        let newSetting = ReminderSetting(checkupType: .comprehensive)
+        let newSetting = THReminderSetting(checkupType: .comprehensive)
         modelContext.insert(newSetting)
         try? modelContext.save()
         return newSetting
@@ -198,13 +198,13 @@ struct ReminderDatePickerView: View {
     @Binding var isPresented: Bool
     @State var selectedDate: Date
     @State var isEnabled: Bool
-    let reminderSetting: ReminderSetting
+    let reminderSetting: THReminderSetting
     @Binding var showHint: Bool
     var onSave: (() -> Void)?
     @Environment(\.modelContext) private var modelContext
     
     init(isPresented: Binding<Bool>,
-         reminderSetting: ReminderSetting,
+         reminderSetting: THReminderSetting,
          showHint: Binding<Bool>,
          onSave: (() -> Void)? = nil) {
         self._isPresented = isPresented
@@ -273,7 +273,7 @@ struct ReminderDatePickerView: View {
 }
 
 struct LatestResultCard: View {
-    let record: CheckupRecord
+    let record: THCheckupRecord
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -301,7 +301,7 @@ struct LatestResultCard: View {
 }
 
 struct IndicatorCard: View {
-    let indicator: ThyroidIndicator
+    let indicator: THThyroidIndicator
     
     var body: some View {
         VStack(spacing: 4) {
@@ -309,7 +309,7 @@ struct IndicatorCard: View {
                 .font(.caption)
                 .fontWeight(.medium)
             
-            Text(indicator.value, format: .number.precision(.fractionLength(ThyroidConfig.decimalPlaces(for: indicator.name))))
+            Text(indicator.value, format: .number.precision(.fractionLength(THConfig.decimalPlaces(for: indicator.name))))
                 .font(.title3)
                 .fontWeight(.bold)
             
@@ -328,7 +328,7 @@ struct IndicatorCard: View {
         .cornerRadius(12)
     }
     
-    private func backgroundColorForStatus(_ status: ThyroidIndicator.IndicatorStatus) -> Color {
+    private func backgroundColorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
         switch status {
         case .normal:
             return Color.green.opacity(0.1)
@@ -378,7 +378,7 @@ struct QuickActionButtons: View {
                     .fontWeight(.semibold)
             }
             
-            NavigationLink(destination: TrendsView()) {
+            NavigationLink(destination: THTrendsView()) {
                 Label("查看趋势", systemImage: "chart.line.uptrend.xyaxis")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

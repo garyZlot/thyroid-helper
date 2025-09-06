@@ -1,5 +1,5 @@
 //
-//  RecordsView.swift
+//  THTyroidPanelRecordsView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,11 +8,11 @@
 import SwiftUI
 import _SwiftData_SwiftUI
 
-struct RecordsView: View {
+struct THTyroidPanelRecordsView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CheckupRecord.date, order: .reverse) private var records: [CheckupRecord]
+    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
-    @State private var recordToEdit: CheckupRecord?
+    @State private var recordToEdit: THCheckupRecord?
     
     var body: some View {
         NavigationView {
@@ -46,7 +46,7 @@ struct RecordsView: View {
             }
         }
         .sheet(isPresented: $showingAddRecord) {
-            AddRecordView()
+            THAddRecordView()
         }
         .sheet(item: $recordToEdit) { record in
             EditRecordView(record: record)
@@ -64,12 +64,12 @@ struct RecordsView: View {
 }
 
 struct RecordRowView: View {
-    let record: CheckupRecord
+    let record: THCheckupRecord
     let onEdit: () -> Void
     
     // 根据检查类型获取对应的指标配置
-    private var indicatorsForType: [ThyroidIndicator] {
-        let indicatorNames = ThyroidConfig.indicatorsForType(record.type)
+    private var indicatorsForType: [THThyroidIndicator] {
+        let indicatorNames = THConfig.indicatorsForType(record.type)
         return (record.indicators ?? [])
             .filter { indicatorNames.contains($0.name) }
             .sortedByMedicalOrder()
@@ -126,7 +126,7 @@ struct RecordRowView: View {
                             .font(.caption2)
                             .fontWeight(.medium)
                         
-                        Text(indicator.value, format: .number.precision(.fractionLength(ThyroidConfig.decimalPlaces(for: indicator.name))))
+                        Text(indicator.value, format: .number.precision(.fractionLength(THConfig.decimalPlaces(for: indicator.name))))
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundColor(colorForStatus(indicator.status))
@@ -158,7 +158,7 @@ struct RecordRowView: View {
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
     
-    private func colorForStatus(_ status: ThyroidIndicator.IndicatorStatus) -> Color {
+    private func colorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
         switch status {
         case .normal: return .green
         case .high: return .red
@@ -166,7 +166,7 @@ struct RecordRowView: View {
         }
     }
     
-    private func backgroundColorForStatus(_ status: ThyroidIndicator.IndicatorStatus) -> Color {
+    private func backgroundColorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
         switch status {
         case .normal: return .green.opacity(0.1)
         case .high: return .red.opacity(0.1)
@@ -180,7 +180,7 @@ struct EditRecordView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let record: CheckupRecord
+    let record: THCheckupRecord
     
     @State private var selectedDate: Date
     @State private var notes: String
@@ -194,7 +194,7 @@ struct EditRecordView: View {
         var doubleValue: Double { Double(value) ?? 0 }
     }
     
-    init(record: CheckupRecord) {
+    init(record: THCheckupRecord) {
         self.record = record
         _selectedDate = State(initialValue: record.date)
         _notes = State(initialValue: record.notes ?? "")
@@ -202,7 +202,7 @@ struct EditRecordView: View {
     
     // 根据记录类型获取对应的指标
     private var indicatorsForType: [String] {
-        ThyroidConfig.indicatorsForType(record.type)
+        THConfig.indicatorsForType(record.type)
     }
     
     var body: some View {
@@ -259,7 +259,7 @@ struct EditRecordView: View {
         
         // 从现有记录中加载数据
         for indicator in (record.indicators ?? []).sortedByMedicalOrder() {
-            let decimalPlaces = ThyroidConfig.decimalPlaces(for: indicator.name)
+            let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
             indicators[indicator.name] = IndicatorInput(
                 value: String(format: "%.\(decimalPlaces)f", indicator.value),
                 unit: indicator.unit,
@@ -277,7 +277,7 @@ struct EditRecordView: View {
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
         // 使用扩展中的标准配置
-        let tempIndicator = ThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         let normalRange = tempIndicator.standardNormalRange
         let rangeString = normalRange.map { "\($0.0)-\($0.1)" } ?? ""
         
@@ -304,8 +304,8 @@ struct EditRecordView: View {
         for indicatorName in indicatorsForType {
             guard let input = indicators[indicatorName], input.isValid else { continue }
             
-            let status = ThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
-            let indicator = ThyroidIndicator(
+            let status = THThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
+            let indicator = THThyroidIndicator(
                 name: indicatorName,
                 value: input.doubleValue,
                 unit: input.unit,
@@ -333,7 +333,7 @@ struct IndicatorEditRow: View {
     
     // 使用扩展获取完整显示名称
     private var displayName: String {
-        let tempIndicator = ThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         return tempIndicator.fullDisplayName
     }
     

@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 
 @MainActor
-class MedicalRecordOCRService: ObservableObject {
+class THMedicalRecordOCRService: ObservableObject {
     @Published var recognizedText = ""
     @Published var isProcessing = false
     @Published var extractedDate: Date?

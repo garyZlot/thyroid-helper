@@ -1,5 +1,5 @@
 //
-//  CloudKitManager.swift
+//  THCloudKitManager.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -10,7 +10,7 @@ import AuthenticationServices
 import CloudKit
 
 @MainActor
-class CloudKitManager: ObservableObject {
+class THCloudKitManager: ObservableObject {
     @Published var isSignedInToiCloud = false
     @Published var userName = ""
     @Published var userEmail = ""

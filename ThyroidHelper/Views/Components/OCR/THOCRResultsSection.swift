@@ -1,5 +1,5 @@
 //
-//  RecognitionResultsSection.swift
+//  THOCRResultsSection.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RecognitionResultsSection: View {
+struct THOCRResultsSection: View {
     let extractedIndicators: [String: Double]
     @Binding var manualAdjustments: [String: String]
     
@@ -49,11 +49,11 @@ struct RecognitionResultsSection: View {
                 // 指标列表，按standardOrder排序
                 LazyVStack(spacing: 12) {
                     ForEach(Array(extractedIndicators.keys).sorted { first, second in
-                        let firstIndex = ThyroidConfig.standardOrder.firstIndex(of: first) ?? ThyroidConfig.standardOrder.count
-                        let secondIndex = ThyroidConfig.standardOrder.firstIndex(of: second) ?? ThyroidConfig.standardOrder.count
+                        let firstIndex = THConfig.standardOrder.firstIndex(of: first) ?? THConfig.standardOrder.count
+                        let secondIndex = THConfig.standardOrder.firstIndex(of: second) ?? THConfig.standardOrder.count
                         return firstIndex < secondIndex
                     }, id: \.self) { indicator in
-                        IndicatorAdjustmentRow(
+                        THIndicatorAdjustmentRow(
                             indicator: indicator,
                             originalValue: extractedIndicators[indicator] ?? 0,
                             adjustment: Binding(

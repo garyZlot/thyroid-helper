@@ -9,7 +9,7 @@ import SwiftUI
 import AuthenticationServices
 
 @MainActor
-class AuthenticationManager: NSObject, ObservableObject {
+class THAuthenticationManager: NSObject, ObservableObject {
     @Published var isAuthenticated = false
     @Published var user: AuthenticatedUser?
     

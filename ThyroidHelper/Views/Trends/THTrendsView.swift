@@ -1,5 +1,5 @@
 //
-//  TrendsView.swift
+//  THTrendsView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -9,8 +9,8 @@ import SwiftUI
 import Charts
 import _SwiftData_SwiftUI
 
-struct TrendsView: View {
-    @Query(sort: \CheckupRecord.date, order: .forward) private var records: [CheckupRecord]
+struct THTrendsView: View {
+    @Query(sort: \THCheckupRecord.date, order: .forward) private var records: [THCheckupRecord]
     
     // 使用标准指标顺序
     private let standardIndicators = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
@@ -49,7 +49,7 @@ struct TrendChartCard: View {
     // 根据指标名称获取配置
     private var config: (title: String, unit: String, color: Color, normalRange: (Double, Double)?) {
         // 创建临时指标对象来获取配置信息
-        let tempIndicator = ThyroidIndicator(name: indicatorName, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THThyroidIndicator(name: indicatorName, value: 0, unit: "", normalRange: "", status: .normal)
         
         let colors: [String: Color] = [
             "FT3": .blue,

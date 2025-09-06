@@ -1,5 +1,5 @@
 //
-//  MedicalHistoryRecord.swift
+//  THMedicalHistoryRecord.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/4.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class MedicalHistoryRecord {
+class THMedicalHistoryRecord {
     // 遵循现有模式，使用String类型的ID和默认值，确保CloudKit兼容性
     var id: String = ""
     var date: Date = Date()

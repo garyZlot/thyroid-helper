@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  THContentView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,18 +8,18 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
-    @StateObject private var authManager = AuthenticationManager()
-    @StateObject private var cloudManager = CloudKitManager()
+struct THContentView: View {
+    @StateObject private var authManager = THAuthenticationManager()
+    @StateObject private var cloudManager = THCloudKitManager()
     
     var body: some View {
         Group {
             if authManager.isAuthenticated {
-                MainTabView()
+                THMainTabView()
                     .environmentObject(authManager)
                     .environmentObject(cloudManager)
             } else {
-                LoginView()
+                THLoginView()
                     .environmentObject(authManager)
             }
         }

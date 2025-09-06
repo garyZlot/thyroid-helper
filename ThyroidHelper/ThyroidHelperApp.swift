@@ -12,10 +12,10 @@ import SwiftData
 struct ThyroidHelperApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            CheckupRecord.self,
-            ThyroidIndicator.self,
-            ReminderSetting.self,
-            MedicalHistoryRecord.self
+            THCheckupRecord.self,
+            THThyroidIndicator.self,
+            THReminderSetting.self,
+            THMedicalHistoryRecord.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -34,7 +34,7 @@ struct ThyroidHelperApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            THContentView()
         }
         .modelContainer(sharedModelContainer)
     }

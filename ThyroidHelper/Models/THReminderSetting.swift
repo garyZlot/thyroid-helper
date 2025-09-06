@@ -1,5 +1,5 @@
 //
-//  ReminderSetting.swift
+//  THReminderSetting.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/3.
@@ -8,7 +8,7 @@
 import SwiftData
 import Foundation
 
-extension CheckupRecord.CheckupType {
+extension THCheckupRecord.CheckupType {
     var defaultInterval: DateComponents {
         switch self {
         case .comprehensive:
@@ -27,10 +27,10 @@ extension CheckupRecord.CheckupType {
 
 // 提醒设置模型
 @Model
-class ReminderSetting {
+class THReminderSetting {
     // Add default values for CloudKit compatibility
     var id: UUID = UUID()
-    var checkupType: CheckupRecord.CheckupType = CheckupRecord.CheckupType.comprehensive
+    var checkupType: THCheckupRecord.CheckupType = THCheckupRecord.CheckupType.comprehensive
     var customReminderDate: Date?
     var isCustomReminderEnabled: Bool = false
     var isActive: Bool = true
@@ -38,7 +38,7 @@ class ReminderSetting {
     
     init(
         id: UUID = UUID(),
-        checkupType: CheckupRecord.CheckupType,
+        checkupType: THCheckupRecord.CheckupType,
         customReminderDate: Date? = nil,
         isCustomReminderEnabled: Bool = false,
         isActive: Bool = true,
@@ -64,8 +64,8 @@ class ReminderSetting {
 }
 
 // 辅助扩展
-extension Array where Element == ReminderSetting {
-    func setting(for type: CheckupRecord.CheckupType) -> ReminderSetting? {
+extension Array where Element == THReminderSetting {
+    func setting(for type: THCheckupRecord.CheckupType) -> THReminderSetting? {
         first(where: { $0.checkupType == type })
     }
 }

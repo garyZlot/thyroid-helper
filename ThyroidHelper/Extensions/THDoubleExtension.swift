@@ -1,5 +1,5 @@
 //
-//  DoubleExtension.swift
+//  THDoubleExtension.swift
 //  ThyroidHelper
 //
 //  Created by gdliu on 2025/8/31.

@@ -10,7 +10,7 @@ import SwiftData
 import UIKit
 
 struct DataExportView: View {
-    @Query private var records: [CheckupRecord]
+    @Query private var records: [THCheckupRecord]
     @State private var exportFormat = "CSV"
     @State private var showingShareSheet = false
     @State private var exportURL: URL?
@@ -156,14 +156,14 @@ struct DataExportView: View {
                         if let indicators = record.indicators, !indicators.isEmpty {
                             // 按照standardOrder排序指标
                             let sortedIndicators = indicators.sorted { indicator1, indicator2 in
-                                let index1 = ThyroidConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
-                                let index2 = ThyroidConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
+                                let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
+                                let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
                                 return index1 < index2
                             }
                             
                             for indicator in sortedIndicators {
                                 // 格式化数值
-                                let decimalPlaces = ThyroidConfig.decimalPlaces(for: indicator.name)
+                                let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                 let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                 
                                 // 转义可能包含逗号的字段
@@ -217,15 +217,15 @@ struct DataExportView: View {
                         if let indicators = record.indicators {
                             // 按照standardOrder排序指标
                             let sortedIndicators = indicators.sorted { indicator1, indicator2 in
-                                let index1 = ThyroidConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
-                                let index2 = ThyroidConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
+                                let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
+                                let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
                                 return index1 < index2
                             }
                             
                             var indicatorsArray: [[String: Any]] = []
                             for indicator in sortedIndicators {
                                 // 格式化数值
-                                let decimalPlaces = ThyroidConfig.decimalPlaces(for: indicator.name)
+                                let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                 let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                 
                                 let indicatorDict: [String: Any] = [
@@ -309,8 +309,8 @@ struct DataExportView: View {
                             if let indicators = record.indicators, !indicators.isEmpty {
                                 // 按照standardOrder排序指标
                                 let sortedIndicators = indicators.sorted { indicator1, indicator2 in
-                                    let index1 = ThyroidConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
-                                    let index2 = ThyroidConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
+                                    let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
+                                    let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
                                     return index1 < index2
                                 }
                                 
@@ -322,7 +322,7 @@ struct DataExportView: View {
                                     }
                                     
                                     // 格式化数值
-                                    let decimalPlaces = ThyroidConfig.decimalPlaces(for: indicator.name)
+                                    let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                     let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                     
                                     let indicatorText = "\(indicator.name): \(formattedValue) \(indicator.unit) (参考范围: \(indicator.normalRange)) - \(indicator.status.rawValue)"
