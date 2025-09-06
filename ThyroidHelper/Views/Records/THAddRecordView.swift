@@ -64,6 +64,7 @@ struct THAddRecordView: View {
             Form {
                 Section("检查信息") {
                     DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
+                        .environment(\.locale, Locale(identifier: "zh_CN"))
                     
                     if mode == .thyroidData {
                         // 甲状腺检查类型
@@ -83,11 +84,11 @@ struct THAddRecordView: View {
                         }
                         .pickerStyle(MenuPickerStyle())
                         
-                        TextField("检查标题", text: $medicalTitle, prompt: Text("例如：甲状腺B超检查"))
+                        TextField("检查标题", text: $medicalTitle, prompt: Text("标题：可选"))
                     }
                 }
                 
-                Section("录入方式") {
+                Section(mode == .thyroidData ? "录入方式" : "添加检查图片") {
                     VStack(spacing: 0) {
                         Button(action: {
                             showingSourceActionSheet = true
@@ -96,7 +97,7 @@ struct THAddRecordView: View {
                                 Image(systemName: "camera.viewfinder")
                                     .font(.title2)
                                     .foregroundColor(.blue)
-                                Text(mode == .thyroidData ? "图片识别数据" : "拍照识别档案")
+                                Text("图片识别数据")
                                     .font(.body)
                                     .foregroundColor(.blue)
                                 Spacer()
@@ -141,7 +142,7 @@ struct THAddRecordView: View {
                                     Image(systemName: "photo.on.rectangle.angled")
                                         .font(.title2)
                                         .foregroundColor(.green)
-                                    Text("选择图片")
+                                    Text("仅上传图片")
                                         .font(.body)
                                         .foregroundColor(.green)
                                     Spacer()

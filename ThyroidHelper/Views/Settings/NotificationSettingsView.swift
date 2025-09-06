@@ -37,6 +37,7 @@ struct NotificationSettingsView: View {
                 
                 if dailyReminder {
                     DatePicker("提醒时间", selection: $reminderTime, displayedComponents: .hourAndMinute)
+                        .environment(\.locale, Locale(identifier: "zh_CN"))
                 }
             }
             
