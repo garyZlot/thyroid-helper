@@ -36,7 +36,7 @@ struct THTyroidPanelView: View {
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("甲功五项")
+            .navigationTitle("检查指标")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddRecord = true }) {
