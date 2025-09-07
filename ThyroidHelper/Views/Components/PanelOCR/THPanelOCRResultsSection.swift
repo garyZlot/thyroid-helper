@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct THOCRResultsSection: View {
+struct THPanelOCRResultsSection: View {
     let extractedIndicators: [String: Double]
     @Binding var manualAdjustments: [String: String]
     

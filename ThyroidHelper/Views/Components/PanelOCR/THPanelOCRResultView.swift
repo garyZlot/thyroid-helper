@@ -1,5 +1,5 @@
 //
-//  THOCRResultView.swift
+//  THPanelOCRResultView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct THOCRResultView: View {
+struct THPanelOCRResultView: View {
     @StateObject private var ocrService: THThyroidPanelOCRService
     let capturedImage: UIImage
     let indicatorType: THThyroidPanelRecord.CheckupType
@@ -81,7 +81,7 @@ struct THOCRResultView: View {
                         
                         // 识别结果
                         if !ocrService.isProcessing && ocrService.errorMessage == nil {
-                            THOCRResultsSection(
+                            THPanelOCRResultsSection(
                                 extractedIndicators: ocrService.extractedIndicators,
                                 manualAdjustments: $manualAdjustments
                             )
@@ -122,7 +122,7 @@ struct THOCRResultView: View {
                 }
             }
             .sheet(isPresented: $showingRawText) {
-                THOCRRawTextView(text: ocrService.recognizedText)
+                THPanelOCRRawTextView(text: ocrService.recognizedText)
             }
         }
         .onAppear {

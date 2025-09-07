@@ -1,5 +1,5 @@
 //
-//  THOCRRawTextView.swift
+//  THPanelOCRRawTextView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct THOCRRawTextView: View {
+struct THPanelOCRRawTextView: View {
     let text: String
     @Environment(\.dismiss) var dismiss
     

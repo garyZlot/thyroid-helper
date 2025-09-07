@@ -281,7 +281,7 @@ struct THAddRecordView: View {
             .sheet(isPresented: $showingOCRResult) {
                 if let image = capturedImage {
                     if mode == .thyroidData {
-                        THOCRResultView(capturedImage: image,
+                        THPanelOCRResultView(capturedImage: image,
                                         indicatorType: thyroidPanelType) { extractedData in
                             handleThyroidOCRResult(extractedData)
                         }
