@@ -18,7 +18,8 @@ struct THConfig {
         "FT4": IndicatorSetting(unit: "pmol/L", normalRange: (10.44, 24.38)),
         "TSH": IndicatorSetting(unit: "μIU/mL", normalRange: (0.380, 4.340)),
         "A-TG": IndicatorSetting(unit: "IU/mL", normalRange: (0, 4.5)),
-        "A-TPO": IndicatorSetting(unit: "IU/mL", normalRange: (0, 60))
+        "A-TPO": IndicatorSetting(unit: "IU/mL", normalRange: (0, 60)),
+        "TG 2": IndicatorSetting(unit: "ng/mL", normalRange: (3.5, 77))
     ]
     
     /// 动态设置指标的小数位数
@@ -35,7 +36,7 @@ struct THConfig {
         case .thyroidFunction5:
             return standardOrder
         case .thyroglobulin:
-            return ["TG"]
+            return ["TG 2"]
         }
     }
 }

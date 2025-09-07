@@ -36,7 +36,7 @@ class THThyroidPanelRecord {
             case .thyroidFunction5:
                 return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
             case .thyroglobulin:
-                return ["TG"]
+                return ["TG 2"]
             }
         }
     }

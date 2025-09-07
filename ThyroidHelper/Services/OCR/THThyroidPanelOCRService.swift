@@ -8,6 +8,7 @@
 @preconcurrency import Vision
 import UIKit
 import Foundation
+import os.log
 
 /// OCR 识别服务
 @MainActor
@@ -20,16 +21,23 @@ class THThyroidPanelOCRService: ObservableObject {
     /// 当前识别指标，外部可以根据检查类型传入
     var indicatorKeys: [String]
     
+    /// 日志记录器
+    private let logger = Logger(subsystem: "ThyroidHelper", category: "OCR")
+    
     init(indicatorKeys: [String]? = nil) {
         // 如果没传就用标准顺序
         self.indicatorKeys = indicatorKeys ?? THConfig.standardOrder
+        logger.info("📋 OCR服务初始化，目标指标: \(self.indicatorKeys)")
     }
     
     func processImage(_ image: UIImage) {
         guard let cgImage = image.cgImage else {
             errorMessage = "图片处理失败"
+            logger.error("❌ 图片处理失败：无法获取CGImage")
             return
         }
+        
+        logger.info("🖼️ 开始处理图片，尺寸: \(image.size.width)x\(image.size.height)")
         
         isProcessing = true
         errorMessage = nil
@@ -46,6 +54,8 @@ class THThyroidPanelOCRService: ObservableObject {
         request.recognitionLanguages = ["zh-Hans", "en-US"]
         request.usesLanguageCorrection = true
         
+        logger.info("⚙️ OCR配置：精确识别，支持中英文，启用语言校正")
+        
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         
         DispatchQueue.global(qos: .userInitiated).async {
@@ -55,6 +65,7 @@ class THThyroidPanelOCRService: ObservableObject {
                 DispatchQueue.main.async {
                     self.errorMessage = "OCR识别失败: \(error.localizedDescription)"
                     self.isProcessing = false
+                    self.logger.error("❌ OCR识别异常: \(error.localizedDescription)")
                 }
             }
         }
@@ -65,12 +76,24 @@ class THThyroidPanelOCRService: ObservableObject {
         
         if let error = error {
             errorMessage = "识别错误: \(error.localizedDescription)"
+            logger.error("❌ OCR识别错误: \(error.localizedDescription)")
             return
         }
         
         guard let observations = request.results as? [VNRecognizedTextObservation] else {
             errorMessage = "无法获取识别结果"
+            logger.error("❌ 无法获取VNRecognizedTextObservation结果")
             return
+        }
+        
+        logger.info("📝 OCR识别完成，获得 \(observations.count) 个文本块")
+        
+        // 记录每个识别到的文本块的详细信息
+        for (index, observation) in observations.enumerated() {
+            if let text = observation.topCandidates(1).first?.string {
+                let box = observation.boundingBox
+                logger.debug("文本块[\(index)]: '\(text)' 位置:(x:\(String(format: "%.3f", box.minX))-\(String(format: "%.3f", box.maxX)), y:\(String(format: "%.3f", box.minY))-\(String(format: "%.3f", box.maxY))) 置信度:\(String(format: "%.3f", observation.confidence))")
+            }
         }
         
         let sortedObservations = observations.sorted { a, b in
@@ -84,6 +107,9 @@ class THThyroidPanelOCRService: ObservableObject {
         let recognizedStrings = sortedObservations.compactMap { $0.topCandidates(1).first?.string }
         recognizedText = recognizedStrings.joined(separator: "\n")
         
+        logger.info("📄 排序后的识别文本:\n\(self.recognizedText)")
+        logger.info("🔍 开始提取指标数值...")
+        
         extractIndicators(from: recognizedText, observations: sortedObservations)
     }
     
@@ -94,42 +120,106 @@ class THThyroidPanelOCRService: ObservableObject {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
         
+        logger.info("📋 文本行数: \(lines.count)")
+        for (index, line) in lines.enumerated() {
+            logger.debug("行[\(index)]: '\(line)'")
+        }
+        
+        logger.info("🎯 方法1: 位置匹配提取...")
         extractByPositionMatching(lines: lines, observations: observations)
         
+        let positionMatchCount = extractedIndicators.count
+        logger.info("✅ 位置匹配完成，提取到 \(positionMatchCount) 个指标")
+        
         if extractedIndicators.count < indicatorKeys.count {
+            logger.info("🎯 方法2: 顺序匹配提取... (还需要 \(self.indicatorKeys.count - self.extractedIndicators.count) 个)")
             extractBySequentialMatching(lines: lines)
+            
+            let sequentialMatchCount = extractedIndicators.count - positionMatchCount
+            logger.info("✅ 顺序匹配完成，额外提取到 \(sequentialMatchCount) 个指标")
+        }
+        
+        logger.info("🏁 最终提取结果:")
+        for key in indicatorKeys {
+            if let value = extractedIndicators[key] {
+                logger.info("  ✓ \(key): \(value)")
+            } else {
+                logger.warning("  ✗ \(key): 未找到")
+            }
         }
     }
 
     private func extractByPositionMatching(lines: [String], observations: [VNRecognizedTextObservation]) {
-        for (index, line) in lines.enumerated() {
+        logger.debug("🔍 开始位置匹配...")
+        
+        for (lineIndex, line) in lines.enumerated() {
+            logger.debug("检查行[\(lineIndex)]: '\(line)'")
+            
             for key in indicatorKeys {
                 if line.contains(key) {
+                    logger.info("🎯 在行[\(lineIndex)]中找到指标关键字 '\(key)': '\(line)'")
+                    
                     if let observation = observations.first(where: { $0.topCandidates(1).first?.string == line }) {
                         let indicatorBox = observation.boundingBox
+                        logger.debug("  指标位置: x:\(String(format: "%.3f", indicatorBox.minX))-\(String(format: "%.3f", indicatorBox.maxX)), y:\(String(format: "%.3f", indicatorBox.minY))-\(String(format: "%.3f", indicatorBox.maxY))")
                         
                         var cleanedLine = line.replacingOccurrences(of: key, with: "")
                             .trimmingCharacters(in: .whitespacesAndNewlines)
                         
-                        if let value = extractFirstNumber(from: cleanedLine),
-                           isReasonableThyroidValue(value: value, indicator: key) {
-                            extractedIndicators[key] = value
-                            continue
+                        logger.debug("  清理后的文本: '\(cleanedLine)'")
+                        
+                        if let value = extractFirstNumber(from: cleanedLine) {
+                            logger.debug("  从同行提取到数值: \(value)")
+                            if isReasonableThyroidValue(value: value, indicator: key) {
+                                extractedIndicators[key] = value
+                                logger.info("  ✅ 同行匹配成功: \(key) = \(value)")
+                                continue
+                            } else {
+                                logger.warning("  ❌ 数值不合理，被过滤: \(value)")
+                            }
+                        } else {
+                            logger.debug("  同行未找到数值")
                         }
                         
                         // 尝试查找右侧的数值行
-                        for valueIndex in (index + 1)..<min(index + 3, lines.count) {
+                        logger.debug("  🔍 搜索右侧数值行...")
+                        var foundRightValue = false
+                        for valueIndex in (lineIndex + 1)..<min(lineIndex + 3, lines.count) {
                             let valueLine = lines[valueIndex]
+                            logger.debug("    检查候选行[\(valueIndex)]: '\(valueLine)'")
+                            
                             if let valueObservation = observations.first(where: { $0.topCandidates(1).first?.string == valueLine }),
                                let value = extractFirstNumber(from: valueLine) {
                                 let valueBox = valueObservation.boundingBox
-                                if valueBox.minX > indicatorBox.maxX && abs(valueBox.midY - indicatorBox.midY) < 0.05,
-                                   isReasonableThyroidValue(value: value, indicator: key) {
-                                    extractedIndicators[key] = value
-                                    break
+                                let horizontalDistance = valueBox.minX - indicatorBox.maxX
+                                let verticalDistance = abs(valueBox.midY - indicatorBox.midY)
+                                
+                                logger.debug("    候选数值: \(value)")
+                                logger.debug("    位置: x:\(String(format: "%.3f", valueBox.minX))-\(String(format: "%.3f", valueBox.maxX)), y:\(String(format: "%.3f", valueBox.minY))-\(String(format: "%.3f", valueBox.maxY))")
+                                logger.debug("    水平距离: \(String(format: "%.3f", horizontalDistance)), 垂直距离: \(String(format: "%.3f", verticalDistance))")
+                                
+                                if valueBox.minX > indicatorBox.maxX && abs(valueBox.midY - indicatorBox.midY) < 0.05 {
+                                    if isReasonableThyroidValue(value: value, indicator: key) {
+                                        extractedIndicators[key] = value
+                                        logger.info("    ✅ 右侧匹配成功: \(key) = \(value)")
+                                        foundRightValue = true
+                                        break
+                                    } else {
+                                        logger.warning("    ❌ 右侧数值不合理，被过滤: \(value)")
+                                    }
+                                } else {
+                                    logger.debug("    ❌ 位置不符合条件")
                                 }
+                            } else {
+                                logger.debug("    未找到数值或observation")
                             }
                         }
+                        
+                        if !foundRightValue {
+                            logger.warning("  ❌ 未找到合适的右侧数值")
+                        }
+                    } else {
+                        logger.error("  ❌ 未找到对应的observation")
                     }
                 }
             }
@@ -137,19 +227,39 @@ class THThyroidPanelOCRService: ObservableObject {
     }
 
     private func extractBySequentialMatching(lines: [String]) {
+        logger.debug("🔍 开始顺序匹配...")
+        
         var numberLines: [(index: Int, value: Double)] = []
         for (index, line) in lines.enumerated() {
             if let value = extractFirstNumber(from: line) {
                 numberLines.append((index, value))
+                logger.debug("数值行[\(index)]: '\(line)' -> \(value)")
             }
         }
         
+        logger.info("📊 找到 \(numberLines.count) 行包含数值")
+        
         for (i, key) in indicatorKeys.enumerated() {
-            if i < numberLines.count, extractedIndicators[key] == nil {
-                let value = numberLines[i].value
-                if isReasonableThyroidValue(value: value, indicator: key) {
-                    extractedIndicators[key] = value
+            if extractedIndicators[key] == nil {
+                logger.debug("处理指标[\(i)]: \(key)")
+                
+                if i < numberLines.count {
+                    let numberLine = numberLines[i]
+                    let value = numberLine.value
+                    
+                    logger.debug("  尝试匹配数值行[\(numberLine.index)]: \(value)")
+                    
+                    if isReasonableThyroidValue(value: value, indicator: key) {
+                        extractedIndicators[key] = value
+                        logger.info("  ✅ 顺序匹配成功: \(key) = \(value) (来自行\(numberLine.index))")
+                    } else {
+                        logger.warning("  ❌ 顺序匹配数值不合理: \(key) = \(value)")
+                    }
+                } else {
+                    logger.warning("  ❌ 没有足够的数值行匹配指标: \(key)")
                 }
+            } else {
+                logger.debug("  ⏭️ 指标已匹配，跳过: \(key)")
             }
         }
     }
@@ -163,16 +273,26 @@ class THThyroidPanelOCRService: ObservableObject {
             if let match = regex.firstMatch(in: text, range: range),
                let valueRange = Range(match.range, in: text) {
                 var valueString = String(text[valueRange])
+                let originalValue = valueString
+                
                 if valueString.hasSuffix("+") || valueString.hasSuffix("-") {
                     valueString.removeLast()
                 }
                 if valueString.hasPrefix("<") || valueString.hasPrefix(">") {
                     valueString.removeFirst()
                 }
-                return Double(valueString)
+                
+                if let result = Double(valueString) {
+                    logger.debug("    🔢 从'\(text)'中提取数值: '\(originalValue)' -> \(result)")
+                    return result
+                } else {
+                    logger.debug("    ❌ 无法转换为Double: '\(valueString)'")
+                }
+            } else {
+                logger.debug("    ❌ 正则匹配失败: '\(text)'")
             }
         } catch {
-            print("正则表达式错误: \(error)")
+            logger.error("❌ 正则表达式错误: \(error)")
         }
         return nil
     }
@@ -180,14 +300,26 @@ class THThyroidPanelOCRService: ObservableObject {
     /// 根据 THConfig.indicatorSettings 的范围判断是否合理
     private func isReasonableThyroidValue(value: Double, indicator: String) -> Bool {
         if let setting = THConfig.indicatorSettings[indicator] {
-            return value >= setting.normalRange.lower * 0.1 &&
-                   value <= setting.normalRange.upper * 10.0
-            // 宽松一些，避免OCR识别的边缘值被过滤掉
+            let minValue = setting.normalRange.lower * 0.1
+            let maxValue = setting.normalRange.upper * 10.0
+            let isReasonable = value >= minValue && value <= maxValue
+            
+            if isReasonable {
+                logger.debug("      ✅ 数值合理: \(value) 在范围 \(minValue) - \(maxValue)")
+            } else {
+                logger.debug("      ❌ 数值不合理: \(value) 不在范围 \(minValue) - \(maxValue)")
+            }
+            
+            return isReasonable
+        } else {
+            let isReasonable = value >= 0 && value <= 1000
+            logger.debug("      ⚠️ 未找到指标配置，使用默认范围: \(value) 在 0-1000? \(isReasonable)")
+            return isReasonable
         }
-        return value >= 0 && value <= 1000
     }
     
     func reset() {
+        logger.info("🔄 重置OCR服务状态")
         recognizedText = ""
         extractedIndicators.removeAll()
         errorMessage = nil
