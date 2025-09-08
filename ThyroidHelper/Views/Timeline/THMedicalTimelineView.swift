@@ -111,7 +111,7 @@ struct TimelineRowView: View {
                 }
                 
                 // 图片网格
-                let allImages = record.allImageDatas
+                let allImages = record.imageDatas
                 if !allImages.isEmpty {
                     if allImages.count == 1, let imageData = allImages.first, let uiImage = UIImage(data: imageData) {
                         // 单张大图
@@ -184,7 +184,7 @@ struct TimelineRowView: View {
         .padding(.vertical, 8)
         .fullScreenCover(isPresented: $showingImageViewer) {
             THImageViewer(
-                imageDatas: record.allImageDatas,
+                imageDatas: record.imageDatas,
                 initialIndex: selectedImageIndex
             )
             .ignoresSafeArea()
@@ -221,7 +221,7 @@ struct THMedicalRecordEditView: View {
         _medicalTitle = State(initialValue: record.title)
         _medicalRecordType = State(initialValue: record.recordType)
         _notes = State(initialValue: record.notes)
-        _selectedImageDatas = State(initialValue: record.allImageDatas)
+        _selectedImageDatas = State(initialValue: record.imageDatas)
     }
     
     var body: some View {
@@ -404,7 +404,7 @@ struct THMedicalRecordEditView: View {
                     selectedDate = newDate
                 }
             }
-            .onChange(of: ocrService.extractedTitle) { _, newTitle in
+            .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
                 if !newTitle.isEmpty {
                     medicalTitle = newTitle
                 }
@@ -429,7 +429,6 @@ struct THMedicalRecordEditView: View {
         record.recordType = medicalRecordType
         
         // 更新图片数据
-        record.imageData = selectedImageDatas.first // 向后兼容
         record.imageDatas = selectedImageDatas
         
         do {

@@ -15,29 +15,18 @@ class THMedicalTimelineRecord {
     var date: Date = Date()
     var title: String = ""
     var recordType: RecordType = THMedicalTimelineRecord.RecordType.ultrasound
-    var imageData: Data? = nil // 保持向后兼容
     var imageDatas: [Data] = [] // 新增：支持多张图片
     var notes: String = ""
     var createdAt: Date = Date()
     
-    init(date: Date, title: String, type:RecordType, imageData: Data? = nil, imageDatas: [Data] = [], notes: String = "") {
+    init(date: Date, title: String, type:RecordType, imageDatas: [Data] = [], notes: String = "") {
         self.id = UUID().uuidString  // 遵循CheckupRecord的ID模式
         self.date = date
         self.title = title
         self.recordType = type
-        self.imageData = imageData
         self.imageDatas = imageDatas
         self.notes = notes
         self.createdAt = Date()
-    }
-    
-    // 便利方法：获取所有图片数据（包括旧的单张图片）
-    var allImageDatas: [Data] {
-        var allImages = imageDatas
-        if let singleImageData = imageData, !imageDatas.contains(singleImageData) {
-            allImages.insert(singleImageData, at: 0)
-        }
-        return allImages
     }
     
     /// 检查记录类型枚举，扩展现有类型概念

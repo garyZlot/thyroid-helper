@@ -74,16 +74,7 @@ struct THAddRecordView: View {
                         }
                         .pickerStyle(MenuPickerStyle())
                     } else {
-                        // 医疗档案类型
-                        Picker("检查类型", selection: $medicalRecordType) {
-                            ForEach(THMedicalTimelineRecord.RecordType.allCases, id: \.self) { type in
-                                Label(type.rawValue, systemImage: type.icon)
-                                    .tag(type)
-                            }
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                        
-                        TextField("检查标题", text: $medicalTitle, prompt: Text("标题：可选"))
+                        TextField("检查项目", text: $medicalTitle, prompt: Text("标题：可选"))
                     }
                 }
                 
@@ -327,7 +318,7 @@ struct THAddRecordView: View {
                     selectedDate = newDate
                 }
             }
-            .onChange(of: ocrService.extractedTitle) { _, newTitle in
+            .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
                 if !newTitle.isEmpty && mode == .medicalRecord {
                     medicalTitle = newTitle
                 }
@@ -409,7 +400,6 @@ struct THAddRecordView: View {
             date: selectedDate,
             title: medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle,
             type: medicalRecordType,
-            imageData: selectedImageDatas.first, // 向后兼容
             imageDatas: selectedImageDatas,
             notes: notes
         )
