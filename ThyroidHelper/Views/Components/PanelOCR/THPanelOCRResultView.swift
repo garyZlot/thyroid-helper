@@ -12,6 +12,7 @@ struct THPanelOCRResultView: View {
     let capturedImage: UIImage
     let indicatorType: THThyroidPanelRecord.CheckupType
     let onConfirm: ([String: Double]) -> Void
+    let onDateExtracted: (Date?) -> Void
     @Environment(\.dismiss) var dismiss
     
     @State private var manualAdjustments: [String: String] = [:]
@@ -19,10 +20,12 @@ struct THPanelOCRResultView: View {
     
     init(capturedImage: UIImage,
          indicatorType: THThyroidPanelRecord.CheckupType,
-         onConfirm: @escaping ([String: Double]) -> Void) {
+         onConfirm: @escaping ([String: Double]) -> Void,
+         onDateExtracted: @escaping (Date?) -> Void = { _ in }) {
         self.capturedImage = capturedImage
         self.indicatorType = indicatorType
         self.onConfirm = onConfirm
+        self.onDateExtracted = onDateExtracted
         _ocrService = StateObject(wrappedValue: THThyroidPanelOCRService(indicatorKeys: indicatorType.indicators))
     }
 
@@ -127,6 +130,9 @@ struct THPanelOCRResultView: View {
         }
         .onAppear {
             ocrService.processImage(capturedImage)
+        }
+        .onChange(of: ocrService.extractedDate) { _, newDate in
+            onDateExtracted(newDate)
         }
     }
     

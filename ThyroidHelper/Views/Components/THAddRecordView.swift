@@ -281,10 +281,18 @@ struct THAddRecordView: View {
             .sheet(isPresented: $showingOCRResult) {
                 if let image = capturedImage {
                     if mode == .thyroidData {
-                        THPanelOCRResultView(capturedImage: image,
-                                        indicatorType: thyroidPanelType) { extractedData in
-                            handleThyroidOCRResult(extractedData)
-                        }
+                        THPanelOCRResultView(
+                            capturedImage: image,
+                            indicatorType: thyroidPanelType,
+                            onConfirm: { extractedData in
+                                handleThyroidOCRResult(extractedData)
+                            },
+                            onDateExtracted: { extractedDate in
+                                if let date = extractedDate {
+                                    selectedDate = date
+                                }
+                            }
+                        )
                     }
                 }
             }
