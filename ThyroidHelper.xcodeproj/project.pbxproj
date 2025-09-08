@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
 		2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */; };
 		2F7823792E695A5E00CDEF24 /* THMedicalTimelineRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823782E695A5D00CDEF24 /* THMedicalTimelineRecord.swift */; };
 		2F78237B2E695A7500CDEF24 /* THMedicalTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78237A2E695A7200CDEF24 /* THMedicalTimelineView.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
 		2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDoubleExtension.swift; sourceTree = "<group>"; };
 		2F7823782E695A5D00CDEF24 /* THMedicalTimelineRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THMedicalTimelineRecord.swift; sourceTree = "<group>"; };
 		2F78237A2E695A7200CDEF24 /* THMedicalTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THMedicalTimelineView.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		2F07068C2E6BB79F006F4DE8 /* OCR */ = {
 			isa = PBXGroup;
 			children = (
+				2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */,
 				2F78237E2E697EEE00CDEF24 /* THMedicalRecordOCRService.swift */,
 				68426F762E5D7EA4008B17BA /* THThyroidPanelOCRService.swift */,
 			);
@@ -385,6 +388,7 @@
 				689F16FF2E5C9E220047ABAB /* THProfileView.swift in Sources */,
 				2F78237B2E695A7500CDEF24 /* THMedicalTimelineView.swift in Sources */,
 				2F78237F2E697EF000CDEF24 /* THMedicalRecordOCRService.swift in Sources */,
+				2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */,
 				689F16FD2E5C9E040047ABAB /* THAddRecordView.swift in Sources */,
 				689F16FB2E5C9DEB0047ABAB /* THTyroidPanelView.swift in Sources */,
 				689F16E92E5C9C890047ABAB /* THThyroidPanelRecord.swift in Sources */,

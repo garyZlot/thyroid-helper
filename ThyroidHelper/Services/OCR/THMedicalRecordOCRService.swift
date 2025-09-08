@@ -18,18 +18,6 @@ class THMedicalRecordOCRService: ObservableObject {
     @Published var extractedNotes: String = ""
     @Published var errorMessage: String?
     
-    // 日期识别模式
-    private let datePatterns: [String] = [
-        // YYYY-MM-DD 格式
-        "([0-9]{4})[年\\-/\\.\\s]+([0-9]{1,2})[月\\-/\\.\\s]+([0-9]{1,2})[日]?",
-        // YYYY.MM.DD 格式
-        "([0-9]{4})\\.([0-9]{1,2})\\.([0-9]{1,2})",
-        // MM/DD/YYYY 格式
-        "([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})",
-        // DD.MM.YYYY 格式
-        "([0-9]{1,2})\\.([0-9]{1,2})\\.([0-9]{4})"
-    ]
-    
     // 检查项目关键词
     private let checkupKeywords: [String: String] = [
         "B超": "甲状腺B超检查",
@@ -121,7 +109,7 @@ class THMedicalRecordOCRService: ObservableObject {
         print("原始文本: \(text)")
         
         // 提取日期
-        extractedDate = extractDate(from: text)
+        extractedDate = THDateExtractionService.extractDate(from: text)
         
         // 提取检查项目
         extractedTitle = extractCheckupType(from: text)
@@ -136,58 +124,6 @@ class THMedicalRecordOCRService: ObservableObject {
         print("📅 提取的日期: \(extractedDate?.formatted() ?? "无")")
         print("📝 提取的标题: \(extractedTitle)")
         print("📄 提取的备注: \(extractedNotes)")
-    }
-    
-    private func extractDate(from text: String) -> Date? {
-        for pattern in datePatterns {
-            do {
-                let regex = try NSRegularExpression(pattern: pattern, options: [])
-                let range = NSRange(location: 0, length: text.utf16.count)
-                
-                if let match = regex.firstMatch(in: text, options: [], range: range) {
-                    let yearRange = Range(match.range(at: 1), in: text)!
-                    let monthRange = Range(match.range(at: 2), in: text)!
-                    let dayRange = Range(match.range(at: 3), in: text)!
-                    
-                    let yearStr = String(text[yearRange])
-                    let monthStr = String(text[monthRange])
-                    let dayStr = String(text[dayRange])
-                    
-                    if let year = Int(yearStr),
-                       let month = Int(monthStr),
-                       let day = Int(dayStr) {
-                        
-                        // 处理不同的日期格式
-                        let calendar = Calendar.current
-                        var dateComponents = DateComponents()
-                        
-                        if year > 31 { // 年份在前
-                            dateComponents.year = year
-                            dateComponents.month = month
-                            dateComponents.day = day
-                        } else { // 可能是 MM/DD/YYYY 格式
-                            dateComponents.year = day
-                            dateComponents.month = yearStr == "1" || yearStr == "2" ? Int(yearStr) : month
-                            dateComponents.day = Int(dayStr) ?? day
-                        }
-                        
-                        if let date = calendar.date(from: dateComponents) {
-                            // 验证日期的合理性（不能是未来日期，不能太久以前）
-                            let now = Date()
-                            let tenYearsAgo = calendar.date(byAdding: .year, value: -10, to: now)!
-                            
-                            if date <= now && date >= tenYearsAgo {
-                                return date
-                            }
-                        }
-                    }
-                }
-            } catch {
-                print("日期正则表达式错误: \(error)")
-            }
-        }
-        
-        return nil
     }
     
     private func extractCheckupType(from text: String) -> String {

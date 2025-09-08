@@ -22,22 +22,6 @@ class THThyroidPanelOCRService: ObservableObject {
     /// 当前识别指标，外部可以根据检查类型传入
     var indicatorKeys: [String]
     
-    // 日期识别正则表达式模式
-    private let datePatterns: [String] = [
-        // YYYY-MM-DD 格式
-        "([0-9]{4})[年\\-/\\.\\s]+([0-9]{1,2})[月\\-/\\.\\s]+([0-9]{1,2})[日]?",
-        // YYYY.MM.DD 格式
-        "([0-9]{4})\\.([0-9]{1,2})\\.([0-9]{1,2})",
-        // MM/DD/YYYY 格式
-        "([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})",
-        // 中文完整日期格式：2024年8月26日
-        "([0-9]{4})年([0-9]{1,2})月([0-9]{1,2})日",
-        // 报告常见格式：检查日期：2024-08-26
-        "检查日期[：:][\\s]*([0-9]{4})[\\-/]([0-9]{1,2})[\\-/]([0-9]{1,2})",
-        // 日期标签格式
-        "日期[：:][\\s]*([0-9]{4})[年\\-/\\.\\s]+([0-9]{1,2})[月\\-/\\.\\s]+([0-9]{1,2})[日]?"
-    ]
-    
     /// 日志记录器
     private let logger = Logger(subsystem: "ThyroidHelper", category: "OCR")
     
@@ -128,7 +112,7 @@ class THThyroidPanelOCRService: ObservableObject {
         logger.info("🔍 开始提取指标数值...")
         
         extractIndicators(from: recognizedText, observations: sortedObservations)
-        extractedDate = extractDateFromText(recognizedText)
+        extractedDate = THDateExtractionService.extractDate(from: recognizedText)
     }
     
     private func extractIndicators(from text: String, observations: [VNRecognizedTextObservation]) {
@@ -335,113 +319,6 @@ class THThyroidPanelOCRService: ObservableObject {
             return isReasonable
         }
     }
-    
-    /// 从OCR识别的文本中提取日期
-    /// - Parameter text: OCR识别的原始文本
-    /// - Returns: 提取到的日期，如果未找到返回nil
-    private func extractDateFromText(_ text: String) -> Date? {
-        print("🔍 [THThyroidPanelOCRService] 开始提取日期信息")
-        print("📄 OCR识别文本: \(text)")
-        
-        // 遍历所有日期模式进行匹配
-        for (index, pattern) in datePatterns.enumerated() {
-            do {
-                let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-                let range = NSRange(location: 0, length: text.utf16.count)
-                
-                if let match = regex.firstMatch(in: text, options: [], range: range) {
-                    print("📍 匹配到模式 #\(index): \(pattern)")
-                    
-                    // 确保有足够的捕获组
-                    guard match.numberOfRanges >= 4 else {
-                        print("⚠️ 捕获组数量不足: \(match.numberOfRanges)")
-                        continue
-                    }
-                    
-                    // 提取年月日字符串
-                    guard let yearRange = Range(match.range(at: 1), in: text),
-                          let monthRange = Range(match.range(at: 2), in: text),
-                          let dayRange = Range(match.range(at: 3), in: text) else {
-                        print("⚠️ 无法创建字符串范围")
-                        continue
-                    }
-                    
-                    let yearStr = String(text[yearRange])
-                    let monthStr = String(text[monthRange])
-                    let dayStr = String(text[dayRange])
-                    
-                    print("📅 提取到日期字符串: 年=\(yearStr), 月=\(monthStr), 日=\(dayStr)")
-                    
-                    // 转换为整数
-                    guard let year = Int(yearStr),
-                          let month = Int(monthStr),
-                          let day = Int(dayStr) else {
-                        print("⚠️ 日期字符串转换失败")
-                        continue
-                    }
-                    
-                    // 构建日期
-                    let calendar = Calendar.current
-                    var dateComponents = DateComponents()
-                    
-                    // 根据年份大小判断日期格式
-                    if year > 31 {
-                        // 标准格式：YYYY-MM-DD
-                        dateComponents.year = year
-                        dateComponents.month = month
-                        dateComponents.day = day
-                    } else if Int(dayStr) ?? 0 > 31 {
-                        // MM/DD/YYYY 格式
-                        dateComponents.year = Int(dayStr)
-                        dateComponents.month = year
-                        dateComponents.day = month
-                    } else {
-                        print("⚠️ 无法确定日期格式")
-                        continue
-                    }
-                    
-                    // 验证并创建日期
-                    if let date = calendar.date(from: dateComponents) {
-                        // 日期合理性检查
-                        if isDateReasonable(date) {
-                            print("✅ 成功提取日期: \(date.formatted(date: .abbreviated, time: .omitted))")
-                            return date
-                        } else {
-                            print("⚠️ 日期不在合理范围内: \(date.formatted())")
-                        }
-                    }
-                }
-            } catch {
-                print("❌ 日期正则表达式错误 (模式#\(index)): \(error.localizedDescription)")
-            }
-        }
-        
-        print("❌ 未找到有效日期")
-        return nil
-    }
-    
-    /// 检查日期是否在合理范围内
-    /// - Parameter date: 待检查的日期
-    /// - Returns: 是否合理
-    private func isDateReasonable(_ date: Date) -> Bool {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        // 不能是未来日期（允许今天）
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
-        if date >= tomorrow {
-            return false
-        }
-        
-        // 不能太久远（10年前）
-        let tenYearsAgo = calendar.date(byAdding: .year, value: -10, to: now)!
-        if date < tenYearsAgo {
-            return false
-        }
-        
-        return true
-    }
-
     
     func reset() {
         logger.info("🔄 重置OCR服务状态")
