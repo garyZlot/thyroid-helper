@@ -14,16 +14,14 @@ class THMedicalTimelineRecord {
     var id: String = ""
     var date: Date = Date()
     var title: String = ""
-    var recordType: RecordType = THMedicalTimelineRecord.RecordType.ultrasound
     var imageDatas: [Data] = [] // 新增：支持多张图片
     var notes: String = ""
     var createdAt: Date = Date()
     
-    init(date: Date, title: String, type:RecordType, imageDatas: [Data] = [], notes: String = "") {
+    init(date: Date, title: String, imageDatas: [Data] = [], notes: String = "") {
         self.id = UUID().uuidString  // 遵循CheckupRecord的ID模式
         self.date = date
         self.title = title
-        self.recordType = type
         self.imageDatas = imageDatas
         self.notes = notes
         self.createdAt = Date()

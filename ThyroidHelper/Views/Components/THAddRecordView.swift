@@ -73,7 +73,11 @@ struct THAddRecordView: View {
                         }
                         .pickerStyle(MenuPickerStyle())
                     } else {
-                        TextField("检查项目", text: $medicalTitle, prompt: Text("标题：可选"))
+                        LabeledContent("检查项目") {
+                            TextField("例如：甲状腺B超检查（可选）", text: $medicalTitle)
+                                .multilineTextAlignment(.trailing)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
                 
@@ -398,7 +402,6 @@ struct THAddRecordView: View {
         let record = THMedicalTimelineRecord(
             date: selectedDate,
             title: medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle,
-            type: medicalRecordType,
             imageDatas: selectedImageDatas,
             notes: notes
         )

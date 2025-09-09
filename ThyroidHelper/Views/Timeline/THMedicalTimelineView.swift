@@ -226,7 +226,6 @@ struct THMedicalRecordEditView: View {
     
     @State private var selectedDate: Date
     @State private var medicalTitle: String
-    @State private var medicalRecordType: THMedicalTimelineRecord.RecordType
     @State private var notes: String
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data]
@@ -244,7 +243,6 @@ struct THMedicalRecordEditView: View {
         self.record = record
         _selectedDate = State(initialValue: record.date)
         _medicalTitle = State(initialValue: record.title)
-        _medicalRecordType = State(initialValue: record.recordType)
         _notes = State(initialValue: record.notes)
         _selectedImageDatas = State(initialValue: record.imageDatas)
     }
@@ -255,15 +253,11 @@ struct THMedicalRecordEditView: View {
                 Section("检查信息") {
                     DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
                     
-                    Picker("检查类型", selection: $medicalRecordType) {
-                        ForEach(THMedicalTimelineRecord.RecordType.allCases, id: \.self) { type in
-                            Label(type.rawValue, systemImage: type.icon)
-                                .tag(type)
-                        }
+                    LabeledContent("检查项目") {
+                        TextField("例如：甲状腺B超检查（可选）", text: $medicalTitle)
+                            .multilineTextAlignment(.trailing)
+                            .foregroundColor(.secondary)
                     }
-                    .pickerStyle(MenuPickerStyle())
-                    
-                    TextField("检查标题", text: $medicalTitle, prompt: Text("例如：甲状腺B超检查"))
                 }
                 
                 Section("图片管理") {
@@ -449,9 +443,8 @@ struct THMedicalRecordEditView: View {
     private func saveChanges() {
         // 更新记录信息
         record.date = selectedDate
-        record.title = medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle
+        record.title = medicalTitle
         record.notes = notes
-        record.recordType = medicalRecordType
         
         // 更新图片数据
         record.imageDatas = selectedImageDatas
