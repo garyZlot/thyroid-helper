@@ -69,6 +69,7 @@ struct TimelineRowView: View {
     let onEdit: () -> Void
     @State private var showingImageViewer = false
     @State private var selectedImageIndex = 0
+    @State private var isNotesExpanded = false
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -85,7 +86,7 @@ struct TimelineRowView: View {
             // 内容
             VStack(alignment: .leading, spacing: 8) {
                 // 时间和标题，以及编辑按钮
-                HStack {
+                HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(record.date, style: .date)
                             .font(.caption)
@@ -96,7 +97,7 @@ struct TimelineRowView: View {
                             .foregroundColor(.primary)
                     }
                     
-                    Spacer()
+                    Spacer(minLength: 8)
                     
                     // 编辑按钮
                     Button(action: onEdit) {
@@ -109,6 +110,7 @@ struct TimelineRowView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
+                .zIndex(10)
                 
                 // 图片网格
                 let allImages = record.imageDatas
@@ -171,12 +173,35 @@ struct TimelineRowView: View {
                     }
                 }
                 
-                // 备注
+                // 内容及备注
                 if !record.notes.isEmpty {
-                    Text(record.notes)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .lineLimit(nil)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("内容及备注")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            Spacer()
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    isNotesExpanded.toggle()
+                                }
+                            } label: {
+                                Image(systemName: isNotesExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        Text(record.notes)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .lineLimit(isNotesExpanded ? nil : 2)
+                            .animation(.easeInOut(duration: 0.3), value: isNotesExpanded)
+                    }
+                    .zIndex(1)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -347,7 +372,7 @@ struct THMedicalRecordEditView: View {
                     }
                 }
                 
-                Section("备注") {
+                Section("内容及备注") {
                     TextField("添加备注信息...", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }

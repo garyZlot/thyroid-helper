@@ -229,7 +229,6 @@ struct ReminderDatePickerView: View {
                             displayedComponents: .date
                         )
                         .datePickerStyle(GraphicalDatePickerStyle())
-                        .environment(\.locale, Locale(identifier: "zh_CN"))
                     }
                 } header: {
                     Text("自定义\(reminderSetting.checkupType.displayName)提醒")

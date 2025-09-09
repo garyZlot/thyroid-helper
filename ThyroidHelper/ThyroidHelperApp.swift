@@ -35,6 +35,7 @@ struct ThyroidHelperApp: App {
     var body: some Scene {
         WindowGroup {
             THContentView()
+                .environment(\.locale, Locale(identifier: "zh_CN"))
         }
         .modelContainer(sharedModelContainer)
     }

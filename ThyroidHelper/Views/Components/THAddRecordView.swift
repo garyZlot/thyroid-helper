@@ -63,7 +63,6 @@ struct THAddRecordView: View {
             Form {
                 Section("检查信息") {
                     DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "zh_CN"))
                     
                     if mode == .thyroidData {
                         // 甲状腺检查类型
@@ -233,7 +232,7 @@ struct THAddRecordView: View {
                     }
                 }
                 
-                Section("备注") {
+                Section("内容及备注") {
                     TextField("添加备注信息...", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }

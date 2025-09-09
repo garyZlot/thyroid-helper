@@ -210,7 +210,6 @@ struct EditRecordView: View {
             Form {
                 Section("检查信息") {
                     DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "zh_CN"))
                 }
                 
                 Section {
