@@ -251,13 +251,14 @@ struct ChartLabelsOverlay: View {
     let yAxisRange: (min: Double, max: Double)
     let geometry: GeometryProxy
     let color: Color
+    let leftSpace: CGFloat = 60.0
     
     // 计算数值标签的位置策略
     private func calculateValueLabelPositions() -> [(position: CGPoint, value: Double, isAbove: Bool)] {
         var positions: [(position: CGPoint, value: Double, isAbove: Bool)] = []
         
         for (index, point) in data.enumerated() {
-            let xPosition = positionForDate(point.0, in: geometry.size.width)
+            let xPosition = leftSpace + positionForDate(point.0, in: geometry.size.width - leftSpace)
             let yPosition = positionForValue(point.1, in: geometry.size.height - 40) // 减去底部padding
             
             // 决定标签显示在线上方还是下方
@@ -297,7 +298,7 @@ struct ChartLabelsOverlay: View {
         ZStack {
             // 日期标签
             ForEach(Array(data.enumerated()), id: \.offset) { index, point in
-                let xPosition = positionForDate(point.0, in: geometry.size.width)
+                let xPosition = leftSpace + positionForDate(point.0, in: geometry.size.width - leftSpace)
                 Text(DateFormatter.shortDateWithYear.string(from: point.0))
                     .font(.caption2)
                     .foregroundColor(.secondary)
