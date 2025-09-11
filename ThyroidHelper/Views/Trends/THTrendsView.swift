@@ -12,14 +12,11 @@ import _SwiftData_SwiftUI
 struct THTrendsView: View {
     @Query(sort: \THThyroidPanelRecord.date, order: .forward) private var records: [THThyroidPanelRecord]
     
-    // 使用标准指标顺序
-    private let standardIndicators = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
-    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    ForEach(standardIndicators, id: \.self) { indicatorName in
+                    ForEach(THConfig.standardOrder, id: \.self) { indicatorName in
                         TrendChartCard(
                             indicatorName: indicatorName,
                             data: getTrendData(for: indicatorName)
@@ -56,7 +53,8 @@ struct TrendChartCard: View {
             "FT4": .purple,
             "TSH": .indigo,
             "A-TG": .green,
-            "A-TPO": .orange
+            "A-TPO": .orange,
+            "TG 2": .brown
         ]
         
         return (

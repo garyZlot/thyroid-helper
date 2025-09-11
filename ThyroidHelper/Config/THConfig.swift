@@ -10,7 +10,7 @@ import Foundation
 /// 甲状腺相关配置
 struct THConfig {
     /// 标准甲状腺指标显示顺序
-    public static let standardOrder: [String] = ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
+    public static let standardOrder: [String] = ["FT3", "FT4", "TSH", "A-TG", "A-TPO", "TG 2"]
     
     /// 指标的配置信息
     public static let indicatorSettings: [String: IndicatorSetting] = [

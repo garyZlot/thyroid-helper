@@ -13,8 +13,22 @@ struct THHomeView: View {
     @Query(sort: \THThyroidPanelRecord.date, order: .reverse) private var records: [THThyroidPanelRecord]
     @State private var showingAddRecord = false
     
+    // 修改为返回最近一天的所有记录
+    var latestDayRecords: [THThyroidPanelRecord] {
+        guard let latestDate = records.first?.date else { return [] }
+        
+        let calendar = Calendar.current
+        let latestDay = calendar.startOfDay(for: latestDate)
+        
+        return records.filter { record in
+            let recordDay = calendar.startOfDay(for: record.date)
+            return calendar.isDate(recordDay, inSameDayAs: latestDay)
+        }
+    }
+    
+    // 为了兼容现有代码，保留 latestRecord 但改为使用最近一天记录中的第一条
     var latestRecord: THThyroidPanelRecord? {
-        records.first
+        latestDayRecords.first
     }
     
     var body: some View {
@@ -25,9 +39,9 @@ struct THHomeView: View {
                     CheckupReminderCard(latestRecord: latestRecord)
                         .padding(.vertical, 8)
                     
-                    // 最新检查结果
-                    if let record = latestRecord {
-                        LatestResultCard(record: record)
+                    // 最新检查结果 - 显示最近一天的所有记录
+                    if !latestDayRecords.isEmpty {
+                        LatestDayResultsCard(records: latestDayRecords)
                     } else {
                         EmptyStateCard()
                     }
@@ -42,6 +56,58 @@ struct THHomeView: View {
                 THAddRecordView()
             }
         }
+    }
+}
+
+// 新增：显示最近一天的所有检查结果
+struct LatestDayResultsCard: View {
+    let records: [THThyroidPanelRecord]
+    
+    private var latestDate: String {
+        guard let date = records.first?.date else { return "" }
+        return date.formatted(date: .abbreviated, time: .omitted)
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("最新检查结果")
+                    .font(.headline)
+                
+                Text("\(latestDate) · 共 \(records.count) 项检查")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            // 按检查类型分组显示
+            ForEach(groupedRecords, id: \.key) { group in
+                VStack(alignment: .leading, spacing: 8) {
+                    if records.count > 1 {
+                        Text(group.key)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.primary)
+                    }
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 6) {
+                        ForEach(group.value.flatMap { $0.indicators ?? [] }.sortedByMedicalOrder(), id: \.name) { indicator in
+                            IndicatorCard(indicator: indicator)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+    
+    // 按检查类型分组
+    private var groupedRecords: [(key: String, value: [THThyroidPanelRecord])] {
+        let grouped = Dictionary(grouping: records) { $0.type.rawValue }
+        return grouped.sorted { $0.key < $1.key }
     }
 }
 
@@ -272,33 +338,6 @@ struct ReminderDatePickerView: View {
     }
 }
 
-struct LatestResultCard: View {
-    let record: THThyroidPanelRecord
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("最新检查结果")
-                    .font(.headline)
-                
-                Text("\(record.date.formatted(date: .abbreviated, time: .omitted)) · \(record.type.rawValue)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 6) {
-                ForEach((record.indicators ?? []).sortedByMedicalOrder(), id: \.name) { indicator in
-                    IndicatorCard(indicator: indicator)
-                }
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-    }
-}
 
 struct IndicatorCard: View {
     let indicator: THThyroidIndicator

@@ -37,6 +37,8 @@ extension THThyroidIndicator {
             return "甲状腺球蛋白自身抗体 (A-TG)"
         case "A-TPO":
             return "甲状腺过氧化物酶自身抗体 (A-TPO)"
+        case "TG 2":
+            return "甲状腺球蛋白 (TG)"
         default:
             return self.name
         }
