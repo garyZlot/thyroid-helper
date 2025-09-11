@@ -86,6 +86,28 @@ struct TrendChartCard: View {
         return (start, end)
     }
     
+    // 计算Y轴的显示范围
+    private var yAxisRange: (min: Double, max: Double) {
+        guard !data.isEmpty else { return (0, 10) }
+        
+        let values = data.map { $0.1 }
+        let dataMin = values.min()!
+        let dataMax = values.max()!
+        
+        // 考虑正常范围
+        var min = dataMin
+        var max = dataMax
+        
+        if let normalRange = config.normalRange {
+            min = Swift.min(min, normalRange.0)
+            max = Swift.max(max, normalRange.1)
+        }
+        
+        // 增加一些边距
+        let margin = (max - min) * 0.2
+        return (min - margin, max + margin)
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -155,6 +177,7 @@ struct TrendChartCard: View {
                         }
                     }
                     .chartXScale(domain: extendedDateRange.start...extendedDateRange.end)
+                    .chartYScale(domain: yAxisRange.min...yAxisRange.max)
                     .chartYAxisLabel(config.unit, position: .leading)
                     .chartXAxis {
                         // 隐藏X轴刻度标签
@@ -178,15 +201,17 @@ struct TrendChartCard: View {
                             .padding(.bottom, 40) // 增加底部内边距以避免标签被截断
                     }
                     .overlay(
-                        // 添加日期标签覆盖层
-                        DateLabelsOverlay(
+                        // 添加日期标签和数值标签覆盖层
+                        ChartLabelsOverlay(
                             data: data,
                             extendedDateRange: extendedDateRange,
-                            geometry: geometry
+                            yAxisRange: yAxisRange,
+                            geometry: geometry,
+                            color: config.color
                         )
                     )
                 }
-                .frame(height: 240) // 增加高度以容纳日期标签
+                .frame(height: 280) // 增加高度以容纳标签
             } else {
                 // iOS 15 及以下的备选方案
                 VStack {
@@ -219,22 +244,83 @@ struct TrendChartCard: View {
     }
 }
 
-// 日期标签覆盖层
-struct DateLabelsOverlay: View {
+// 图表标签覆盖层（包含日期和数值标签）
+struct ChartLabelsOverlay: View {
     let data: [(Date, Double)]
     let extendedDateRange: (start: Date, end: Date)
+    let yAxisRange: (min: Double, max: Double)
     let geometry: GeometryProxy
+    let color: Color
+    
+    // 计算数值标签的位置策略
+    private func calculateValueLabelPositions() -> [(position: CGPoint, value: Double, isAbove: Bool)] {
+        var positions: [(position: CGPoint, value: Double, isAbove: Bool)] = []
+        
+        for (index, point) in data.enumerated() {
+            let xPosition = positionForDate(point.0, in: geometry.size.width)
+            let yPosition = positionForValue(point.1, in: geometry.size.height - 40) // 减去底部padding
+            
+            // 决定标签显示在线上方还是下方
+            let isAbove = shouldShowAbove(for: index, value: point.1, in: data)
+            let labelY = isAbove ? yPosition - 25 : yPosition + 20
+            
+            positions.append((
+                position: CGPoint(x: xPosition, y: labelY),
+                value: point.1,
+                isAbove: isAbove
+            ))
+        }
+        
+        return positions
+    }
+    
+    // 决定标签应该显示在点的上方还是下方
+    private func shouldShowAbove(for index: Int, value: Double, in data: [(Date, Double)]) -> Bool {
+        // 如果是第一个或最后一个点，根据相邻点决定
+        if index == 0 && data.count > 1 {
+            return value > data[1].1
+        } else if index == data.count - 1 && data.count > 1 {
+            return value > data[index - 1].1
+        } else if data.count > 1 {
+            // 中间的点，比较与前后点的关系
+            let prevValue = index > 0 ? data[index - 1].1 : value
+            let nextValue = index < data.count - 1 ? data[index + 1].1 : value
+            let avgNeighbor = (prevValue + nextValue) / 2
+            return value > avgNeighbor
+        }
+        
+        // 默认显示在上方
+        return true
+    }
     
     var body: some View {
         ZStack {
+            // 日期标签
             ForEach(Array(data.enumerated()), id: \.offset) { index, point in
-                // 计算日期标签的位置
                 let xPosition = positionForDate(point.0, in: geometry.size.width)
                 Text(DateFormatter.shortDateWithYear.string(from: point.0))
                     .font(.caption2)
                     .foregroundColor(.secondary)
                     .rotationEffect(.degrees(-45))
-                    .position(x: xPosition, y: geometry.size.height - 15) // 放在图表底部
+                    .position(x: xPosition, y: geometry.size.height - 15)
+            }
+            
+            // 数值标签
+            ForEach(Array(calculateValueLabelPositions().enumerated()), id: \.offset) { index, labelInfo in
+                VStack(spacing: 2) {
+                    Text(String(format: "%.1f", labelInfo.value))
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(color)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color(.systemBackground))
+                                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                        )
+                }
+                .position(labelInfo.position)
             }
         }
     }
@@ -245,6 +331,14 @@ struct DateLabelsOverlay: View {
         let timeFromStart = date.timeIntervalSince(extendedDateRange.start)
         let positionRatio = timeFromStart / totalDuration
         return positionRatio * width
+    }
+    
+    // 计算数值在图表中的Y位置
+    private func positionForValue(_ value: Double, in height: CGFloat) -> CGFloat {
+        let valueRange = yAxisRange.max - yAxisRange.min
+        let valueFromMin = value - yAxisRange.min
+        let positionRatio = valueFromMin / valueRange
+        return height - (positionRatio * height) // Y轴是反向的
     }
 }
 
