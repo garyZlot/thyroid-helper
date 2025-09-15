@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */; };
 		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
 		2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */; };
 		2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THUIApplicationExtension.swift; sourceTree = "<group>"; };
 		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
 		2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDoubleExtension.swift; sourceTree = "<group>"; };
 		2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THImageZoomViewer.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 		2F4B1DF42E63EB62000EE005 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */,
 				2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */,
 			);
 			path = Extensions;
@@ -389,6 +392,7 @@
 				689F16F72E5C9DB00047ABAB /* THHomeView.swift in Sources */,
 				689F16EC2E5C9CF80047ABAB /* THCloudKitManager.swift in Sources */,
 				689F16FF2E5C9E220047ABAB /* THProfileView.swift in Sources */,
+				2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */,
 				2F78237B2E695A7500CDEF24 /* THMedicalTimelineView.swift in Sources */,
 				2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */,
 				2F78237F2E697EF000CDEF24 /* THMedicalRecordOCRService.swift in Sources */,
