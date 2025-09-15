@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 import os.log
 
-/// OCR 识别服务
+/// 改进的OCR 识别服务
 @MainActor
 class THThyroidPanelOCRService: ObservableObject {
     @Published var recognizedText = ""
@@ -89,56 +89,127 @@ class THThyroidPanelOCRService: ObservableObject {
         
         logger.info("📝 OCR识别完成，获得 \(observations.count) 个文本块")
         
-        // 记录每个识别到的文本块的详细信息
-        for (index, observation) in observations.enumerated() {
-            if let text = observation.topCandidates(1).first?.string {
-                let box = observation.boundingBox
-                logger.debug("文本块[\(index)]: '\(text)' 位置:(x:\(String(format: "%.3f", box.minX))-\(String(format: "%.3f", box.maxX)), y:\(String(format: "%.3f", box.minY))-\(String(format: "%.3f", box.maxY))) 置信度:\(String(format: "%.3f", observation.confidence))")
-            }
-        }
+        // 提取表格数据
+        let tableData = extractTableData(from: observations)
+        recognizedText = tableData.allText
         
-        let sortedObservations = observations.sorted { a, b in
-            if abs(a.boundingBox.midY - b.boundingBox.midY) > 0.01 {
-                return a.boundingBox.maxY > b.boundingBox.maxY
-            } else {
-                return a.boundingBox.minX < b.boundingBox.minX
-            }
-        }
-
-        let recognizedStrings = sortedObservations.compactMap { $0.topCandidates(1).first?.string }
-        recognizedText = recognizedStrings.joined(separator: "\n")
-        
-        logger.info("📄 排序后的识别文本:\n\(self.recognizedText)")
+        logger.info("📄 识别文本:\n\(self.recognizedText)")
         logger.info("🔍 开始提取指标数值...")
         
-        extractIndicators(from: recognizedText, observations: sortedObservations)
+        extractIndicatorsFromTable(tableData: tableData)
         extractedDate = THDateExtractionService.extractDate(from: recognizedText)
     }
     
-    private func extractIndicators(from text: String, observations: [VNRecognizedTextObservation]) {
-        extractedIndicators.removeAll()
-        
-        let lines = text.components(separatedBy: .newlines)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        
-        logger.info("📋 文本行数: \(lines.count)")
-        for (index, line) in lines.enumerated() {
-            logger.debug("行[\(index)]: '\(line)'")
+    /// 表格数据结构
+    struct TableCell {
+        let text: String
+        let boundingBox: CGRect
+        let confidence: Float
+        var row: Int = -1
+        var column: Int = -1
+    }
+    
+    struct TableData {
+        let cells: [TableCell]
+        let allText: String
+        let rows: [[TableCell]]
+    }
+    
+    /// 从OCR结果中提取表格数据
+    private func extractTableData(from observations: [VNRecognizedTextObservation]) -> TableData {
+        // 转换为TableCell
+        var cells: [TableCell] = []
+        for observation in observations {
+            if let text = observation.topCandidates(1).first?.string {
+                let cell = TableCell(
+                    text: text.trimmingCharacters(in: .whitespacesAndNewlines),
+                    boundingBox: observation.boundingBox,
+                    confidence: observation.confidence
+                )
+                if !cell.text.isEmpty {
+                    cells.append(cell)
+                }
+            }
         }
         
-        logger.info("🎯 方法1: 位置匹配提取...")
-        extractByPositionMatching(lines: lines, observations: observations)
+        // 按行分组 - 使用更宽松的行判定标准
+        let sortedCells = cells.sorted { a, b in
+            if abs(a.boundingBox.midY - b.boundingBox.midY) > 0.02 { // 增加行判定阈值
+                return a.boundingBox.midY > b.boundingBox.midY // 从上到下
+            } else {
+                return a.boundingBox.minX < b.boundingBox.minX // 从左到右
+            }
+        }
         
-        let positionMatchCount = extractedIndicators.count
-        logger.info("✅ 位置匹配完成，提取到 \(positionMatchCount) 个指标")
+        // 分行逻辑
+        var rows: [[TableCell]] = []
+        var currentRow: [TableCell] = []
+        var lastY: CGFloat = -1
         
-        if extractedIndicators.count < indicatorKeys.count {
-            logger.info("🎯 方法2: 顺序匹配提取... (还需要 \(self.indicatorKeys.count - self.extractedIndicators.count) 个)")
-            extractBySequentialMatching(lines: lines)
+        for cell in sortedCells {
+            let cellY = cell.boundingBox.midY
             
-            let sequentialMatchCount = extractedIndicators.count - positionMatchCount
-            logger.info("✅ 顺序匹配完成，额外提取到 \(sequentialMatchCount) 个指标")
+            if lastY == -1 || abs(cellY - lastY) > 0.02 {
+                // 新行
+                if !currentRow.isEmpty {
+                    rows.append(currentRow)
+                }
+                currentRow = [cell]
+                lastY = cellY
+            } else {
+                // 同一行
+                currentRow.append(cell)
+            }
+        }
+        
+        if !currentRow.isEmpty {
+            rows.append(currentRow)
+        }
+        
+        // 为每个cell标记行列信息
+        var cellsWithPosition: [TableCell] = []
+        for (rowIndex, row) in rows.enumerated() {
+            for (colIndex, cell) in row.enumerated() {
+                var updatedCell = cell
+                updatedCell.row = rowIndex
+                updatedCell.column = colIndex
+                cellsWithPosition.append(updatedCell)
+            }
+        }
+        
+        let allText = rows.map { row in
+            row.map { $0.text }.joined(separator: " ")
+        }.joined(separator: "\n")
+        
+        logger.info("📊 表格解析完成：\(rows.count)行")
+        for (i, row) in rows.enumerated() {
+            logger.debug("行[\(i)]: \(row.map { $0.text }.joined(separator: " | "))")
+        }
+        
+        return TableData(cells: cellsWithPosition, allText: allText, rows: rows)
+    }
+    
+    /// 从表格数据中提取指标
+    private func extractIndicatorsFromTable(tableData: TableData) {
+        extractedIndicators.removeAll()
+        
+        // 方法1：基于关键字的精确匹配
+        logger.info("🎯 方法1: 表格关键字匹配...")
+        extractByTableKeywordMatching(tableData: tableData)
+        
+        let keywordMatchCount = extractedIndicators.count
+        logger.info("✅ 关键字匹配完成，提取到 \(keywordMatchCount) 个指标")
+        
+        // 方法2：如果关键字匹配不足，尝试模式匹配
+        if extractedIndicators.count < indicatorKeys.count {
+            logger.info("🎯 方法2: 数值模式匹配...")
+            extractByValuePatternMatching(tableData: tableData)
+        }
+        
+        // 方法3：如果仍然不足，尝试位置推断
+        if extractedIndicators.count < indicatorKeys.count {
+            logger.info("🎯 方法3: 位置推断匹配...")
+            extractByPositionInference(tableData: tableData)
         }
         
         logger.info("🏁 最终提取结果:")
@@ -150,148 +221,163 @@ class THThyroidPanelOCRService: ObservableObject {
             }
         }
     }
-
-    private func extractByPositionMatching(lines: [String], observations: [VNRecognizedTextObservation]) {
-        logger.debug("🔍 开始位置匹配...")
-        
-        for (lineIndex, line) in lines.enumerated() {
-            logger.debug("检查行[\(lineIndex)]: '\(line)'")
-            
-            for key in indicatorKeys {
-                if line.contains(key) {
-                    logger.info("🎯 在行[\(lineIndex)]中找到指标关键字 '\(key)': '\(line)'")
-                    
-                    if let observation = observations.first(where: { $0.topCandidates(1).first?.string == line }) {
-                        let indicatorBox = observation.boundingBox
-                        logger.debug("  指标位置: x:\(String(format: "%.3f", indicatorBox.minX))-\(String(format: "%.3f", indicatorBox.maxX)), y:\(String(format: "%.3f", indicatorBox.minY))-\(String(format: "%.3f", indicatorBox.maxY))")
+    
+    /// 方法1：基于表格的关键字匹配
+    private func extractByTableKeywordMatching(tableData: TableData) {
+        for row in tableData.rows {
+            // 查找包含指标关键字的cell
+            for (cellIndex, cell) in row.enumerated() {
+                for indicator in indicatorKeys {
+                    if cell.text.contains(indicator) && extractedIndicators[indicator] == nil {
+                        logger.info("🎯 在行中找到指标 '\(indicator)': '\(cell.text)'")
                         
-                        var cleanedLine = line.replacingOccurrences(of: key, with: "")
-                            .trimmingCharacters(in: .whitespacesAndNewlines)
-                        
-                        logger.debug("  清理后的文本: '\(cleanedLine)'")
-                        
-                        if let value = extractFirstNumber(from: cleanedLine) {
-                            logger.debug("  从同行提取到数值: \(value)")
-                            if isReasonableThyroidValue(value: value, indicator: key) {
-                                extractedIndicators[key] = value
-                                logger.info("  ✅ 同行匹配成功: \(key) = \(value)")
-                                continue
-                            } else {
-                                logger.warning("  ❌ 数值不合理，被过滤: \(value)")
-                            }
+                        // 在同一行中查找数值
+                        if let value = findValueInRow(row: row, excludeIndex: cellIndex, indicator: indicator) {
+                            extractedIndicators[indicator] = value
+                            logger.info("  ✅ 同行匹配成功: \(indicator) = \(value)")
                         } else {
-                            logger.debug("  同行未找到数值")
+                            logger.warning("  ❌ 同行未找到合适数值")
                         }
-                        
-                        // 尝试查找右侧的数值行
-                        logger.debug("  🔍 搜索右侧数值行...")
-                        var foundRightValue = false
-                        for valueIndex in (lineIndex + 1)..<min(lineIndex + 3, lines.count) {
-                            let valueLine = lines[valueIndex]
-                            logger.debug("    检查候选行[\(valueIndex)]: '\(valueLine)'")
-                            
-                            if let valueObservation = observations.first(where: { $0.topCandidates(1).first?.string == valueLine }),
-                               let value = extractFirstNumber(from: valueLine) {
-                                let valueBox = valueObservation.boundingBox
-                                let horizontalDistance = valueBox.minX - indicatorBox.maxX
-                                let verticalDistance = abs(valueBox.midY - indicatorBox.midY)
-                                
-                                logger.debug("    候选数值: \(value)")
-                                logger.debug("    位置: x:\(String(format: "%.3f", valueBox.minX))-\(String(format: "%.3f", valueBox.maxX)), y:\(String(format: "%.3f", valueBox.minY))-\(String(format: "%.3f", valueBox.maxY))")
-                                logger.debug("    水平距离: \(String(format: "%.3f", horizontalDistance)), 垂直距离: \(String(format: "%.3f", verticalDistance))")
-                                
-                                if valueBox.minX > indicatorBox.maxX && abs(valueBox.midY - indicatorBox.midY) < 0.05 {
-                                    if isReasonableThyroidValue(value: value, indicator: key) {
-                                        extractedIndicators[key] = value
-                                        logger.info("    ✅ 右侧匹配成功: \(key) = \(value)")
-                                        foundRightValue = true
-                                        break
-                                    } else {
-                                        logger.warning("    ❌ 右侧数值不合理，被过滤: \(value)")
-                                    }
-                                } else {
-                                    logger.debug("    ❌ 位置不符合条件")
-                                }
-                            } else {
-                                logger.debug("    未找到数值或observation")
-                            }
-                        }
-                        
-                        if !foundRightValue {
-                            logger.warning("  ❌ 未找到合适的右侧数值")
-                        }
-                    } else {
-                        logger.error("  ❌ 未找到对应的observation")
                     }
                 }
             }
         }
     }
-
-    private func extractBySequentialMatching(lines: [String]) {
-        logger.debug("🔍 开始顺序匹配...")
+    
+    /// 方法2：基于数值模式的匹配
+    private func extractByValuePatternMatching(tableData: TableData) {
+        // 查找看起来像结果列的数值
+        var candidateValues: [(indicator: String, value: Double, confidence: Float)] = []
         
-        var numberLines: [(index: Int, value: Double)] = []
-        for (index, line) in lines.enumerated() {
-            if let value = extractFirstNumber(from: line) {
-                numberLines.append((index, value))
-                logger.debug("数值行[\(index)]: '\(line)' -> \(value)")
+        for row in tableData.rows {
+            // 查找这行是否包含指标
+            let indicatorInRow = indicatorKeys.first { indicator in
+                row.contains { $0.text.contains(indicator) }
+            }
+            
+            if let indicator = indicatorInRow, extractedIndicators[indicator] == nil {
+                // 查找这行中的数值
+                for cell in row {
+                    if let value = extractNumberFromText(cell.text),
+                       isReasonableThyroidValue(value: value, indicator: indicator) {
+                        candidateValues.append((indicator: indicator, value: value, confidence: cell.confidence))
+                    }
+                }
             }
         }
         
-        logger.info("📊 找到 \(numberLines.count) 行包含数值")
+        // 按置信度排序，选择最佳匹配
+        candidateValues.sort { $0.confidence > $1.confidence }
         
-        for (i, key) in indicatorKeys.enumerated() {
-            if extractedIndicators[key] == nil {
-                logger.debug("处理指标[\(i)]: \(key)")
+        for candidate in candidateValues {
+            if extractedIndicators[candidate.indicator] == nil {
+                extractedIndicators[candidate.indicator] = candidate.value
+                logger.info("  ✅ 模式匹配成功: \(candidate.indicator) = \(candidate.value)")
+            }
+        }
+    }
+    
+    /// 方法3：基于位置推断的匹配
+    private func extractByPositionInference(tableData: TableData) {
+        // 查找"结果"列或类似的列标题
+        var resultColumnIndex: Int?
+        
+        for row in tableData.rows {
+            for (index, cell) in row.enumerated() {
+                if cell.text.contains("结果") || cell.text.contains("值") ||
+                   cell.text.lowercased().contains("result") {
+                    resultColumnIndex = index
+                    logger.info("📍 找到结果列，索引: \(index)")
+                    break
+                }
+            }
+            if resultColumnIndex != nil { break }
+        }
+        
+        // 如果没找到结果列，尝试推断
+        if resultColumnIndex == nil {
+            // 查找最右边包含数值的列
+            var maxColumn = -1
+            for row in tableData.rows {
+                for (index, cell) in row.enumerated() {
+                    if extractNumberFromText(cell.text) != nil {
+                        maxColumn = max(maxColumn, index)
+                    }
+                }
+            }
+            if maxColumn >= 0 {
+                resultColumnIndex = maxColumn
+                logger.info("📍 推断结果列，索引: \(maxColumn)")
+            }
+        }
+        
+        guard let columnIndex = resultColumnIndex else {
+            logger.warning("❌ 无法确定结果列位置")
+            return
+        }
+        
+        // 按指标顺序匹配
+        var indicatorRowMap: [String: Int] = [:]
+        for (rowIndex, row) in tableData.rows.enumerated() {
+            for indicator in indicatorKeys {
+                if row.contains(where: { $0.text.contains(indicator) }) {
+                    indicatorRowMap[indicator] = rowIndex
+                }
+            }
+        }
+        
+        for indicator in indicatorKeys {
+            if let rowIndex = indicatorRowMap[indicator],
+               extractedIndicators[indicator] == nil,
+               rowIndex < tableData.rows.count,
+               columnIndex < tableData.rows[rowIndex].count {
                 
-                if i < numberLines.count {
-                    let numberLine = numberLines[i]
-                    let value = numberLine.value
-                    
-                    logger.debug("  尝试匹配数值行[\(numberLine.index)]: \(value)")
-                    
-                    if isReasonableThyroidValue(value: value, indicator: key) {
-                        extractedIndicators[key] = value
-                        logger.info("  ✅ 顺序匹配成功: \(key) = \(value) (来自行\(numberLine.index))")
-                    } else {
-                        logger.warning("  ❌ 顺序匹配数值不合理: \(key) = \(value)")
-                    }
-                } else {
-                    logger.warning("  ❌ 没有足够的数值行匹配指标: \(key)")
+                let cell = tableData.rows[rowIndex][columnIndex]
+                if let value = extractNumberFromText(cell.text),
+                   isReasonableThyroidValue(value: value, indicator: indicator) {
+                    extractedIndicators[indicator] = value
+                    logger.info("  ✅ 位置推断成功: \(indicator) = \(value)")
                 }
-            } else {
-                logger.debug("  ⏭️ 指标已匹配，跳过: \(key)")
             }
         }
     }
-
-    private func extractFirstNumber(from text: String) -> Double? {
-        let pattern = "[<>]?[0-9]+\\.?[0-9]*[+-]?"
+    
+    /// 在行中查找数值
+    private func findValueInRow(row: [TableCell], excludeIndex: Int, indicator: String) -> Double? {
+        for (index, cell) in row.enumerated() {
+            if index != excludeIndex {
+                if let value = extractNumberFromText(cell.text),
+                   isReasonableThyroidValue(value: value, indicator: indicator) {
+                    return value
+                }
+            }
+        }
+        return nil
+    }
+    
+    /// 改进的数值提取函数
+    private func extractNumberFromText(_ text: String) -> Double? {
+        // 处理特殊格式：<1.30, >100, 0.269+等
+        let cleanText = text
+            .replacingOccurrences(of: "<", with: "")
+            .replacingOccurrences(of: ">", with: "")
+            .replacingOccurrences(of: "+", with: "")
+            .replacingOccurrences(of: "-", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // 正则匹配数字（包括小数）
+        let pattern = "([0-9]+\\.?[0-9]*)"
         do {
             let regex = try NSRegularExpression(pattern: pattern)
-            let range = NSRange(location: 0, length: text.utf16.count)
+            let range = NSRange(location: 0, length: cleanText.utf16.count)
             
-            if let match = regex.firstMatch(in: text, range: range),
-               let valueRange = Range(match.range, in: text) {
-                var valueString = String(text[valueRange])
-                let originalValue = valueString
-                
-                if valueString.hasSuffix("+") || valueString.hasSuffix("-") {
-                    valueString.removeLast()
-                }
-                if valueString.hasPrefix("<") || valueString.hasPrefix(">") {
-                    valueString.removeFirst()
-                }
-                
+            if let match = regex.firstMatch(in: cleanText, range: range),
+               let valueRange = Range(match.range, in: cleanText) {
+                let valueString = String(cleanText[valueRange])
                 if let result = Double(valueString) {
-                    logger.debug("    🔢 从'\(text)'中提取数值: '\(originalValue)' -> \(result)")
+                    logger.debug("    🔢 从'\(text)'中提取数值: '\(valueString)' -> \(result)")
                     return result
-                } else {
-                    logger.debug("    ❌ 无法转换为Double: '\(valueString)'")
                 }
-            } else {
-                logger.debug("    ❌ 正则匹配失败: '\(text)'")
             }
         } catch {
             logger.error("❌ 正则表达式错误: \(error)")
@@ -301,9 +387,15 @@ class THThyroidPanelOCRService: ObservableObject {
     
     /// 根据 THConfig.indicatorSettings 的范围判断是否合理
     private func isReasonableThyroidValue(value: Double, indicator: String) -> Bool {
+        // 过滤明显不是测量结果的数值（如序号）
+        if value < 0.001 || value == 1.0 || value == 2.0 || value == 3.0 || value == 4.0 || value == 5.0 {
+            logger.debug("      ❌ 疑似序号，被过滤: \(value)")
+            return false
+        }
+        
         if let setting = THConfig.indicatorSettings[indicator] {
-            let minValue = setting.normalRange.lower * 0.1
-            let maxValue = setting.normalRange.upper * 10.0
+            let minValue = setting.normalRange.lower * 0.01  // 更宽松的下限
+            let maxValue = setting.normalRange.upper * 100.0  // 更宽松的上限
             let isReasonable = value >= minValue && value <= maxValue
             
             if isReasonable {
@@ -314,8 +406,8 @@ class THThyroidPanelOCRService: ObservableObject {
             
             return isReasonable
         } else {
-            let isReasonable = value >= 0 && value <= 1000
-            logger.debug("      ⚠️ 未找到指标配置，使用默认范围: \(value) 在 0-1000? \(isReasonable)")
+            let isReasonable = value >= 0.01 && value <= 10000
+            logger.debug("      ⚠️ 未找到指标配置，使用默认范围: \(value) 在 0.01-10000? \(isReasonable)")
             return isReasonable
         }
     }
