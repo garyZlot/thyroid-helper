@@ -17,6 +17,7 @@ struct THPanelOCRResultView: View {
     
     @State private var manualAdjustments: [String: String] = [:]
     @State private var showingRawText = false
+    @State private var showingImageViewer = false  // 🆕 用于弹出全屏图片查看器
     
     init(capturedImage: UIImage,
          indicatorType: THThyroidPanelRecord.CheckupType,
@@ -29,20 +30,27 @@ struct THPanelOCRResultView: View {
         _ocrService = StateObject(wrappedValue: THThyroidPanelOCRService(indicatorKeys: indicatorType.indicators))
     }
 
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 拍摄的图片预览
                 ScrollView {
                     VStack(spacing: 20) {
-                        // 图片展示
-                        Image(uiImage: capturedImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxHeight: 200)
-                            .cornerRadius(12)
-                            .shadow(radius: 4)
+                        // 🆕 可点击的图片展示
+                        Button {
+                            showingImageViewer = true
+                        } label: {
+                            Image(uiImage: capturedImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxHeight: 200)
+                                .cornerRadius(12)
+                                .shadow(radius: 4)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
                         
                         // 识别状态
                         if ocrService.isProcessing {
@@ -127,6 +135,10 @@ struct THPanelOCRResultView: View {
             .sheet(isPresented: $showingRawText) {
                 THPanelOCRRawTextView(text: ocrService.recognizedText)
             }
+            // 🆕 弹出全屏查看器
+            .fullScreenCover(isPresented: $showingImageViewer) {
+                THImageZoomViewer(image: capturedImage)
+            }
         }
         .onAppear {
             ocrService.processImage(capturedImage)
@@ -138,14 +150,11 @@ struct THPanelOCRResultView: View {
     
     private func getFinalIndicators() -> [String: Double] {
         var result = ocrService.extractedIndicators
-        
-        // 应用手动调整
         for (key, valueString) in manualAdjustments {
             if !valueString.isEmpty, let value = Double(valueString) {
                 result[key] = value
             }
         }
-        
         return result
     }
     
