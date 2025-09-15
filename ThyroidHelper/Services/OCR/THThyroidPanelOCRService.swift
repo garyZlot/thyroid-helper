@@ -132,39 +132,52 @@ class THThyroidPanelOCRService: ObservableObject {
             }
         }
         
-        // 按行分组 - 使用更宽松的行判定标准
-        let sortedCells = cells.sorted { a, b in
-            if abs(a.boundingBox.midY - b.boundingBox.midY) > 0.02 { // 增加行判定阈值
-                return a.boundingBox.midY > b.boundingBox.midY // 从上到下
-            } else {
-                return a.boundingBox.minX < b.boundingBox.minX // 从左到右
-            }
-        }
+        // 改进的排序和分行逻辑
+        logger.info("🔍 开始改进的文本块排序...")
         
-        // 分行逻辑
+        // 首先按Y坐标排序（从上到下）
+        let sortedByY = cells.sorted { $0.boundingBox.maxY > $1.boundingBox.maxY }
+        
+        // 使用聚类算法进行行分组
         var rows: [[TableCell]] = []
-        var currentRow: [TableCell] = []
-        var lastY: CGFloat = -1
+        var remainingCells = sortedByY
         
-        for cell in sortedCells {
-            let cellY = cell.boundingBox.midY
+        while !remainingCells.isEmpty {
+            let firstCell = remainingCells.removeFirst()
+            var currentRow = [firstCell]
+            let rowY = firstCell.boundingBox.midY
             
-            if lastY == -1 || abs(cellY - lastY) > 0.02 {
-                // 新行
-                if !currentRow.isEmpty {
-                    rows.append(currentRow)
+            logger.debug("  🆕 开始新行，基准Y: \(String(format: "%.3f", rowY))")
+            
+            // 找出与当前行Y坐标相近的所有cell
+            var i = 0
+            while i < remainingCells.count {
+                let cell = remainingCells[i]
+                let cellY = cell.boundingBox.midY
+                let yDistance = abs(cellY - rowY)
+                
+                // 使用动态阈值：对于小文本使用更小的阈值
+                let heightThreshold = min(firstCell.boundingBox.height, cell.boundingBox.height) * 0.5
+                let yThreshold = max(0.015, heightThreshold)
+                
+                if yDistance <= yThreshold {
+                    currentRow.append(cell)
+                    remainingCells.remove(at: i)
+                    logger.debug("    ➕ 添加到当前行: '\(cell.text)' (Y距离: \(String(format: "%.3f", yDistance)))")
+                } else {
+                    i += 1
                 }
-                currentRow = [cell]
-                lastY = cellY
-            } else {
-                // 同一行
-                currentRow.append(cell)
             }
+            
+            // 对当前行按X坐标排序（从左到右）
+            currentRow.sort { $0.boundingBox.minX < $1.boundingBox.minX }
+            rows.append(currentRow)
+            
+            logger.debug("  ✅ 行完成，包含 \(currentRow.count) 个元素")
         }
         
-        if !currentRow.isEmpty {
-            rows.append(currentRow)
-        }
+        // 再次检查和优化行分组
+        rows = optimizeRowGrouping(rows: rows)
         
         // 为每个cell标记行列信息
         var cellsWithPosition: [TableCell] = []
@@ -187,6 +200,52 @@ class THThyroidPanelOCRService: ObservableObject {
         }
         
         return TableData(cells: cellsWithPosition, allText: allText, rows: rows)
+    }
+    
+    /// 优化行分组
+    private func optimizeRowGrouping(rows: [[TableCell]]) -> [[TableCell]] {
+        var optimizedRows: [[TableCell]] = []
+        
+        for row in rows {
+            if row.count == 1 {
+                // 单个cell的行，检查是否应该合并到前一行
+                let cell = row[0]
+                
+                if let lastRowIndex = optimizedRows.indices.last,
+                   let lastRow = optimizedRows.last,
+                   !lastRow.isEmpty {
+                    
+                    // 计算与上一行的Y距离
+                    let lastRowMaxY = lastRow.map { $0.boundingBox.maxY }.max() ?? 0
+                    let lastRowMinY = lastRow.map { $0.boundingBox.minY }.min() ?? 0
+                    let lastRowMidY = (lastRowMaxY + lastRowMinY) / 2
+                    
+                    let currentCellY = cell.boundingBox.midY
+                    let yDistance = abs(currentCellY - lastRowMidY)
+                    
+                    // 如果距离很近，考虑合并
+                    if yDistance < 0.025 {
+                        // 检查X位置是否合理
+                        let lastRowMaxX = lastRow.map { $0.boundingBox.maxX }.max() ?? 0
+                        let currentCellX = cell.boundingBox.minX
+                        
+                        // 如果在合理的X位置范围内，合并到上一行
+                        if currentCellX >= lastRowMaxX - 0.1 {
+                            optimizedRows[lastRowIndex].append(cell)
+                            // 重新按X排序
+                            optimizedRows[lastRowIndex].sort { $0.boundingBox.minX < $1.boundingBox.minX }
+                            logger.debug("  🔗 合并单元格到上一行: '\(cell.text)'")
+                            continue
+                        }
+                    }
+                }
+            }
+            
+            // 不合并，作为独立行添加
+            optimizedRows.append(row)
+        }
+        
+        return optimizedRows
     }
     
     /// 从表格数据中提取指标
