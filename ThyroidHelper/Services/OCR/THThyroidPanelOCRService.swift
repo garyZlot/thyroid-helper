@@ -281,9 +281,9 @@ class THThyroidPanelOCRService: ObservableObject {
         }
     }
     
-    /// 方法1：基于表格的关键字匹配
+    /// 方法1：基于表格的关键字匹配（修改：支持在相邻行查找数值）
     private func extractByTableKeywordMatching(tableData: TableData) {
-        for row in tableData.rows {
+        for (rowIndex, row) in tableData.rows.enumerated() {
             // 查找包含指标关键字的cell
             for (cellIndex, cell) in row.enumerated() {
                 for indicator in indicatorKeys {
@@ -294,14 +294,41 @@ class THThyroidPanelOCRService: ObservableObject {
                         if let value = findValueInRow(row: row, excludeIndex: cellIndex, indicator: indicator) {
                             extractedIndicators[indicator] = value
                             logger.info("  ✅ 同行匹配成功: \(indicator) = \(value)")
+                        } else if let nearbyValue = findValueInNearbyRows(tableData: tableData, rowIndex: rowIndex, excludeIndex: cellIndex, indicator: indicator) {
+                            // 🆕 如果同行没有，尝试在相邻行查找（例如 FT4 的结果在下一行）
+                            extractedIndicators[indicator] = nearbyValue
+                            logger.info("  ✅ 相邻行匹配成功: \(indicator) = \(nearbyValue)")
                         } else {
-                            logger.warning("  ❌ 同行未找到合适数值")
+                            logger.warning("  ❌ 同行及相邻行未找到合适数值")
                         }
                     }
                 }
             }
         }
     }
+
+    /// 🆕 从相邻行查找数值（优先搜索下一行，再上一行，向外扩展两行）
+    private func findValueInNearbyRows(tableData: TableData, rowIndex: Int, excludeIndex: Int, indicator: String) -> Double? {
+        let offsets = [1, -1, 2, -2]
+        for offset in offsets {
+            let idx = rowIndex + offset
+            if idx < 0 || idx >= tableData.rows.count { continue }
+            let nearbyRow = tableData.rows[idx]
+            for cell in nearbyRow {
+                // 跳过明显是范围的文本（如 "10.44-24.38"）
+                if cell.text.range(of: #"^\s*\d+(\.\d+)?\s*-\s*\d+(\.\d+)?\s*$"#, options: .regularExpression) != nil {
+                    continue
+                }
+                if let value = extractNumberFromText(cell.text),
+                   isReasonableThyroidValue(value: value, indicator: indicator) {
+                    logger.debug("    🔎 在相邻行[\(idx)]找到数值 '\(cell.text)' -> \(value)")
+                    return value
+                }
+            }
+        }
+        return nil
+    }
+
     
     /// 方法2：基于数值模式的匹配
     private func extractByValuePatternMatching(tableData: TableData) {
@@ -423,6 +450,13 @@ class THThyroidPanelOCRService: ObservableObject {
             .replacingOccurrences(of: "+", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         
+        // 🆕 跳过包含范围符号的文本（如 "10.44-24.38"）
+        if cleanText.contains("-"),
+           let _ = cleanText.range(of: #"^\s*\d+(\.\d+)?\s*-\s*\d+(\.\d+)?\s*$"#, options: .regularExpression) {
+            logger.debug("    ⏭️ 跳过范围文本: '\(text)'")
+            return nil
+        }
+        
         // 正则匹配数字（包括小数）- 优先匹配小数
         let patterns = [
             "([0-9]+\\.[0-9]+)",  // 优先匹配小数
@@ -448,6 +482,7 @@ class THThyroidPanelOCRService: ObservableObject {
         }
         return nil
     }
+
     
     /// 根据 THConfig.indicatorSettings 的范围判断是否合理
     private func isReasonableThyroidValue(value: Double, indicator: String) -> Bool {
