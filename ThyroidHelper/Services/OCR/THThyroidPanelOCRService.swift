@@ -362,25 +362,30 @@ class THThyroidPanelOCRService: ObservableObject {
             .replacingOccurrences(of: "<", with: "")
             .replacingOccurrences(of: ">", with: "")
             .replacingOccurrences(of: "+", with: "")
-            .replacingOccurrences(of: "-", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         
-        // 正则匹配数字（包括小数）
-        let pattern = "([0-9]+\\.?[0-9]*)"
-        do {
-            let regex = try NSRegularExpression(pattern: pattern)
-            let range = NSRange(location: 0, length: cleanText.utf16.count)
-            
-            if let match = regex.firstMatch(in: cleanText, range: range),
-               let valueRange = Range(match.range, in: cleanText) {
-                let valueString = String(cleanText[valueRange])
-                if let result = Double(valueString) {
-                    logger.debug("    🔢 从'\(text)'中提取数值: '\(valueString)' -> \(result)")
-                    return result
+        // 正则匹配数字（包括小数）- 优先匹配小数
+        let patterns = [
+            "([0-9]+\\.[0-9]+)",  // 优先匹配小数
+            "([0-9]+)"            // 然后匹配整数
+        ]
+        
+        for pattern in patterns {
+            do {
+                let regex = try NSRegularExpression(pattern: pattern)
+                let range = NSRange(location: 0, length: cleanText.utf16.count)
+                
+                if let match = regex.firstMatch(in: cleanText, range: range),
+                   let valueRange = Range(match.range, in: cleanText) {
+                    let valueString = String(cleanText[valueRange])
+                    if let result = Double(valueString) {
+                        logger.debug("    🔢 从'\(text)'中提取数值: '\(valueString)' -> \(result)")
+                        return result
+                    }
                 }
+            } catch {
+                logger.error("❌ 正则表达式错误: \(error)")
             }
-        } catch {
-            logger.error("❌ 正则表达式错误: \(error)")
         }
         return nil
     }
