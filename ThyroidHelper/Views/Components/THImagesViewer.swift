@@ -1,5 +1,5 @@
 //
-//  THImageViewer.swift
+//  THImagesViewer.swift
 //  ThyroidHelper
 //
 //  Created by Assistant on 2025/9/5.
@@ -9,7 +9,7 @@ import SwiftUI
 import Photos
 
 // MARK: - SwiftUI 包装
-struct THImageViewer: UIViewControllerRepresentable {
+struct THImagesViewer: UIViewControllerRepresentable {
     let imageDatas: [Data]
     var initialIndex: Int = 0
     

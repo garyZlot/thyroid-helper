@@ -208,7 +208,7 @@ struct TimelineRowView: View {
         }
         .padding(.vertical, 8)
         .fullScreenCover(isPresented: $showingImageViewer) {
-            THImageViewer(
+            THImagesViewer(
                 imageDatas: record.imageDatas,
                 initialIndex: selectedImageIndex
             )
