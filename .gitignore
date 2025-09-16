@@ -1,0 +1,58 @@
+# Xcode
+#
+# 用户特定文件
+*.xcuserstate
+*.xcuserdatad/
+*.xcuserdata/
+
+# Xcode 构建文件
+DerivedData/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+Packages/
+*.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# macOS
+.DS_Store
+
+# 归档和导出文件
+*.xcarchive/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Playgrounds
+*.playground/Contents.swift
+*.playground/timeline.xctimeline
+*.playground/Sources/
+
+# 其他临时文件
+*.swp
+*~.nib
+*.bak
+*.tmp
+
+# 依赖管理缓存
+.swiftpm/
+Package.resolved
