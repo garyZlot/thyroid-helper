@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */; };
+		2F1D7E4C2E78F30F009F5096 /* THDateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */; };
 		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
 		2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */; };
 		2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THUIApplicationExtension.swift; sourceTree = "<group>"; };
+		2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtension.swift; sourceTree = "<group>"; };
 		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
 		2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDoubleExtension.swift; sourceTree = "<group>"; };
 		2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THImageZoomViewer.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 		2F4B1DF42E63EB62000EE005 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */,
 				2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */,
 				2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */,
 			);
@@ -380,6 +383,7 @@
 				689F170A2E5C9E8E0047ABAB /* AboutView.swift in Sources */,
 				2F7823822E697F8B00CDEF24 /* THImagesViewer.swift in Sources */,
 				68ECC79B2E627A720031B882 /* THThyroidIndicator+Extensions.swift in Sources */,
+				2F1D7E4C2E78F30F009F5096 /* THDateExtension.swift in Sources */,
 				689950AE2E6850D60045F733 /* THReminderSetting.swift in Sources */,
 				689F16F12E5C9D590047ABAB /* THContentView.swift in Sources */,
 				689F16F32E5C9D720047ABAB /* THLoginView.swift in Sources */,

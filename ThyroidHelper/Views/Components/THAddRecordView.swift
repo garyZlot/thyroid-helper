@@ -9,6 +9,7 @@ import SwiftUI
 import Vision
 import AVFoundation
 import PhotosUI
+import SwiftData
 
 struct THAddRecordView: View {
     @Environment(\.modelContext) private var modelContext
@@ -26,6 +27,10 @@ struct THAddRecordView: View {
     @State private var thyroidPanelType: THThyroidPanelRecord.CheckupType = .thyroidFunction5
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
+    
+    @State private var showingDuplicateAlert = false
+    @State private var showingSuccessAlert = false
+    @State private var duplicateRecord: THThyroidPanelRecord?
     
     // 医疗档案相关状态
     @State private var medicalTitle = ""
@@ -331,6 +336,17 @@ struct THAddRecordView: View {
                     notes = newNotes
                 }
             }
+            .alert("记录已存在", isPresented: $showingDuplicateAlert) {
+                Button("取消", role: .cancel) { }
+                Button("仍然添加") {
+                    performSaveThyroidRecord()
+                }
+            } message: {
+                if let duplicate = duplicateRecord {
+                    let dateString = duplicate.date.localizedMedium
+                    Text("在 \(dateString) 已存在一条 \(duplicate.type.rawValue) 记录，确定要添加新记录吗？")
+                }
+            }
         }
     }
     
@@ -373,6 +389,41 @@ struct THAddRecordView: View {
     }
     
     private func saveThyroidRecord() {
+        // 检查是否存在同一日期和同一类型的记录
+        if let existingRecord = checkForDuplicateRecord() {
+            duplicateRecord = existingRecord
+            showingDuplicateAlert = true
+            return
+        }
+        
+        // 执行实际保存
+        performSaveThyroidRecord()
+    }
+
+    // 检查重复记录的辅助函数
+    private func checkForDuplicateRecord() -> THThyroidPanelRecord? {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: selectedDate)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        do {
+            // 先获取指定日期范围的所有记录
+            let descriptor = FetchDescriptor<THThyroidPanelRecord>(
+                predicate: #Predicate<THThyroidPanelRecord> { record in
+                    record.date >= startOfDay && record.date < endOfDay
+                }
+            )
+            
+            let records = try modelContext.fetch(descriptor)
+            return records.first { $0.type == thyroidPanelType }
+        } catch {
+            print("❌ 检查重复记录失败: \(error)")
+            return nil
+        }
+    }
+
+    // 实际执行保存的函数
+    private func performSaveThyroidRecord() {
         let record = THThyroidPanelRecord(date: selectedDate, type: thyroidPanelType, notes: notes.isEmpty ? nil : notes)
         
         for (name, input) in indicators {
@@ -392,7 +443,7 @@ struct THAddRecordView: View {
         
         do {
             try modelContext.save()
-            dismiss()
+            showingSuccessAlert = true
         } catch {
             print("❌ 保存甲状腺记录失败: \(error.localizedDescription)")
         }
@@ -415,6 +466,7 @@ struct THAddRecordView: View {
             print("❌ 保存医疗档案失败: \(error.localizedDescription)")
         }
     }
+    
 }
 
 struct IndicatorInputRow: View {
