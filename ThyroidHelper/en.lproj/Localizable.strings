@@ -5,3 +5,60 @@
   Created by gdliu on 2025/9/16.
   
 */
+
+/* Main Page */
+"app_title" = "Thyroid Helper";
+"latest_examination_results" = "Latest Examination Results";
+"examination_count_format" = "%@ · %d examinations in total";
+"next_checkup_reminder" = "Next Checkup Reminder";
+"days_until_checkup_format" = "%d days until next checkup";
+"time_for_checkup" = "Time for checkup!";
+"add_record_to_start_tracking" = "Add examination record to start tracking";
+"next_checkup_date_format" = "Next checkup date: %@";
+"tap_to_set_custom_reminder" = "Tap here to set custom reminder";
+"no_examination_records" = "No Examination Records";
+"add_first_record_prompt" = "Add your first examination record to start health management";
+"camera_input" = "Camera Input";
+"view_trends" = "View Trends";
+"reference_format" = "Ref: %@";
+
+/* Reminder Settings */
+"enable_custom_reminder" = "Enable Custom Reminder";
+"checkup_date" = "Checkup Date";
+"custom_reminder_header_format" = "Custom %@ Reminder";
+"custom_reminder_footer" = "When enabled, your set date will be used for checkup reminders instead of automatically calculated dates.";
+"set_reminder_title_format" = "Set %@ Reminder";
+"cancel" = "Cancel";
+"save" = "Save";
+"save_reminder_error" = "Failed to save reminder settings";
+
+/* Trends Page */
+"indicators_trend" = "Indicators Trend";
+"normal_range_format" = "Normal: %.1f-%.1f %@";
+"no_data_format" = "No %@ data available";
+"chart_requires_ios16" = "Chart feature requires iOS 16+";
+"latest_value_format" = "Latest: %.2f %@";
+"insufficient_data_for_trend" = "Insufficient data for trend analysis";
+"indicator_stable" = "📊 Indicator stable with minimal change";
+"indicator_rising_format" = "📈 Indicator shows upward trend (+%.2f)";
+"indicator_falling_format" = "📉 Indicator shows downward trend (%.2f)";
+
+/* Empty state */
+"no_records_title" = "No records available";
+"no_records_description" = "Add your first record";
+
+/* Navigation */
+"checkup_indicators_title" = "Checkup Indicators";
+
+/* Edit Record View */
+"section_checkup_info" = "Checkup Info";
+"checkup_date" = "Checkup Date";
+"section_notes" = "Notes";
+"notes_placeholder" = "Add notes...";
+"cancel" = "Cancel";
+"save" = "Save";
+"save_failed_format" = "Save failed: %@";
+
+/* Indicator Edit */
+"value_placeholder" = "Value";
+"reference_range_format" = "Reference: %@";

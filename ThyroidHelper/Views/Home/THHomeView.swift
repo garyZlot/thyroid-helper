@@ -51,7 +51,7 @@ struct THHomeView: View {
                 }
                 .padding()
             }
-            .navigationTitle("甲状腺助手")
+            .navigationTitle("app_title".localized)
             .sheet(isPresented: $showingAddRecord) {
                 THAddRecordView()
             }
@@ -71,10 +71,10 @@ struct LatestDayResultsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("最新检查结果")
+                Text("latest_examination_results".localized)
                     .font(.headline)
                 
-                Text("\(latestDate) · 共 \(records.count) 项检查")
+                Text("examination_count_format".localized(latestDate, records.count))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -148,7 +148,7 @@ struct CheckupReminderCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("下次复查提醒")
+                        Text("next_checkup_reminder".localized)
                             .font(.headline)
                             .foregroundColor(.white)
                         
@@ -156,42 +156,36 @@ struct CheckupReminderCard: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.caption)
                                 .foregroundColor(.green)
-                                .accessibilityLabel("已设置自定义提醒")
+                                .accessibilityLabel("custom_reminder_set".localized)
                         }
                     }
                     
                     if let days = daysUntilCheckup {
                         if days > 0 {
-                            Text("距离下次检查还有")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.9))
-                            + Text(" \(days) ")
-                                .font(.headline)
-                                .foregroundColor(.orange)
-                            + Text("天")
+                            Text("days_until_checkup_format".localized(days))
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.9))
                         } else {
-                            Text("该复查了！")
+                            Text("time_for_checkup".localized)
                                 .font(.subheadline)
                                 .foregroundColor(.yellow)
                                 .fontWeight(.bold)
                         }
                     } else {
-                        Text("添加检查记录开始追踪")
+                        Text("add_record_to_start_tracking".localized)
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.9))
                     }
                     
                     if let nextDate = formattedNextCheckupDate {
-                        Text("下次检查日期：\(nextDate)")
+                        Text("next_checkup_date_format".localized(nextDate))
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.8))
                     }
                     
                     // 提示文本
                     if showHint && !thyroidSetting.isCustomReminderEnabled {
-                        Text("点击此处设置自定义提醒")
+                        Text("tap_to_set_custom_reminder".localized)
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.7))
                             .padding(.top, 4)
@@ -285,11 +279,11 @@ struct ReminderDatePickerView: View {
         NavigationView {
             Form {
                 Section {
-                    Toggle("启用自定义提醒", isOn: $isEnabled)
+                    Toggle("enable_custom_reminder".localized, isOn: $isEnabled)
                     
                     if isEnabled {
                         DatePicker(
-                            "复查日期",
+                            "checkup_date".localized,
                             selection: $selectedDate,
                             in: Date()...,
                             displayedComponents: .date
@@ -297,21 +291,21 @@ struct ReminderDatePickerView: View {
                         .datePickerStyle(GraphicalDatePickerStyle())
                     }
                 } header: {
-                    Text("自定义\(reminderSetting.checkupType.displayName)提醒")
+                    Text("custom_reminder_header_format".localized(reminderSetting.checkupType.displayName))
                 } footer: {
-                    Text("开启后，将使用您设置的日期作为复查提醒，而不是自动计算的日期。")
+                    Text("custom_reminder_footer".localized)
                 }
             }
-            .navigationTitle("设置\(reminderSetting.checkupType.displayName)提醒")
+            .navigationTitle("set_reminder_title_format".localized(reminderSetting.checkupType.displayName))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") {
+                    Button("cancel".localized) {
                         isPresented = false
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
+                    Button("save".localized) {
                         saveSettings()
                         isPresented = false
                     }
@@ -333,7 +327,7 @@ struct ReminderDatePickerView: View {
             try modelContext.save()
             onSave?()
         } catch {
-            print("保存提醒设置失败: \(error)")
+            print("save_reminder_error".localized + ": \(error)")
         }
     }
 }
@@ -356,7 +350,7 @@ struct IndicatorCard: View {
                 .font(.caption2)
                 .foregroundColor(.secondary)
             
-            Text("参考: \(indicator.normalRange)")
+            Text("reference_format".localized(indicator.normalRange))
                 .font(.caption2)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
@@ -386,11 +380,11 @@ struct EmptyStateCard: View {
                 .font(.system(size: 50))
                 .foregroundColor(.gray)
             
-            Text("暂无检查记录")
+            Text("no_examination_records".localized)
                 .font(.headline)
                 .foregroundColor(.secondary)
             
-            Text("添加您的第一条检查记录开始健康管理")
+            Text("add_first_record_prompt".localized)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -408,7 +402,7 @@ struct QuickActionButtons: View {
     var body: some View {
         HStack(spacing: 16) {
             Button(action: { showingAddRecord = true }) {
-                Label("拍照录入", systemImage: "camera.fill")
+                Label("camera_input".localized, systemImage: "camera.fill")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(.blue)
@@ -418,7 +412,7 @@ struct QuickActionButtons: View {
             }
             
             NavigationLink(destination: THTrendsView()) {
-                Label("查看趋势", systemImage: "chart.line.uptrend.xyaxis")
+                Label("view_trends".localized, systemImage: "chart.line.uptrend.xyaxis")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(.green)

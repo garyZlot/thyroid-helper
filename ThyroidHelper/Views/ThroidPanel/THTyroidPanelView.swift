@@ -19,9 +19,9 @@ struct THTyroidPanelView: View {
             Group {
                 if records.isEmpty {
                     ContentUnavailableView(
-                        "暂无检查记录",
+                        "no_records_title".localized,
                         systemImage: "doc.text",
-                        description: Text("添加您的第一条检查记录")
+                        description: Text("no_records_description".localized)
                     )
                 } else {
                     List {
@@ -36,7 +36,7 @@ struct THTyroidPanelView: View {
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("检查指标")
+            .navigationTitle("checkup_indicators_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddRecord = true }) {
@@ -67,7 +67,6 @@ struct RecordRowView: View {
     let record: THThyroidPanelRecord
     let onEdit: () -> Void
     
-    // 根据检查类型获取对应的指标配置
     private var indicatorsForType: [THThyroidIndicator] {
         let indicatorNames = THConfig.indicatorsForType(record.type)
         return (record.indicators ?? [])
@@ -87,7 +86,6 @@ struct RecordRowView: View {
                 Spacer()
                 
                 HStack(spacing: 12) {
-                    // 状态指示器
                     HStack(spacing: 4) {
                         if let abnormalCount = record.indicators?.filter { $0.status != .normal }.count {
                             if abnormalCount > 0 {
@@ -105,7 +103,6 @@ struct RecordRowView: View {
                         }
                     }
                     
-                    // 编辑按钮
                     Button(action: onEdit) {
                         Image(systemName: "pencil")
                             .font(.caption)
@@ -118,7 +115,6 @@ struct RecordRowView: View {
                 }
             }
             
-            // 指标概览 - 根据检查类型显示对应的指标
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
                 ForEach(indicatorsForType, id: \.name) { indicator in
                     VStack(spacing: 2) {
@@ -131,9 +127,8 @@ struct RecordRowView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(colorForStatus(indicator.status))
                         
-                        // 显示标准正常范围
                         if let normalRange = indicator.standardNormalRange {
-                            Text("\(normalRange.0, specifier: "%.2f")-\(normalRange.1, specifier: "%.2f")")
+                            Text(String(format: "%.2f-%.2f", normalRange.0, normalRange.1))
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
                         }
@@ -200,7 +195,6 @@ struct EditRecordView: View {
         _notes = State(initialValue: record.notes ?? "")
     }
     
-    // 根据记录类型获取对应的指标
     private var indicatorsForType: [String] {
         THConfig.indicatorsForType(record.type)
     }
@@ -208,8 +202,8 @@ struct EditRecordView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("检查信息") {
-                    DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
+                Section("section_checkup_info".localized) {
+                    DatePicker("checkup_date".localized, selection: $selectedDate, displayedComponents: .date)
                 }
                 
                 Section {
@@ -224,20 +218,20 @@ struct EditRecordView: View {
                     }
                 }
                 
-                Section("备注") {
-                    TextField("添加备注信息...", text: $notes, axis: .vertical)
+                Section("section_notes".localized) {
+                    TextField("notes_placeholder".localized, text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
             }
-            .navigationTitle(record.type.rawValue) // 使用检查类型作为导航栏标题
+            .navigationTitle(record.type.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("取消") { dismiss() }
+                    Button("cancel".localized) { dismiss() }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") { saveChanges() }
+                    Button("save".localized) { saveChanges() }
                         .disabled(!canSave)
                 }
             }
@@ -256,8 +250,6 @@ struct EditRecordView: View {
     
     private func setupIndicatorsFromRecord() {
         indicators.removeAll()
-        
-        // 从现有记录中加载数据
         for indicator in (record.indicators ?? []).sortedByMedicalOrder() {
             let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
             indicators[indicator.name] = IndicatorInput(
@@ -266,8 +258,6 @@ struct EditRecordView: View {
                 normalRange: indicator.normalRange
             )
         }
-        
-        // 确保当前类型的所有指标都存在（如果缺少则添加默认值）
         for indicatorName in indicatorsForType {
             if indicators[indicatorName] == nil {
                 indicators[indicatorName] = defaultIndicatorInput(for: indicatorName)
@@ -276,7 +266,6 @@ struct EditRecordView: View {
     }
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
-        // 使用扩展中的标准配置
         let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         let normalRange = tempIndicator.standardNormalRange
         let rangeString = normalRange.map { "\($0.0)-\($0.1)" } ?? ""
@@ -288,11 +277,9 @@ struct EditRecordView: View {
     }
     
     private func saveChanges() {
-        // 更新记录基本信息
         record.date = selectedDate
         record.notes = notes.isEmpty ? nil : notes
         
-        // 清除现有指标
         if let existingIndicators = record.indicators {
             for indicator in existingIndicators {
                 modelContext.delete(indicator)
@@ -300,7 +287,6 @@ struct EditRecordView: View {
         }
         record.indicators = []
         
-        // 添加新指标（只保存当前类型对应的指标）
         for indicatorName in indicatorsForType {
             guard let input = indicators[indicatorName], input.isValid else { continue }
             
@@ -321,7 +307,7 @@ struct EditRecordView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            print("保存失败: \(error.localizedDescription)")
+            print("save_failed_format".localized(error.localizedDescription))
         }
     }
 }
@@ -331,7 +317,6 @@ struct IndicatorEditRow: View {
     let name: String
     @Binding var input: EditRecordView.IndicatorInput
     
-    // 使用扩展获取完整显示名称
     private var displayName: String {
         let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         return tempIndicator.fullDisplayName
@@ -343,7 +328,7 @@ struct IndicatorEditRow: View {
                 .font(.headline)
             
             HStack {
-                TextField("数值", text: $input.value)
+                TextField("value_placeholder".localized, text: $input.value)
                     .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
                 
@@ -353,10 +338,11 @@ struct IndicatorEditRow: View {
                     .frame(width: 60, alignment: .leading)
             }
             
-            Text("参考范围: \(input.normalRange)")
+            Text("reference_range_format".localized(input.normalRange))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
         .padding(.vertical, 4)
     }
 }
+

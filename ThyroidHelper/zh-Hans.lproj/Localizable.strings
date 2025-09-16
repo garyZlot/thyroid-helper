@@ -5,3 +5,60 @@
   Created by gdliu on 2025/9/16.
   
 */
+
+/* 主页面 */
+"app_title" = "甲状腺助手";
+"latest_examination_results" = "最新检查结果";
+"examination_count_format" = "%@ · 共 %d 项检查";
+"next_checkup_reminder" = "下次复查提醒";
+"days_until_checkup_format" = "距离下次检查还有 %d 天";
+"time_for_checkup" = "该复查了！";
+"add_record_to_start_tracking" = "添加检查记录开始追踪";
+"next_checkup_date_format" = "下次检查日期：%@";
+"tap_to_set_custom_reminder" = "点击此处设置自定义提醒";
+"no_examination_records" = "暂无检查记录";
+"add_first_record_prompt" = "添加您的第一条检查记录开始健康管理";
+"camera_input" = "拍照录入";
+"view_trends" = "查看趋势";
+"reference_format" = "参考: %@";
+
+/* 提醒设置 */
+"enable_custom_reminder" = "启用自定义提醒";
+"checkup_date" = "复查日期";
+"custom_reminder_header_format" = "自定义%@提醒";
+"custom_reminder_footer" = "开启后，将使用您设置的日期作为复查提醒，而不是自动计算的日期。";
+"set_reminder_title_format" = "设置%@提醒";
+"cancel" = "取消";
+"save" = "保存";
+"save_reminder_error" = "保存提醒设置失败";
+
+/* 趋势页面 */
+"indicators_trend" = "指标趋势";
+"normal_range_format" = "正常: %.1f-%.1f %@";
+"no_data_format" = "暂无%@数据";
+"chart_requires_ios16" = "图表功能需要 iOS 16+";
+"latest_value_format" = "最新值: %.2f %@";
+"insufficient_data_for_trend" = "数据不足以分析趋势";
+"indicator_stable" = "📊 指标稳定，变化较小";
+"indicator_rising_format" = "📈 指标呈上升趋势 (+%.2f)";
+"indicator_falling_format" = "📉 指标呈下降趋势 (%.2f)";
+
+/* Empty state */
+"no_records_title" = "暂无检查记录";
+"no_records_description" = "添加您的第一条检查记录";
+
+/* Navigation */
+"checkup_indicators_title" = "检查指标";
+
+/* Edit Record View */
+"section_checkup_info" = "检查信息";
+"checkup_date" = "检查日期";
+"section_notes" = "备注";
+"notes_placeholder" = "添加备注信息...";
+"cancel" = "取消";
+"save" = "保存";
+"save_failed_format" = "保存失败: %@";
+
+/* Indicator Edit */
+"value_placeholder" = "数值";
+"reference_range_format" = "参考范围: %@";

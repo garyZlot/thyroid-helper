@@ -25,7 +25,7 @@ struct THTrendsView: View {
                 }
                 .padding()
             }
-            .navigationTitle("指标趋势")
+            .navigationTitle("indicators_trend".localized)
         }
     }
     
@@ -119,7 +119,7 @@ struct TrendChartCard: View {
                 
                 // 显示正常范围
                 if let range = config.normalRange {
-                    Text("正常: \(range.0, specifier: "%.1f")-\(range.1, specifier: "%.1f") \(config.unit)")
+                    Text("normal_range_format".localized(range.0, range.1, config.unit))
                         .font(.caption2)
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 8)
@@ -130,7 +130,7 @@ struct TrendChartCard: View {
             }
             
             if data.isEmpty {
-                Text("暂无\(config.title)数据")
+                Text("no_data_format".localized(config.title))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(height: 200)
@@ -215,13 +215,13 @@ struct TrendChartCard: View {
             } else {
                 // iOS 15 及以下的备选方案
                 VStack {
-                    Text("图表功能需要 iOS 16+")
+                    Text("chart_requires_ios16".localized)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
                     // 显示最新值
                     if let latestValue = data.last {
-                        Text("最新值: \(latestValue.1, specifier: "%.2f") \(config.unit)")
+                        Text("latest_value_format".localized(latestValue.1, config.unit))
                             .font(.headline)
                             .foregroundColor(config.color)
                     }
@@ -348,18 +348,18 @@ struct TrendAnalysis: View {
     let normalRange: (Double, Double)?
     
     private var trendDescription: String {
-        guard data.count >= 2 else { return "数据不足以分析趋势" }
+        guard data.count >= 2 else { return "insufficient_data_for_trend".localized }
         
         let latest = data.last!.1
         let previous = data[data.count - 2].1
         let change = latest - previous
         
         if abs(change) < 0.1 {
-            return "📊 指标稳定，变化较小"
+            return "indicator_stable".localized
         } else if change > 0 {
-            return "📈 指标呈上升趋势 (+\(String(format: "%.2f", change)))"
+            return "indicator_rising_format".localized(change)
         } else {
-            return "📉 指标呈下降趋势 (\(String(format: "%.2f", change)))"
+            return "indicator_falling_format".localized(change)
         }
     }
     
