@@ -56,3 +56,8 @@ fastlane/test_output
 # 依赖管理缓存
 .swiftpm/
 Package.resolved
+# Xcode 用户特定文件
+*.xcuserstate
+*.xcuserdatad/
+*.xcuserdata/
+*.xcbkptlist
