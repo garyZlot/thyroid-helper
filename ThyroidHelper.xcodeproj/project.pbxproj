@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */; };
 		2F1D7E4C2E78F30F009F5096 /* THDateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */; };
+		2F1D7E4F2E795B68009F5096 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2F1D7E4D2E795B68009F5096 /* Localizable.strings */; };
 		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
 		2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */; };
 		2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */; };
@@ -48,6 +49,8 @@
 /* Begin PBXFileReference section */
 		2F1D7E492E77C38C009F5096 /* THUIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THUIApplicationExtension.swift; sourceTree = "<group>"; };
 		2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtension.swift; sourceTree = "<group>"; };
+		2F1D7E4E2E795B68009F5096 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2F1D7E502E795BA2009F5096 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
 		2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDoubleExtension.swift; sourceTree = "<group>"; };
 		2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THImageZoomViewer.swift; sourceTree = "<group>"; };
@@ -243,6 +246,7 @@
 				689F16DC2E5C9C670047ABAB /* Info.plist */,
 				689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */,
 				689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */,
+				2F1D7E4D2E795B68009F5096 /* Localizable.strings */,
 			);
 			path = ThyroidHelper;
 			sourceTree = "<group>";
@@ -347,6 +351,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 689F16BB2E5C97B50047ABAB;
 			minimizedProjectReferenceProxies = 1;
@@ -368,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */,
+				2F1D7E4F2E795B68009F5096 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +423,18 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		2F1D7E4D2E795B68009F5096 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2F1D7E4E2E795B68009F5096 /* en */,
+				2F1D7E502E795BA2009F5096 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		689F16D32E5C97B70047ABAB /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -431,6 +449,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThyroidHelper/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "用于拍照识别检查报告";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问您的相册";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -464,6 +484,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThyroidHelper/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "用于拍照识别检查报告";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问您的相册";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
