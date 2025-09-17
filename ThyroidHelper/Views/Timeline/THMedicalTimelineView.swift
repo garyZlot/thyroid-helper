@@ -20,9 +20,9 @@ struct THMedicalTimelineView: View {
             VStack {
                 if records.isEmpty {
                     ContentUnavailableView(
-                        "暂无档案记录",
+                        "no_medical_records_title".localized,
                         systemImage: "clock",
-                        description: Text("添加您的第一条医疗记录")
+                        description: Text("no_medical_records_description".localized)
                     )
                 } else {
                     List {
@@ -36,7 +36,7 @@ struct THMedicalTimelineView: View {
                     .listStyle(PlainListStyle())
                 }
             }
-            .navigationTitle("档案")
+            .navigationTitle("medical_records_nav_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -177,7 +177,7 @@ struct TimelineRowView: View {
                 if !record.notes.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("内容及备注")
+                            Text("notes_section_title".localized)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             
@@ -250,17 +250,17 @@ struct THMedicalRecordEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("检查信息") {
-                    DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
+                Section("section_checkup_info".localized) {
+                    DatePicker("checkup_date".localized, selection: $selectedDate, displayedComponents: .date)
                     
-                    LabeledContent("检查项目") {
-                        TextField("例如：甲状腺B超检查（可选）", text: $medicalTitle)
+                    LabeledContent("checkup_item".localized) {
+                        TextField("checkup_item_placeholder".localized, text: $medicalTitle)
                             .multilineTextAlignment(.trailing)
                             .foregroundColor(.secondary)
                     }
                 }
                 
-                Section("图片管理") {
+                Section("section_images".localized) {
                     VStack(spacing: 0) {
                         Button(action: {
                             showingSourceActionSheet = true
@@ -269,7 +269,7 @@ struct THMedicalRecordEditView: View {
                                 Image(systemName: "camera.viewfinder")
                                     .font(.title2)
                                     .foregroundColor(.blue)
-                                Text("拍照添加")
+                                Text("add_photo".localized)
                                     .font(.body)
                                     .foregroundColor(.blue)
                                 Spacer()
@@ -289,7 +289,7 @@ struct THMedicalRecordEditView: View {
                                 Image(systemName: "photo.on.rectangle.angled")
                                     .font(.title2)
                                     .foregroundColor(.green)
-                                Text("选择图片")
+                                Text("select_photos".localized)
                                     .font(.body)
                                     .foregroundColor(.green)
                                 Spacer()
@@ -305,30 +305,30 @@ struct THMedicalRecordEditView: View {
                 }
                 .actionSheet(isPresented: $showingSourceActionSheet) {
                     ActionSheet(
-                        title: Text("选择图片来源"),
+                        title: Text("select_photo_source".localized),
                         buttons: [
-                            .default(Text("拍照")) {
+                            .default(Text("take_photo".localized)) {
                                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                                     imagePickerSource = .camera
                                     showingImagePicker = true
                                 }
                             },
-                            .default(Text("从相册选择")) {
+                            .default(Text("choose_from_library".localized)) {
                                 imagePickerSource = .photoLibrary
                                 showingImagePicker = true
                             },
-                            .cancel(Text("取消"))
+                            .cancel(Text("cancel".localized))
                         ]
                     )
                 }
                 
                 // OCR识别结果展示
                 if ocrService.isProcessing {
-                    Section("正在识别...") {
+                    Section("ocr_processing_title".localized) {
                         HStack {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                            Text("正在识别图片内容...")
+                            Text("ocr_processing_message".localized)
                                 .foregroundColor(.secondary)
                         }
                         .padding()
@@ -337,7 +337,7 @@ struct THMedicalRecordEditView: View {
                 
                 // 图片预览
                 if !selectedImageDatas.isEmpty {
-                    Section("检查图片") {
+                    Section("section_checkup_images".localized) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: 12) {
                                 ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
@@ -366,14 +366,14 @@ struct THMedicalRecordEditView: View {
                     }
                 }
                 
-                Section("内容及备注") {
-                    TextField("添加备注信息...", text: $notes, axis: .vertical)
+                Section("section_notes".localized) {
+                    TextField("notes_placeholder".localized, text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
                 
                 // OCR识别的原始文本
                 if !ocrService.recognizedText.isEmpty {
-                    Section("识别内容") {
+                    Section("section_recognized_text".localized) {
                         Text(ocrService.recognizedText)
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -381,15 +381,15 @@ struct THMedicalRecordEditView: View {
                     }
                 }
             }
-            .navigationTitle("编辑档案记录")
+            .navigationTitle("edit_medical_record_nav_title".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("取消") { dismiss() }
+                    Button("cancel".localized) { dismiss() }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
+                    Button("save".localized) {
                         saveChanges()
                     }
                     .disabled(!canSave)
@@ -453,7 +453,7 @@ struct THMedicalRecordEditView: View {
             try modelContext.save()
             dismiss()
         } catch {
-            print("❌ 保存医疗档案失败: \(error.localizedDescription)")
+            print("save_failed_format".localized(error.localizedDescription))
         }
     }
 }

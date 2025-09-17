@@ -62,3 +62,40 @@
 /* Indicator Edit */
 "value_placeholder" = "数值";
 "reference_range_format" = "参考范围: %@";
+
+/* Empty state */
+"no_medical_records_title" = "暂无档案记录";
+"no_medical_records_description" = "添加您的第一条医疗记录";
+
+/* Navigation */
+"medical_records_nav_title" = "档案";
+"edit_medical_record_nav_title" = "编辑档案记录";
+
+/* Timeline */
+"notes_section_title" = "内容及备注";
+
+/* Edit Record View */
+"section_checkup_info" = "检查信息";
+"checkup_date" = "检查日期";
+"checkup_item" = "检查项目";
+"checkup_item_placeholder" = "例如：甲状腺B超检查（可选）";
+
+"section_images" = "图片管理";
+"add_photo" = "拍照添加";
+"select_photos" = "选择图片";
+"select_photo_source" = "选择图片来源";
+"take_photo" = "拍照";
+"choose_from_library" = "从相册选择";
+"cancel" = "取消";
+
+"ocr_processing_title" = "正在识别...";
+"ocr_processing_message" = "正在识别图片内容...";
+
+"section_checkup_images" = "检查图片";
+"section_notes" = "内容及备注";
+"notes_placeholder" = "添加备注信息...";
+"section_recognized_text" = "识别内容";
+
+"save" = "保存";
+"save_failed_format" = "保存医疗档案失败: %@";
+

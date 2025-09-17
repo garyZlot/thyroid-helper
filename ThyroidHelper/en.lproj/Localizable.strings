@@ -62,3 +62,40 @@
 /* Indicator Edit */
 "value_placeholder" = "Value";
 "reference_range_format" = "Reference: %@";
+
+/* Empty state */
+"no_medical_records_title" = "No records available";
+"no_medical_records_description" = "Add your first medical record";
+
+/* Navigation */
+"medical_records_nav_title" = "Records";
+"edit_medical_record_nav_title" = "Edit Medical Record";
+
+/* Timeline */
+"notes_section_title" = "Notes";
+
+/* Edit Record View */
+"section_checkup_info" = "Checkup Info";
+"checkup_date" = "Checkup Date";
+"checkup_item" = "Checkup Item";
+"checkup_item_placeholder" = "e.g. Thyroid ultrasound (optional)";
+
+"section_images" = "Image Management";
+"add_photo" = "Take Photo";
+"select_photos" = "Select Photos";
+"select_photo_source" = "Choose Image Source";
+"take_photo" = "Take Photo";
+"choose_from_library" = "Choose from Library";
+"cancel" = "Cancel";
+
+"ocr_processing_title" = "Processing...";
+"ocr_processing_message" = "Recognizing image content...";
+
+"section_checkup_images" = "Checkup Images";
+"section_notes" = "Notes";
+"notes_placeholder" = "Add notes...";
+"section_recognized_text" = "Recognized Text";
+
+"save" = "Save";
+"save_failed_format" = "Save medical record failed: %@";
+
