@@ -118,7 +118,7 @@ class THImageViewerController: UIViewController {
     
     private func updatePageLabel() {
         if imageDatas.count > 1 {
-            pageLabel.text = " \(currentIndex + 1) / \(imageDatas.count) "
+            pageLabel.text = String(format: "page_indicator_format".localized, currentIndex + 1, imageDatas.count)
             pageLabel.isHidden = false
         } else {
             pageLabel.isHidden = true
@@ -126,10 +126,10 @@ class THImageViewerController: UIViewController {
     }
     
     private func makeMenu() -> UIMenu {
-        let saveAction = UIAction(title: "保存到相册", image: UIImage(systemName: "square.and.arrow.down")) { [weak self] _ in
+        let saveAction = UIAction(title: "save_to_photos".localized, image: UIImage(systemName: "square.and.arrow.down")) { [weak self] _ in
             self?.saveCurrentImageToPhotos()
         }
-        let shareAction = UIAction(title: "分享", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
+        let shareAction = UIAction(title: "share".localized, image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
             self?.shareCurrentImage()
         }
         return UIMenu(children: [saveAction, shareAction])
@@ -146,8 +146,8 @@ class THImageViewerController: UIViewController {
             }) { success, _ in
                 if success {
                     DispatchQueue.main.async {
-                        let alert = UIAlertController(title: "已保存到相册", message: nil, preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "好的", style: .default))
+                        let alert = UIAlertController(title: "saved_to_photos".localized, message: nil, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "ok".localized, style: .default))
                         self.present(alert, animated: true)
                     }
                 }

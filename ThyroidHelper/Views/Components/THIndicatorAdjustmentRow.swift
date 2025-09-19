@@ -46,7 +46,7 @@ struct THIndicatorAdjustmentRow: View {
                     Text(indicator)
                         .font(.headline)
                     
-                    Text("参考: \(normalRange)")
+                    Text(String(format: "reference_range_format".localized, normalRange))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -56,7 +56,7 @@ struct THIndicatorAdjustmentRow: View {
                 
                 // 原始识别值
                 if isEditing {
-                    TextField("数值", text: $adjustment)
+                    TextField("value_placeholder".localized, text: $adjustment)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.decimalPad)
                         .frame(width: 80)
@@ -103,13 +103,13 @@ struct THIndicatorAdjustmentRow: View {
             // 调整状态提示
             if isAdjusted {
                 HStack {
-                    Text("原识别值: \(originalValue, format: .number.precision(.fractionLength(decimalPlaces)))")
+                    Text(String(format: "original_recognized_value_format".localized, originalValue, decimalPlaces))
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
                     Spacer()
                     
-                    Button("恢复") {
+                    Button("restore".localized) {
                         adjustment = ""
                         isEditing = false
                     }

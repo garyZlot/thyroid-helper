@@ -5,13 +5,6 @@
 //  Created by gdlium2p on 2025/8/26.
 //
 
-//
-//  THPanelOCRResultView.swift
-//  ThyroidHelper
-//
-//  Created by gdlium2p on 2025/8/26.
-//
-
 import SwiftUI
 
 struct THPanelOCRResultView: View {
@@ -24,7 +17,7 @@ struct THPanelOCRResultView: View {
 
     @State private var manualAdjustments: [String: String] = [:]
     @State private var showingRawText = false
-    @State private var showingImageViewer = false  // 🆕 用于弹出全屏图片查看器
+    @State private var showingImageViewer = false
 
     init(capturedImage: UIImage,
          indicatorType: THThyroidPanelRecord.CheckupType,
@@ -41,7 +34,7 @@ struct THPanelOCRResultView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // 🆕 可点击的图片展示
+                    // 可点击的图片展示
                     Button {
                         showingImageViewer = true
                     } label: {
@@ -64,7 +57,7 @@ struct THPanelOCRResultView: View {
                             ProgressView()
                                 .scaleEffect(1.2)
 
-                            Text("正在识别检查报告...")
+                            Text("ocr_processing_report".localized)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -78,7 +71,7 @@ struct THPanelOCRResultView: View {
                                 .font(.title)
                                 .foregroundColor(.orange)
 
-                            Text("识别出错")
+                            Text("ocr_error_title".localized)
                                 .font(.headline)
 
                             Text(error)
@@ -86,7 +79,7 @@ struct THPanelOCRResultView: View {
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
 
-                            Button("重新识别") {
+                            Button("retry_recognition".localized) {
                                 ocrService.processImage(capturedImage)
                             }
                             .buttonStyle(.borderedProminent)
@@ -113,14 +106,14 @@ struct THPanelOCRResultView: View {
                     VStack(spacing: 12) {
                         Divider()
                         HStack(spacing: 16) {
-                            Button("查看原文") {
+                            Button("view_raw_text".localized) {
                                 showingRawText = true
                             }
                             .buttonStyle(.bordered)
 
                             Spacer()
 
-                            Button("确认数据") {
+                            Button("confirm_data".localized) {
                                 confirmData()
                             }
                             .buttonStyle(.borderedProminent)
@@ -131,11 +124,11 @@ struct THPanelOCRResultView: View {
                     .background(.regularMaterial)
                 }
             }
-            .navigationTitle("识别结果")
+            .navigationTitle("recognition_result".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("取消") { dismiss() }
+                    Button("cancel".localized) { dismiss() }
                 }
             }
             .sheet(isPresented: $showingRawText) {

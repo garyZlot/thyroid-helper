@@ -99,3 +99,49 @@
 "save" = "Save";
 "save_failed_format" = "Save medical record failed: %@";
 
+/* OCR Raw Text View */
+"ocr_raw_text_title" = "OCR Recognized Raw Text";
+"no_text_recognized" = "No text recognized";
+"recognized_text" = "Recognized Text";
+"close" = "Close";
+
+/* OCR Result View */
+"ocr_processing_report" = "Processing checkup report...";
+"ocr_error_title" = "Recognition Error";
+"retry_recognition" = "Retry Recognition";
+"view_raw_text" = "View Raw Text";
+"confirm_data" = "Confirm Data";
+"recognition_result" = "Recognition Result";
+
+/* OCR Results Section */
+"recognized_indicators" = "Recognized Indicators";
+"indicators_count_format" = "%d items";
+"no_thyroid_indicators_recognized" = "No thyroid indicators recognized";
+"ensure_clear_image_prompt" = "Please ensure the image is clear and contains values for FT3, FT4, TSH, A-TG, A-TPO and other indicators";
+"manual_adjustment_hint" = "You can manually adjust inaccurate recognition values";
+
+/* Add Record View */
+"checkup_type" = "Checkup Type";
+"input_method" = "Input Method";
+"add_checkup_images" = "Add Checkup Images";
+"image_recognition_data" = "Image Recognition Data";
+"manual_input_data" = "Manual Input Data";
+"upload_images_only" = "Upload Images Only";
+"checkup_values" = "Checkup Values";
+"hide_input_fields" = "Hide Input Fields";
+"add_thyroid_record" = "Add Thyroid Record";
+"add_medical_record" = "Add Medical Record";
+"record_already_exists" = "Record Already Exists";
+"add_anyway" = "Add Anyway";
+"duplicate_record_message" = "A %@ record already exists on %@. Are you sure you want to add a new record?";
+
+/* Indicator Adjustment Row */
+"original_recognized_value_format" = "Original value: %.%df";
+"restore" = "Restore";
+
+/* Images Viewer */
+"page_indicator_format" = " %d / %d ";
+"save_to_photos" = "Save to Photos";
+"share" = "Share";
+"saved_to_photos" = "Saved to Photos";
+"ok" = "OK";

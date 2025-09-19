@@ -15,12 +15,12 @@ struct THPanelOCRResultsSection: View {
         VStack(alignment: .leading, spacing: 16) {
             // 标题
             HStack {
-                Text("识别到的指标")
+                Text("recognized_indicators".localized)
                     .font(.headline)
                 
                 Spacer()
                 
-                Text("\(extractedIndicators.count) 项")
+                Text(String(format: "indicators_count_format".localized, extractedIndicators.count))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -32,11 +32,11 @@ struct THPanelOCRResultsSection: View {
                         .font(.title)
                         .foregroundColor(.gray)
                     
-                    Text("未识别到甲状腺指标")
+                    Text("no_thyroid_indicators_recognized".localized)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text("请确保图片清晰，包含FT3、FT4、TSH、A-TG、A-TPO等指标数值")
+                    Text("ensure_clear_image_prompt".localized)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -71,7 +71,7 @@ struct THPanelOCRResultsSection: View {
                     Image(systemName: "lightbulb")
                         .foregroundColor(.orange)
                     
-                    Text("可以手动调整识别不准确的数值")
+                    Text("manual_adjustment_hint".localized)
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

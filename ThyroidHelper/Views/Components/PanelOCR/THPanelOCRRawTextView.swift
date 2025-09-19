@@ -15,11 +15,11 @@ struct THPanelOCRRawTextView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("OCR识别原始文本")
+                    Text("ocr_raw_text_title".localized)
                         .font(.headline)
                     
                     if text.isEmpty {
-                        Text("未识别到任何文本")
+                        Text("no_text_recognized".localized)
                             .foregroundColor(.secondary)
                             .italic()
                     } else {
@@ -34,11 +34,11 @@ struct THPanelOCRRawTextView: View {
                 }
                 .padding()
             }
-            .navigationTitle("识别文本")
+            .navigationTitle("recognized_text".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("关闭") { dismiss() }
+                    Button("close".localized) { dismiss() }
                 }
             }
         }

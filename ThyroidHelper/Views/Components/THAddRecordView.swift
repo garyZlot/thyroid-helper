@@ -66,27 +66,27 @@ struct THAddRecordView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("检查信息") {
-                    DatePicker("检查日期", selection: $selectedDate, displayedComponents: .date)
+                Section("section_checkup_info".localized) {
+                    DatePicker("checkup_date".localized, selection: $selectedDate, displayedComponents: .date)
                     
                     if mode == .thyroidData {
                         // 甲状腺检查类型
-                        Picker("检查类型", selection: $thyroidPanelType) {
+                        Picker("checkup_type".localized, selection: $thyroidPanelType) {
                             ForEach(THThyroidPanelRecord.CheckupType.allCases, id: \.self) { type in
                                 Text(type.rawValue).tag(type)
                             }
                         }
                         .pickerStyle(MenuPickerStyle())
                     } else {
-                        LabeledContent("检查项目") {
-                            TextField("例如：甲状腺B超检查（可选）", text: $medicalTitle)
+                        LabeledContent("checkup_item".localized) {
+                            TextField("checkup_item_placeholder".localized, text: $medicalTitle)
                                 .multilineTextAlignment(.trailing)
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
                 
-                Section(mode == .thyroidData ? "录入方式" : "添加检查图片") {
+                Section(mode == .thyroidData ? "input_method".localized : "add_checkup_images".localized) {
                     VStack(spacing: 0) {
                         Button(action: {
                             showingSourceActionSheet = true
@@ -95,7 +95,7 @@ struct THAddRecordView: View {
                                 Image(systemName: "camera.viewfinder")
                                     .font(.title2)
                                     .foregroundColor(.blue)
-                                Text("图片识别数据")
+                                Text("image_recognition_data".localized)
                                     .font(.body)
                                     .foregroundColor(.blue)
                                 Spacer()
@@ -121,7 +121,7 @@ struct THAddRecordView: View {
                                     Image(systemName: "hand.point.up.left.fill")
                                         .font(.title2)
                                         .foregroundColor(.green)
-                                    Text("手动输入数据")
+                                    Text("manual_input_data".localized)
                                         .font(.body)
                                         .foregroundColor(.green)
                                     Spacer()
@@ -140,7 +140,7 @@ struct THAddRecordView: View {
                                     Image(systemName: "photo.on.rectangle.angled")
                                         .font(.title2)
                                         .foregroundColor(.green)
-                                    Text("仅上传图片")
+                                    Text("upload_images_only".localized)
                                         .font(.body)
                                         .foregroundColor(.green)
                                     Spacer()
@@ -157,30 +157,30 @@ struct THAddRecordView: View {
                 }
                 .actionSheet(isPresented: $showingSourceActionSheet) {
                     ActionSheet(
-                        title: Text("选择图片来源"),
+                        title: Text("select_photo_source".localized),
                         buttons: [
-                            .default(Text("拍照")) {
+                            .default(Text("take_photo".localized)) {
                                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                                     imagePickerSource = .camera
                                     showingImagePicker = true
                                 }
                             },
-                            .default(Text("从相册选择")) {
+                            .default(Text("choose_from_library".localized)) {
                                 imagePickerSource = .photoLibrary
                                 showingImagePicker = true
                             },
-                            .cancel(Text("取消"))
+                            .cancel(Text("cancel".localized))
                         ]
                     )
                 }
                 
                 // OCR识别结果展示
                 if (mode == .medicalRecord && ocrService.isProcessing) {
-                    Section("正在识别...") {
+                    Section("ocr_processing_title".localized) {
                         HStack {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                            Text("正在识别图片内容...")
+                            Text("ocr_processing_message".localized)
                                 .foregroundColor(.secondary)
                         }
                         .padding()
@@ -189,7 +189,7 @@ struct THAddRecordView: View {
                 
                 // 医疗档案的图片预览
                 if mode == .medicalRecord && !selectedImageDatas.isEmpty {
-                    Section("检查图片") {
+                    Section("section_checkup_images".localized) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: 12) {
                                 ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
@@ -220,7 +220,7 @@ struct THAddRecordView: View {
                 
                 // 甲状腺数据输入
                 if mode == .thyroidData && (showManualInput || !indicators.isEmpty) {
-                    Section("检查数值") {
+                    Section("checkup_values".localized) {
                         ForEach(thyroidPanelType.indicators, id: \.self) { indicatorName in
                             IndicatorInputRow(
                                 name: indicatorName,
@@ -232,7 +232,7 @@ struct THAddRecordView: View {
                         }
                         
                         if showManualInput && indicators.values.allSatisfy({ $0.value.isEmpty }) {
-                            Button("隐藏输入字段") {
+                            Button("hide_input_fields".localized) {
                                 showManualInput = false
                                 indicators.removeAll()
                             }
@@ -241,14 +241,14 @@ struct THAddRecordView: View {
                     }
                 }
                 
-                Section("内容及备注") {
-                    TextField("添加备注信息...", text: $notes, axis: .vertical)
+                Section("section_notes".localized) {
+                    TextField("notes_placeholder".localized, text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
                 
                 // 医疗档案 OCR识别的原始文本
                 if mode == .medicalRecord && !ocrService.recognizedText.isEmpty {
-                    Section("识别内容") {
+                    Section("section_recognized_text".localized) {
                         Text(ocrService.recognizedText)
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -256,15 +256,15 @@ struct THAddRecordView: View {
                     }
                 }
             }
-            .navigationTitle(mode == .thyroidData ? "添加甲状腺记录" : "添加档案记录")
+            .navigationTitle(mode == .thyroidData ? "add_thyroid_record".localized : "add_medical_record".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("取消") { dismiss() }
+                    Button("cancel".localized) { dismiss() }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
+                    Button("save".localized) {
                         if mode == .thyroidData {
                             saveThyroidRecord()
                         } else {
@@ -336,15 +336,15 @@ struct THAddRecordView: View {
                     notes = newNotes
                 }
             }
-            .alert("记录已存在", isPresented: $showingDuplicateAlert) {
-                Button("取消", role: .cancel) { }
-                Button("仍然添加") {
+            .alert("record_already_exists".localized, isPresented: $showingDuplicateAlert) {
+                Button("cancel".localized, role: .cancel) { }
+                Button("add_anyway".localized) {
                     performSaveThyroidRecord()
                 }
             } message: {
                 if let duplicate = duplicateRecord {
                     let dateString = duplicate.date.localizedMedium
-                    Text("在 \(dateString) 已存在一条 \(duplicate.type.rawValue) 记录，确定要添加新记录吗？")
+                    Text(String(format: "duplicate_record_message".localized, dateString, duplicate.type.rawValue))
                 }
             }
         }
@@ -483,7 +483,7 @@ struct IndicatorInputRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(displayName)
                     .font(.headline)
-                Text("参考: \(input.normalRange)")
+                Text("reference_format".localized(input.normalRange))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -492,7 +492,7 @@ struct IndicatorInputRow: View {
             Spacer()
             
             HStack(spacing: 8) {
-                TextField("数值", text: $input.value)
+                TextField("value_placeholder".localized, text: $input.value)
                     .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 80)
