@@ -28,17 +28,17 @@ extension THThyroidIndicator {
     var fullDisplayName: String {
         switch self.name {
         case "FT3":
-            return "游离三碘甲状腺原氨酸 (FT3)"
+            return "indicator_ft3".localized
         case "FT4":
-            return "游离甲状腺素 (FT4)"
+            return "indicator_ft4".localized
         case "TSH":
-            return "促甲状腺激素 (TSH)"
+            return "indicator_tsh".localized
         case "A-TG":
-            return "甲状腺球蛋白自身抗体 (A-TG)"
+            return "indicator_anti_tg".localized
         case "A-TPO":
-            return "甲状腺过氧化物酶自身抗体 (A-TPO)"
+            return "indicator_anti_tpo".localized
         case "TG 2":
-            return "甲状腺球蛋白 (TG)"
+            return "indicator_tg".localized
         default:
             return self.name
         }

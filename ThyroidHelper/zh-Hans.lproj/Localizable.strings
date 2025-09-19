@@ -236,4 +236,11 @@
 "no_records" = "无记录";
 
 "checkup_thyroid_function" = "甲功五项";
-"checkup_thyroglobulink" = "甲状腺球蛋白";
+"checkup_thyroglobulin" = "甲状腺球蛋白";
+
+"indicator_ft3" = "游离三碘甲状腺原氨酸 (FT3)";
+"indicator_ft4" = "游离甲状腺素 (FT4)";
+"indicator_tsh" = "促甲状腺激素 (TSH)";
+"indicator_anti_tg" = "甲状腺球蛋白自身抗体 (A-TG)";
+"indicator_anti_tpo" = "甲状腺过氧化物酶自身抗体 (A-TPO)";
+"indicator_tg" = "甲状腺球蛋白 (TG)";

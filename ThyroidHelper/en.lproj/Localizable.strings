@@ -236,4 +236,11 @@
 "no_records" = "No Records";
 
 "checkup_thyroid_function" = "Thyroid Function Panel";
-"checkup_thyroglobulink" = "Thyroglobulin";
+"checkup_thyroglobulin" = "Thyroglobulin";
+
+"indicator_ft3" = "Free Triiodothyronine (FT3)";
+"indicator_ft4" = "Free Thyroxine (FT4)";
+"indicator_tsh" = "Thyroid-Stimulating Hormone (TSH)";
+"indicator_anti_tg" = "Anti-Thyroglobulin Antibody (Anti-TG)";
+"indicator_anti_tpo" = "Anti-Thyroid Peroxidase Antibody (Anti-TPO)";
+"indicator_tg" = "Thyroglobulin (TG)";
