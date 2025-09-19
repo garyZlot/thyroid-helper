@@ -27,7 +27,7 @@ struct THProfileView: View {
                             .foregroundColor(.blue)
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(authManager.user?.fullName ?? "用户")
+                            Text(authManager.user?.fullName ?? "user".localized)
                                 .font(.headline)
                             
                             if let email = authManager.user?.email {
@@ -47,62 +47,62 @@ struct THProfileView: View {
                 }
                 
                 // 数据统计
-                Section("数据统计") {
-                    StatRow(title: "检查记录", value: "\(records.count) 条")
-                    StatRow(title: "最近检查", value: lastCheckupText)
-                    StatRow(title: "数据同步", value: cloudManager.isSignedInToiCloud ? "已开启" : "未开启")
+                Section("data_statistics".localized) {
+                    StatRow(title: "checkup_records".localized, value: String(format: "records_count_format".localized, records.count))
+                    StatRow(title: "recent_checkup".localized, value: lastCheckupText)
+                    StatRow(title: "data_sync".localized, value: cloudManager.isSignedInToiCloud ? "enabled".localized : "disabled".localized)
                 }
                 
                 // 设置选项
-                Section("设置") {
-                    NavigationLink(destination: NotificationSettingsView()) {
-                        Label("通知设置", systemImage: "bell")
+                Section("settings".localized) {
+                    NavigationLink(destination: THNotificationSettingsView()) {
+                        Label("notification_settings".localized, systemImage: "bell")
                     }
                     
-                    NavigationLink(destination: DataExportView()) {
-                        Label("数据导出", systemImage: "square.and.arrow.up")
+                    NavigationLink(destination: THDataExportView()) {
+                        Label("data_export".localized, systemImage: "square.and.arrow.up")
                     }
                     
-                    NavigationLink(destination: AboutView()) {
-                        Label("关于应用", systemImage: "info.circle")
+                    NavigationLink(destination: THAboutView()) {
+                        Label("about_app".localized, systemImage: "info.circle")
                     }
                 }
                 
                 // 数据管理
-                Section("数据管理") {
+                Section("data_management".localized) {
                     Button(action: { cloudManager.checkiCloudStatus() }) {
-                        Label("刷新云端状态", systemImage: "icloud.and.arrow.down")
+                        Label("refresh_cloud_status".localized, systemImage: "icloud.and.arrow.down")
                     }
                     
                     Button(action: { showingDeleteAlert = true }) {
-                        Label("清除所有数据", systemImage: "trash")
+                        Label("clear_all_data".localized, systemImage: "trash")
                             .foregroundColor(.red)
                     }
                 }
                 
                 // 账户
-                Section("账户") {
+                Section("account".localized) {
                     Button(action: { authManager.signOut() }) {
-                        Label("退出登录", systemImage: "rectangle.portrait.and.arrow.right")
+                        Label("sign_out".localized, systemImage: "rectangle.portrait.and.arrow.right")
                             .foregroundColor(.red)
                     }
                 }
             }
-            .navigationTitle("个人中心")
+            .navigationTitle("personal_center".localized)
         }
-        .alert("清除数据", isPresented: $showingDeleteAlert) {
-            Button("取消", role: .cancel) { }
-            Button("确认清除", role: .destructive) {
+        .alert("clear_data".localized, isPresented: $showingDeleteAlert) {
+            Button("cancel".localized, role: .cancel) { }
+            Button("confirm_clear".localized, role: .destructive) {
                 clearAllData()
             }
         } message: {
-            Text("此操作将删除所有本地检查记录，且无法恢复。")
+            Text("clear_data_warning".localized)
         }
     }
     
     private var lastCheckupText: String {
         guard let lastRecord = records.max(by: { $0.date < $1.date }) else {
-            return "无记录"
+            return "no_records".localized
         }
         
         let formatter = RelativeDateTimeFormatter()

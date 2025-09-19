@@ -21,11 +21,11 @@ struct THLoginView: View {
                     .font(.system(size: 80))
                     .foregroundColor(.blue)
                 
-                Text("甲状腺复查助手")
+                Text("app_title".localized)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
-                Text("科学管理检查数据，守护甲状腺健康")
+                Text("app_subtitle".localized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -36,10 +36,10 @@ struct THLoginView: View {
             
             // 功能介绍
             VStack(spacing: 20) {
-                FeatureRow(icon: "camera.fill", title: "拍照识别", description: "智能识别检查报告数值")
-                FeatureRow(icon: "chart.line.uptrend.xyaxis", title: "趋势分析", description: "可视化指标变化趋势")
-                FeatureRow(icon: "icloud.fill", title: "云端同步", description: "数据安全存储在iCloud")
-                FeatureRow(icon: "bell.fill", title: "智能提醒", description: "不错过每次复查时间")
+                FeatureRow(icon: "camera.fill", title: "feature_photo_recognition".localized, description: "feature_photo_recognition_desc".localized)
+                FeatureRow(icon: "chart.line.uptrend.xyaxis", title: "feature_trend_analysis".localized, description: "feature_trend_analysis_desc".localized)
+                FeatureRow(icon: "icloud.fill", title: "feature_cloud_sync".localized, description: "feature_cloud_sync_desc".localized)
+                FeatureRow(icon: "bell.fill", title: "feature_smart_reminder".localized, description: "feature_smart_reminder_desc".localized)
             }
             .padding(.horizontal, 30)
             
@@ -55,7 +55,7 @@ struct THLoginView: View {
             .frame(height: 50)
             .padding(.horizontal, 30)
             
-            Text("使用Apple ID登录，数据加密存储")
+            Text("apple_signin_note".localized)
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.bottom, 30)

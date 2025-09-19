@@ -106,7 +106,7 @@ struct LatestDayResultsCard: View {
     
     // 按检查类型分组
     private var groupedRecords: [(key: String, value: [THThyroidPanelRecord])] {
-        let grouped = Dictionary(grouping: records) { $0.type.rawValue }
+        let grouped = Dictionary(grouping: records) { $0.type.localizedName }
         return grouped.sorted { $0.key < $1.key }
     }
 }

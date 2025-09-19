@@ -17,27 +17,27 @@ struct THMainTabView: View {
         TabView {
             THHomeView()
                 .tabItem {
-                    Label("首页", systemImage: "house.fill")
+                    Label("home".localized, systemImage: "house.fill")
                 }
             
             THTrendsView()
                 .tabItem {
-                    Label("趋势", systemImage: "chart.line.uptrend.xyaxis")
+                    Label("trends".localized, systemImage: "chart.line.uptrend.xyaxis")
                 }
             
             THTyroidPanelView()
                 .tabItem {
-                    Label("指标", systemImage: "doc.text.fill")
+                    Label("indicators".localized, systemImage: "doc.text.fill")
                 }
             
             THMedicalTimelineView()
                 .tabItem {
-                    Label("档案", systemImage: "clock.fill")
+                    Label("medical_records".localized, systemImage: "clock.fill")
                 }
             
             THProfileView()
                 .tabItem {
-                    Label("我的", systemImage: "person.fill")
+                    Label("profile".localized, systemImage: "person.fill")
                 }
         }
         .onAppear {

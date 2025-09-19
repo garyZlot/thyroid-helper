@@ -19,7 +19,7 @@ extension THThyroidPanelRecord.CheckupType {
     }
     
     var displayName: String {
-        return self.rawValue
+        return self.localizedName
     }
 }
 

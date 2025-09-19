@@ -18,14 +18,10 @@ struct ThyroidHelperApp: App {
             THMedicalTimelineRecord.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
         do {
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
-            
-            // 打印数据库位置（仅调试用）
-            let url = modelConfiguration.url
-            print("数据库位置: \(url)")
-            
+            print("数据库位置: \(modelConfiguration.url)")
+            THDatabaseManager.migrateDatabase(modelContext: container.mainContext)
             return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")

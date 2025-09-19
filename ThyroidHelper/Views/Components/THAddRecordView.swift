@@ -73,7 +73,7 @@ struct THAddRecordView: View {
                         // 甲状腺检查类型
                         Picker("checkup_type".localized, selection: $thyroidPanelType) {
                             ForEach(THThyroidPanelRecord.CheckupType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
+                                Text(type.localizedName).tag(type)
                             }
                         }
                         .pickerStyle(MenuPickerStyle())

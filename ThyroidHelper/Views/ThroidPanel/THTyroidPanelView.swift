@@ -223,7 +223,7 @@ struct EditRecordView: View {
                         .lineLimit(3...6)
                 }
             }
-            .navigationTitle(record.type.rawValue)
+            .navigationTitle(record.type.localizedName)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

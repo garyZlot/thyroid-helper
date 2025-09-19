@@ -28,8 +28,8 @@ class THThyroidPanelRecord {
     }
     
     enum CheckupType: String, CaseIterable, Codable {
-        case thyroidFunction5 = "甲功五项"
-        case thyroglobulin = "甲状腺球蛋白"
+        case thyroidFunction5 = "thyroid_function"
+        case thyroglobulin = "thyroglobulin"
         
         var indicators: [String] {
             switch self {
@@ -37,6 +37,15 @@ class THThyroidPanelRecord {
                 return ["FT3", "FT4", "TSH", "A-TG", "A-TPO"]
             case .thyroglobulin:
                 return ["TG 2"]
+            }
+        }
+        
+        var localizedName: String {
+            switch self {
+            case .thyroidFunction5:
+                return "checkup_thyroid_function".localized
+            case .thyroglobulin:
+                return "checkup_thyroglobulin".localized
             }
         }
     }

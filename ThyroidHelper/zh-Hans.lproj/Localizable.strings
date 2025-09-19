@@ -145,3 +145,95 @@
 "share" = "分享";
 "saved_to_photos" = "已保存到相册";
 "ok" = "好的";
+
+/* About View */
+"version_1_0_0" = "版本 1.0.0";
+"app_introduction" = "应用介绍";
+"app_description" = "甲状腺复查助手是专为甲状腺疾病患者设计的健康管理工具，帮助您：";
+"feature_record_data" = "科学记录检查数据";
+"feature_visualize_trends" = "可视化展示指标趋势";
+"feature_smart_reminders" = "智能提醒复查时间";
+"feature_icloud_sync" = "安全的iCloud数据同步";
+"technical_support" = "技术支持";
+"user_feedback" = "用户反馈";
+"privacy_policy" = "隐私政策";
+"user_agreement" = "用户协议";
+"medical_disclaimer" = "本应用仅用于健康数据记录，不提供医疗建议。如有健康问题，请咨询专业医生。";
+"about" = "关于";
+
+/* Data Export View */
+"export_format" = "导出格式";
+"file_format" = "文件格式";
+"data_range" = "数据范围";
+"checkup_records" = "检查记录";
+"records_count_format" = "%d 条";
+"time_range" = "时间范围";
+"no_data" = "无数据";
+"export_data" = "导出数据";
+"export_data_usage_hint" = "导出的数据可用于备份或医生咨询";
+"data_export" = "数据导出";
+"export_failed" = "导出失败";
+"no_data_to_export" = "没有数据可导出";
+"export_error" = "导出错误";
+"file_creation_failed" = "文件创建失败";
+"csv_header" = "检查日期,检查类型,指标名称,指标值,单位,参考范围,状态,备注";
+"pdf_export_title" = "甲状腺检查记录导出";
+"export_time_format" = "导出时间: %@";
+"pdf_indicator_format" = "%@: %@ %@ (参考范围: %@) - %@";
+"pdf_notes_format" = "备注: %@";
+
+/* Notification Settings View */
+"checkup_reminders" = "复查提醒";
+"enable_checkup_reminders" = "开启复查提醒";
+"advance_reminder" = "提前提醒";
+"days" = "天数";
+"7_days" = "7天";
+"14_days" = "14天";
+"30_days" = "30天";
+"daily_reminders" = "日常提醒";
+"daily_medication_reminder" = "每日用药提醒";
+"reminder_time" = "提醒时间";
+"notification_permission_note" = "提醒功能需要您授权应用发送通知";
+"notification_settings" = "通知设置";
+
+/* Login View */
+"app_subtitle" = "科学管理检查数据，守护甲状腺健康";
+"feature_photo_recognition" = "拍照识别";
+"feature_photo_recognition_desc" = "智能识别检查报告数值";
+"feature_trend_analysis" = "趋势分析";
+"feature_trend_analysis_desc" = "可视化指标变化趋势";
+"feature_cloud_sync" = "云端同步";
+"feature_cloud_sync_desc" = "数据安全存储在iCloud";
+"feature_smart_reminder" = "智能提醒";
+"feature_smart_reminder_desc" = "不错过每次复查时间";
+"apple_signin_note" = "使用Apple ID登录，数据加密存储";
+
+/* Main Tab View */
+"home" = "首页";
+"trends" = "趋势";
+"indicators" = "指标";
+"medical_records" = "档案";
+"profile" = "我的";
+
+/* Profile View */
+"user" = "用户";
+"data_statistics" = "数据统计";
+"recent_checkup" = "最近检查";
+"data_sync" = "数据同步";
+"enabled" = "已开启";
+"disabled" = "未开启";
+"settings" = "设置";
+"about_app" = "关于应用";
+"data_management" = "数据管理";
+"refresh_cloud_status" = "刷新云端状态";
+"clear_all_data" = "清除所有数据";
+"account" = "账户";
+"sign_out" = "退出登录";
+"personal_center" = "个人中心";
+"clear_data" = "清除数据";
+"confirm_clear" = "确认清除";
+"clear_data_warning" = "此操作将删除所有本地检查记录，且无法恢复。";
+"no_records" = "无记录";
+
+"checkup_thyroid_function" = "甲功五项";
+"checkup_thyroglobulink" = "甲状腺球蛋白";

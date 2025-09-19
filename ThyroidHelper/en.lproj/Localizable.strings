@@ -145,3 +145,95 @@
 "share" = "Share";
 "saved_to_photos" = "Saved to Photos";
 "ok" = "OK";
+
+/* About View */
+"version_1_0_0" = "Version 1.0.0";
+"app_introduction" = "App Introduction";
+"app_description" = "Thyroid Helper is a health management tool designed for thyroid disease patients to help you:";
+"feature_record_data" = "Scientifically record checkup data";
+"feature_visualize_trends" = "Visualize indicator trends";
+"feature_smart_reminders" = "Smart checkup reminders";
+"feature_icloud_sync" = "Secure iCloud data sync";
+"technical_support" = "Technical Support";
+"user_feedback" = "User Feedback";
+"privacy_policy" = "Privacy Policy";
+"user_agreement" = "User Agreement";
+"medical_disclaimer" = "This app is only for health data recording and does not provide medical advice. Please consult a professional doctor for health issues.";
+"about" = "About";
+
+/* Data Export View */
+"export_format" = "Export Format";
+"file_format" = "File Format";
+"data_range" = "Data Range";
+"checkup_records" = "Checkup Records";
+"records_count_format" = "%d records";
+"time_range" = "Time Range";
+"no_data" = "No Data";
+"export_data" = "Export Data";
+"export_data_usage_hint" = "Exported data can be used for backup or doctor consultation";
+"data_export" = "Data Export";
+"export_failed" = "Export Failed";
+"no_data_to_export" = "No data to export";
+"export_error" = "Export Error";
+"file_creation_failed" = "File creation failed";
+"csv_header" = "Checkup Date,Checkup Type,Indicator Name,Indicator Value,Unit,Reference Range,Status,Notes";
+"pdf_export_title" = "Thyroid Checkup Records Export";
+"export_time_format" = "Export time: %@";
+"pdf_indicator_format" = "%@: %@ %@ (Reference: %@) - %@";
+"pdf_notes_format" = "Notes: %@";
+
+/* Notification Settings View */
+"checkup_reminders" = "Checkup Reminders";
+"enable_checkup_reminders" = "Enable Checkup Reminders";
+"advance_reminder" = "Advance Reminder";
+"days" = "Days";
+"7_days" = "7 days";
+"14_days" = "14 days";
+"30_days" = "30 days";
+"daily_reminders" = "Daily Reminders";
+"daily_medication_reminder" = "Daily Medication Reminder";
+"reminder_time" = "Reminder Time";
+"notification_permission_note" = "Reminder features require you to authorize the app to send notifications";
+"notification_settings" = "Notification Settings";
+
+/* Login View */
+"app_subtitle" = "Scientifically manage checkup data, protect thyroid health";
+"feature_photo_recognition" = "Photo Recognition";
+"feature_photo_recognition_desc" = "Intelligently recognize checkup report values";
+"feature_trend_analysis" = "Trend Analysis";
+"feature_trend_analysis_desc" = "Visualize indicator change trends";
+"feature_cloud_sync" = "Cloud Sync";
+"feature_cloud_sync_desc" = "Data securely stored in iCloud";
+"feature_smart_reminder" = "Smart Reminders";
+"feature_smart_reminder_desc" = "Never miss a checkup appointment";
+"apple_signin_note" = "Sign in with Apple ID, data encrypted and stored";
+
+/* Main Tab View */
+"home" = "Home";
+"trends" = "Trends";
+"indicators" = "Indicators";
+"medical_records" = "Records";
+"profile" = "Profile";
+
+/* Profile View */
+"user" = "User";
+"data_statistics" = "Data Statistics";
+"recent_checkup" = "Recent Checkup";
+"data_sync" = "Data Sync";
+"enabled" = "Enabled";
+"disabled" = "Disabled";
+"settings" = "Settings";
+"about_app" = "About App";
+"data_management" = "Data Management";
+"refresh_cloud_status" = "Refresh Cloud Status";
+"clear_all_data" = "Clear All Data";
+"account" = "Account";
+"sign_out" = "Sign Out";
+"personal_center" = "Personal Center";
+"clear_data" = "Clear Data";
+"confirm_clear" = "Confirm Clear";
+"clear_data_warning" = "This operation will delete all local checkup records and cannot be undone.";
+"no_records" = "No Records";
+
+"checkup_thyroid_function" = "Thyroid Function Panel";
+"checkup_thyroglobulink" = "Thyroglobulin";

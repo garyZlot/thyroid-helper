@@ -1,5 +1,5 @@
 //
-//  DataExportView.swift
+//  THDataExportView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import UIKit
 
-struct DataExportView: View {
+struct THDataExportView: View {
     @Query private var records: [THThyroidPanelRecord]
     @State private var exportFormat = "CSV"
     @State private var showingShareSheet = false
@@ -20,8 +20,8 @@ struct DataExportView: View {
     
     var body: some View {
         Form {
-            Section("导出格式") {
-                Picker("文件格式", selection: $exportFormat) {
+            Section("export_format".localized) {
+                Picker("file_format".localized, selection: $exportFormat) {
                     Text("CSV").tag("CSV")
                     Text("PDF").tag("PDF")
                     Text("JSON").tag("JSON")
@@ -29,23 +29,23 @@ struct DataExportView: View {
                 .pickerStyle(.segmented)
             }
             
-            Section("数据范围") {
+            Section("data_range".localized) {
                 HStack {
-                    Text("检查记录")
+                    Text("checkup_records".localized)
                     Spacer()
-                    Text("\(records.count) 条")
+                    Text(String(format: "records_count_format".localized, records.count))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
-                    Text("时间范围")
+                    Text("time_range".localized)
                     Spacer()
                     if let earliest = records.min(by: { $0.date < $1.date }),
                        let latest = records.max(by: { $0.date < $1.date }) {
                         Text("\(earliest.date.formatted(date: .abbreviated, time: .omitted)) - \(latest.date.formatted(date: .abbreviated, time: .omitted))")
                             .foregroundColor(.secondary)
                     } else {
-                        Text("无数据")
+                        Text("no_data".localized)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -57,7 +57,7 @@ struct DataExportView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        Label("导出数据", systemImage: "square.and.arrow.up")
+                        Label("export_data".localized, systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
@@ -65,20 +65,20 @@ struct DataExportView: View {
             }
             
             Section {
-                Text("导出的数据可用于备份或医生咨询")
+                Text("export_data_usage_hint".localized)
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
         }
-        .navigationTitle("数据导出")
+        .navigationTitle("data_export".localized)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingShareSheet) {
             if let url = exportURL {
                 ShareSheet(items: [url])
             }
         }
-        .alert("导出失败", isPresented: $showingError) {
-            Button("确定", role: .cancel) { }
+        .alert("export_failed".localized, isPresented: $showingError) {
+            Button("ok".localized, role: .cancel) { }
         } message: {
             Text(errorMessage)
         }
@@ -86,7 +86,7 @@ struct DataExportView: View {
     
     private func exportData() {
         guard !records.isEmpty else {
-            errorMessage = "没有数据可导出"
+            errorMessage = "no_data_to_export".localized
             showingError = true
             return
         }
@@ -126,7 +126,7 @@ struct DataExportView: View {
                         isExporting = false
                     }
                 } else {
-                    throw NSError(domain: "导出错误", code: -1, userInfo: [NSLocalizedDescriptionKey: "文件创建失败"])
+                    throw NSError(domain: "export_error".localized, code: -1, userInfo: [NSLocalizedDescriptionKey: "file_creation_failed".localized])
                 }
                 
             } catch {
@@ -144,7 +144,8 @@ struct DataExportView: View {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
-                    var csvString = "检查日期,检查类型,指标名称,指标值,单位,参考范围,状态,备注\n"
+                    let csvHeader = "csv_header".localized
+                    var csvString = "\(csvHeader)\n"
                     
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -170,12 +171,12 @@ struct DataExportView: View {
                                 let escapedNotes = notes.replacingOccurrences(of: "\"", with: "\"\"")
                                 let escapedRange = indicator.normalRange.replacingOccurrences(of: "\"", with: "\"\"")
                                 
-                                csvString += "\(dateString),\(record.type.rawValue),\(indicator.name),\(formattedValue),\(indicator.unit),\"\(escapedRange)\",\(indicator.status.rawValue),\"\(escapedNotes)\"\n"
+                                csvString += "\(dateString),\(record.type.localizedName),\(indicator.name),\(formattedValue),\(indicator.unit),\"\(escapedRange)\",\(indicator.status.rawValue),\"\(escapedNotes)\"\n"
                             }
                         } else {
                             // 没有指标的情况
                             let escapedNotes = notes.replacingOccurrences(of: "\"", with: "\"\"")
-                            csvString += "\(dateString),\(record.type.rawValue),,,,,\"\(escapedNotes)\"\n"
+                            csvString += "\(dateString),\(record.type.localizedName),,,,,\"\(escapedNotes)\"\n"
                         }
                     }
                     
@@ -210,7 +211,7 @@ struct DataExportView: View {
                         var recordDict: [String: Any] = [
                             "id": record.id,
                             "date": dateFormatter.string(from: record.date),
-                            "type": record.type.rawValue,
+                            "type": record.type.localizedName,
                             "notes": record.notes ?? ""
                         ]
                         
@@ -268,7 +269,7 @@ struct DataExportView: View {
                     let data = renderer.pdfData { context in
                         context.beginPage()
                         
-                        let title = "甲状腺检查记录导出"
+                        let title = "pdf_export_title".localized
                         let titleAttributes = [
                             NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 20),
                             NSAttributedString.Key.foregroundColor: UIColor.black
@@ -277,7 +278,7 @@ struct DataExportView: View {
                         
                         let dateFormatter = DateFormatter()
                         dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
-                        let exportDate = "导出时间: \(dateFormatter.string(from: Date()))"
+                        let exportDate = String(format: "export_time_format".localized, dateFormatter.string(from: Date()))
                         let dateAttributes = [
                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12),
                             NSAttributedString.Key.foregroundColor: UIColor.gray
@@ -296,7 +297,7 @@ struct DataExportView: View {
                             // 记录标题
                             let recordDateFormatter = DateFormatter()
                             recordDateFormatter.dateFormat = "yyyy年MM月dd日"
-                            let recordTitle = "\(recordDateFormatter.string(from: record.date)) - \(record.type.rawValue)"
+                            let recordTitle = "\(recordDateFormatter.string(from: record.date)) - \(record.type.localizedName)"
                             
                             let recordAttributes = [
                                 NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 16),
@@ -325,7 +326,12 @@ struct DataExportView: View {
                                     let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                     let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                     
-                                    let indicatorText = "\(indicator.name): \(formattedValue) \(indicator.unit) (参考范围: \(indicator.normalRange)) - \(indicator.status.rawValue)"
+                                    let indicatorText = String(format: "pdf_indicator_format".localized,
+                                                             indicator.name,
+                                                             formattedValue,
+                                                             indicator.unit,
+                                                             indicator.normalRange,
+                                                             indicator.status.rawValue)
                                     
                                     let indicatorAttributes = [
                                         NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
@@ -345,7 +351,7 @@ struct DataExportView: View {
                                     yPosition = 50
                                 }
                                 
-                                let notesText = "备注: \(notes)"
+                                let notesText = String(format: "pdf_notes_format".localized, notes)
                                 let notesAttributes = [
                                     NSAttributedString.Key.font: UIFont.italicSystemFont(ofSize: 14),
                                     NSAttributedString.Key.foregroundColor: UIColor.gray
