@@ -1,5 +1,5 @@
 //
-//  THTyroidPanelView.swift
+//  THIndicatorsView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,11 +8,11 @@
 import SwiftUI
 import _SwiftData_SwiftUI
 
-struct THTyroidPanelView: View {
+struct THIndicatorsView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THThyroidPanelRecord.date, order: .reverse) private var records: [THThyroidPanelRecord]
+    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
-    @State private var recordToEdit: THThyroidPanelRecord?
+    @State private var recordToEdit: THCheckupRecord?
     
     var body: some View {
         NavigationView {
@@ -64,10 +64,10 @@ struct THTyroidPanelView: View {
 }
 
 struct RecordRowView: View {
-    let record: THThyroidPanelRecord
+    let record: THCheckupRecord
     let onEdit: () -> Void
     
-    private var indicatorsForType: [THThyroidIndicator] {
+    private var indicatorsForType: [THIndicatorRecord] {
         let indicatorNames = THConfig.indicatorsForType(record.type)
         return (record.indicators ?? [])
             .filter { indicatorNames.contains($0.name) }
@@ -153,7 +153,7 @@ struct RecordRowView: View {
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
     
-    private func colorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
+    private func colorForStatus(_ status: THIndicatorRecord.IndicatorStatus) -> Color {
         switch status {
         case .normal: return .green
         case .high: return .red
@@ -161,7 +161,7 @@ struct RecordRowView: View {
         }
     }
     
-    private func backgroundColorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
+    private func backgroundColorForStatus(_ status: THIndicatorRecord.IndicatorStatus) -> Color {
         switch status {
         case .normal: return .green.opacity(0.1)
         case .high: return .red.opacity(0.1)
@@ -175,7 +175,7 @@ struct EditRecordView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let record: THThyroidPanelRecord
+    let record: THCheckupRecord
     
     @State private var selectedDate: Date
     @State private var notes: String
@@ -189,7 +189,7 @@ struct EditRecordView: View {
         var doubleValue: Double { Double(value) ?? 0 }
     }
     
-    init(record: THThyroidPanelRecord) {
+    init(record: THCheckupRecord) {
         self.record = record
         _selectedDate = State(initialValue: record.date)
         _notes = State(initialValue: record.notes ?? "")
@@ -266,7 +266,7 @@ struct EditRecordView: View {
     }
     
     private func defaultIndicatorInput(for name: String) -> IndicatorInput {
-        let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THIndicatorRecord(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         let normalRange = tempIndicator.standardNormalRange
         let rangeString = normalRange.map { "\($0.0)-\($0.1)" } ?? ""
         
@@ -290,8 +290,8 @@ struct EditRecordView: View {
         for indicatorName in indicatorsForType {
             guard let input = indicators[indicatorName], input.isValid else { continue }
             
-            let status = THThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
-            let indicator = THThyroidIndicator(
+            let status = THIndicatorRecord.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
+            let indicator = THIndicatorRecord(
                 name: indicatorName,
                 value: input.doubleValue,
                 unit: input.unit,
@@ -318,7 +318,7 @@ struct IndicatorEditRow: View {
     @Binding var input: EditRecordView.IndicatorInput
     
     private var displayName: String {
-        let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THIndicatorRecord(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         return tempIndicator.fullDisplayName
     }
     

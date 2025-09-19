@@ -12,7 +12,7 @@ struct THProfileView: View {
     @EnvironmentObject var authManager: THAuthenticationManager
     @EnvironmentObject var cloudManager: THCloudKitManager
     @Environment(\.modelContext) private var modelContext
-    @Query private var records: [THThyroidPanelRecord]
+    @Query private var records: [THCheckupRecord]
     
     @State private var showingDeleteAlert = false
     

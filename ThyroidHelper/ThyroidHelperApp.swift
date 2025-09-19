@@ -12,10 +12,10 @@ import SwiftData
 struct ThyroidHelperApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            THThyroidPanelRecord.self,
-            THThyroidIndicator.self,
+            THCheckupRecord.self,
+            THIndicatorRecord.self,
             THReminderSetting.self,
-            THMedicalTimelineRecord.self
+            THHistoryRecord.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

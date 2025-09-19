@@ -17,24 +17,23 @@ struct THAddRecordView: View {
     
     // 记录类型：甲状腺检查数据 或 医疗档案
     enum RecordMode {
-        case thyroidData    // 甲状腺数据记录
-        case medicalRecord  // 医疗档案记录
+        case checkupIndicator    // 甲状腺数据记录
+        case medicalHistory      // 医疗档案记录
     }
     
     let mode: RecordMode
     
     @State private var selectedDate = Date()
-    @State private var thyroidPanelType: THThyroidPanelRecord.CheckupType = .thyroidFunction5
+    @State private var thyroidPanelType: THCheckupRecord.CheckupType = .thyroidFunction5
     @State private var notes = ""
     @State private var indicators: [String: IndicatorInput] = [:]
     
     @State private var showingDuplicateAlert = false
     @State private var showingSuccessAlert = false
-    @State private var duplicateRecord: THThyroidPanelRecord?
+    @State private var duplicateRecord: THCheckupRecord?
     
     // 医疗档案相关状态
     @State private var medicalTitle = ""
-    @State private var medicalRecordType: THMedicalTimelineRecord.RecordType = .ultrasound
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data] = []
     
@@ -51,7 +50,7 @@ struct THAddRecordView: View {
     // 手动输入状态
     @State private var showManualInput = false
     
-    init(mode: RecordMode = .thyroidData) {
+    init(mode: RecordMode = .checkupIndicator) {
         self.mode = mode
     }
     
@@ -69,10 +68,10 @@ struct THAddRecordView: View {
                 Section("section_checkup_info".localized) {
                     DatePicker("checkup_date".localized, selection: $selectedDate, displayedComponents: .date)
                     
-                    if mode == .thyroidData {
+                    if mode == .checkupIndicator {
                         // 甲状腺检查类型
                         Picker("checkup_type".localized, selection: $thyroidPanelType) {
-                            ForEach(THThyroidPanelRecord.CheckupType.allCases, id: \.self) { type in
+                            ForEach(THCheckupRecord.CheckupType.allCases, id: \.self) { type in
                                 Text(type.localizedName).tag(type)
                             }
                         }
@@ -86,7 +85,7 @@ struct THAddRecordView: View {
                     }
                 }
                 
-                Section(mode == .thyroidData ? "input_method".localized : "add_checkup_images".localized) {
+                Section(mode == .checkupIndicator ? "input_method".localized : "add_checkup_images".localized) {
                     VStack(spacing: 0) {
                         Button(action: {
                             showingSourceActionSheet = true
@@ -110,7 +109,7 @@ struct THAddRecordView: View {
                         
                         Divider()
                         
-                        if mode == .thyroidData {
+                        if mode == .checkupIndicator {
                             Button(action: {
                                 showManualInput = true
                                 if indicators.isEmpty {
@@ -175,7 +174,7 @@ struct THAddRecordView: View {
                 }
                 
                 // OCR识别结果展示
-                if (mode == .medicalRecord && ocrService.isProcessing) {
+                if (mode == .medicalHistory && ocrService.isProcessing) {
                     Section("ocr_processing_title".localized) {
                         HStack {
                             ProgressView()
@@ -188,7 +187,7 @@ struct THAddRecordView: View {
                 }
                 
                 // 医疗档案的图片预览
-                if mode == .medicalRecord && !selectedImageDatas.isEmpty {
+                if mode == .medicalHistory && !selectedImageDatas.isEmpty {
                     Section("section_checkup_images".localized) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack(spacing: 12) {
@@ -219,7 +218,7 @@ struct THAddRecordView: View {
                 }
                 
                 // 甲状腺数据输入
-                if mode == .thyroidData && (showManualInput || !indicators.isEmpty) {
+                if mode == .checkupIndicator && (showManualInput || !indicators.isEmpty) {
                     Section("checkup_values".localized) {
                         ForEach(thyroidPanelType.indicators, id: \.self) { indicatorName in
                             IndicatorInputRow(
@@ -247,7 +246,7 @@ struct THAddRecordView: View {
                 }
                 
                 // 医疗档案 OCR识别的原始文本
-                if mode == .medicalRecord && !ocrService.recognizedText.isEmpty {
+                if mode == .medicalHistory && !ocrService.recognizedText.isEmpty {
                     Section("section_recognized_text".localized) {
                         Text(ocrService.recognizedText)
                             .font(.caption)
@@ -256,7 +255,7 @@ struct THAddRecordView: View {
                     }
                 }
             }
-            .navigationTitle(mode == .thyroidData ? "add_thyroid_record".localized : "add_medical_record".localized)
+            .navigationTitle(mode == .checkupIndicator ? "add_checkup_indicator".localized : "add_medical_history".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -265,7 +264,7 @@ struct THAddRecordView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("save".localized) {
-                        if mode == .thyroidData {
+                        if mode == .checkupIndicator {
                             saveThyroidRecord()
                         } else {
                             saveMedicalRecord()
@@ -279,7 +278,7 @@ struct THAddRecordView: View {
             }
             .sheet(isPresented: $showingOCRResult) {
                 if let image = capturedImage {
-                    if mode == .thyroidData {
+                    if mode == .checkupIndicator {
                         THPanelOCRResultView(
                             capturedImage: image,
                             indicatorType: thyroidPanelType,
@@ -297,7 +296,7 @@ struct THAddRecordView: View {
             }
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
-                    if mode == .thyroidData {
+                    if mode == .checkupIndicator {
                         showingOCRResult = true
                     } else {
                         // 医疗档案模式：添加图片并开始OCR
@@ -327,7 +326,7 @@ struct THAddRecordView: View {
                 }
             }
             .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
-                if !newTitle.isEmpty && mode == .medicalRecord {
+                if !newTitle.isEmpty && mode == .medicalHistory {
                     medicalTitle = newTitle
                 }
             }
@@ -369,7 +368,7 @@ struct THAddRecordView: View {
     }
     
     private var canSave: Bool {
-        if mode == .thyroidData {
+        if mode == .checkupIndicator {
             return !indicators.isEmpty && indicators.values.allSatisfy { $0.isValid }
         } else {
             return !medicalTitle.isEmpty || !selectedImageDatas.isEmpty
@@ -401,15 +400,15 @@ struct THAddRecordView: View {
     }
 
     // 检查重复记录的辅助函数
-    private func checkForDuplicateRecord() -> THThyroidPanelRecord? {
+    private func checkForDuplicateRecord() -> THCheckupRecord? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: selectedDate)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
         do {
             // 先获取指定日期范围的所有记录
-            let descriptor = FetchDescriptor<THThyroidPanelRecord>(
-                predicate: #Predicate<THThyroidPanelRecord> { record in
+            let descriptor = FetchDescriptor<THCheckupRecord>(
+                predicate: #Predicate<THCheckupRecord> { record in
                     record.date >= startOfDay && record.date < endOfDay
                 }
             )
@@ -424,11 +423,11 @@ struct THAddRecordView: View {
 
     // 实际执行保存的函数
     private func performSaveThyroidRecord() {
-        let record = THThyroidPanelRecord(date: selectedDate, type: thyroidPanelType, notes: notes.isEmpty ? nil : notes)
+        let record = THCheckupRecord(date: selectedDate, type: thyroidPanelType, notes: notes.isEmpty ? nil : notes)
         
         for (name, input) in indicators {
-            let status = THThyroidIndicator.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
-            let indicator = THThyroidIndicator(
+            let status = THIndicatorRecord.determineStatus(value: input.doubleValue, normalRange: input.normalRange)
+            let indicator = THIndicatorRecord(
                 name: name,
                 value: input.doubleValue,
                 unit: input.unit,
@@ -450,9 +449,9 @@ struct THAddRecordView: View {
     }
     
     private func saveMedicalRecord() {
-        let record = THMedicalTimelineRecord(
+        let record = THHistoryRecord(
             date: selectedDate,
-            title: medicalTitle.isEmpty ? medicalRecordType.rawValue : medicalTitle,
+            title: medicalTitle,
             imageDatas: selectedImageDatas,
             notes: notes
         )
@@ -474,7 +473,7 @@ struct IndicatorInputRow: View {
     @Binding var input: THAddRecordView.IndicatorInput
     
     private var displayName: String {
-        let tempIndicator = THThyroidIndicator(name: name, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THIndicatorRecord(name: name, value: 0, unit: "", normalRange: "", status: .normal)
         return tempIndicator.fullDisplayName
     }
     

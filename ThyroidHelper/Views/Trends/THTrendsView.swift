@@ -10,7 +10,7 @@ import Charts
 import _SwiftData_SwiftUI
 
 struct THTrendsView: View {
-    @Query(sort: \THThyroidPanelRecord.date, order: .forward) private var records: [THThyroidPanelRecord]
+    @Query(sort: \THCheckupRecord.date, order: .forward) private var records: [THCheckupRecord]
     
     var body: some View {
         NavigationStack {
@@ -46,7 +46,7 @@ struct TrendChartCard: View {
     // 根据指标名称获取配置
     private var config: (title: String, unit: String, color: Color, normalRange: (Double, Double)?) {
         // 创建临时指标对象来获取配置信息
-        let tempIndicator = THThyroidIndicator(name: indicatorName, value: 0, unit: "", normalRange: "", status: .normal)
+        let tempIndicator = THIndicatorRecord(name: indicatorName, value: 0, unit: "", normalRange: "", status: .normal)
         
         let colors: [String: Color] = [
             "FT3": .blue,

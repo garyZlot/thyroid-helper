@@ -17,7 +17,7 @@ class THCheckupRecord {
     var notes: String? = nil
     
     // 关系：一对多，设为可选
-    @Relationship(deleteRule: .cascade) var indicators: [THThyroidIndicator]? = []
+    @Relationship(deleteRule: .cascade) var indicators: [THIndicatorRecord]? = []
     
     init(date: Date, type: CheckupType, notes: String? = nil) {
         self.id = UUID().uuidString

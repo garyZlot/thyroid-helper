@@ -18,7 +18,7 @@ struct THDatabaseManager {
         
         do {
             // 迁移 THThyroidPanelRecord
-            let panelDescriptor = FetchDescriptor<THThyroidPanelRecord>()
+            let panelDescriptor = FetchDescriptor<THCheckupRecord>()
             let panelRecords = try modelContext.fetch(panelDescriptor)
             print("找到 \(panelRecords.count) 条 THThyroidPanelRecord 记录需要迁移。")
             

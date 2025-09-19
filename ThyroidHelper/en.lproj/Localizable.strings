@@ -64,12 +64,12 @@
 "reference_range_format" = "Reference: %@";
 
 /* Empty state */
-"no_medical_records_title" = "No records available";
-"no_medical_records_description" = "Add your first medical record";
+"no_history_title" = "No history available";
+"no_history_description" = "Add your first medical history";
 
 /* Navigation */
-"medical_records_nav_title" = "Records";
-"edit_medical_record_nav_title" = "Edit Medical Record";
+"history_nav_title" = "History";
+"edit_history_nav_title" = "Edit History";
 
 /* Timeline */
 "notes_section_title" = "Notes";
@@ -97,7 +97,7 @@
 "section_recognized_text" = "Recognized Text";
 
 "save" = "Save";
-"save_failed_format" = "Save medical record failed: %@";
+"save_failed_format" = "Save medical history failed: %@";
 
 /* OCR Raw Text View */
 "ocr_raw_text_title" = "OCR Recognized Raw Text";
@@ -129,8 +129,8 @@
 "upload_images_only" = "Upload Images Only";
 "checkup_values" = "Checkup Values";
 "hide_input_fields" = "Hide Input Fields";
-"add_thyroid_record" = "Add Thyroid Record";
-"add_medical_record" = "Add Medical Record";
+"add_checkup_indicator" = "Add Indicator Record";
+"add_medical_history" = "Add History Record";
 "record_already_exists" = "Record Already Exists";
 "add_anyway" = "Add Anyway";
 "duplicate_record_message" = "A %@ record already exists on %@. Are you sure you want to add a new record?";
@@ -212,7 +212,7 @@
 "home" = "Home";
 "trends" = "Trends";
 "indicators" = "Indicators";
-"medical_records" = "Records";
+"history" = "History";
 "profile" = "Profile";
 
 /* Profile View */

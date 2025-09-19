@@ -10,11 +10,11 @@ import SwiftData
 
 struct THHomeView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THThyroidPanelRecord.date, order: .reverse) private var records: [THThyroidPanelRecord]
+    @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
     
     // 修改为返回最近一天的所有记录
-    var latestDayRecords: [THThyroidPanelRecord] {
+    var latestDayRecords: [THCheckupRecord] {
         guard let latestDate = records.first?.date else { return [] }
         
         let calendar = Calendar.current
@@ -27,7 +27,7 @@ struct THHomeView: View {
     }
     
     // 为了兼容现有代码，保留 latestRecord 但改为使用最近一天记录中的第一条
-    var latestRecord: THThyroidPanelRecord? {
+    var latestRecord: THCheckupRecord? {
         latestDayRecords.first
     }
     
@@ -61,7 +61,7 @@ struct THHomeView: View {
 
 // 新增：显示最近一天的所有检查结果
 struct LatestDayResultsCard: View {
-    let records: [THThyroidPanelRecord]
+    let records: [THCheckupRecord]
     
     private var latestDate: String {
         guard let date = records.first?.date else { return "" }
@@ -105,14 +105,14 @@ struct LatestDayResultsCard: View {
     }
     
     // 按检查类型分组
-    private var groupedRecords: [(key: String, value: [THThyroidPanelRecord])] {
+    private var groupedRecords: [(key: String, value: [THCheckupRecord])] {
         let grouped = Dictionary(grouping: records) { $0.type.localizedName }
         return grouped.sorted { $0.key < $1.key }
     }
 }
 
 struct CheckupReminderCard: View {
-    let latestRecord: THThyroidPanelRecord?
+    let latestRecord: THCheckupRecord?
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \THReminderSetting.lastUpdated, order: .reverse)
     private var reminderSettings: [THReminderSetting]
@@ -334,7 +334,7 @@ struct ReminderDatePickerView: View {
 
 
 struct IndicatorCard: View {
-    let indicator: THThyroidIndicator
+    let indicator: THIndicatorRecord
     
     var body: some View {
         VStack(spacing: 4) {
@@ -361,7 +361,7 @@ struct IndicatorCard: View {
         .cornerRadius(12)
     }
     
-    private func backgroundColorForStatus(_ status: THThyroidIndicator.IndicatorStatus) -> Color {
+    private func backgroundColorForStatus(_ status: THIndicatorRecord.IndicatorStatus) -> Color {
         switch status {
         case .normal:
             return Color.green.opacity(0.1)

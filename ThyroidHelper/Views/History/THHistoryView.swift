@@ -1,5 +1,5 @@
 //
-//  THMedicalTimelineView.swift
+//  THHistoryView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/4.
@@ -9,20 +9,20 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-struct THMedicalTimelineView: View {
+struct THHistoryView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \THMedicalTimelineRecord.date, order: .reverse) private var records: [THMedicalTimelineRecord]
+    @Query(sort: \THHistoryRecord.date, order: .reverse) private var records: [THHistoryRecord]
     @State private var showingAddRecord = false
-    @State private var recordToEdit: THMedicalTimelineRecord?
+    @State private var recordToEdit: THHistoryRecord?
     
     var body: some View {
         NavigationView {
             VStack {
                 if records.isEmpty {
                     ContentUnavailableView(
-                        "no_medical_records_title".localized,
+                        "no_history_title".localized,
                         systemImage: "clock",
-                        description: Text("no_medical_records_description".localized)
+                        description: Text("no_history_description".localized)
                     )
                 } else {
                     List {
@@ -36,7 +36,7 @@ struct THMedicalTimelineView: View {
                     .listStyle(PlainListStyle())
                 }
             }
-            .navigationTitle("medical_records_nav_title".localized)
+            .navigationTitle("history_nav_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -47,7 +47,7 @@ struct THMedicalTimelineView: View {
                 }
             }
             .sheet(isPresented: $showingAddRecord) {
-                THAddRecordView(mode: .medicalRecord)
+                THAddRecordView(mode: .medicalHistory)
             }
             .sheet(item: $recordToEdit) { record in
                 THMedicalRecordEditView(record: record)
@@ -65,7 +65,7 @@ struct THMedicalTimelineView: View {
 }
 
 struct TimelineRowView: View {
-    let record: THMedicalTimelineRecord
+    let record: THHistoryRecord
     let onEdit: () -> Void
     @State private var showingImageViewer = false
     @State private var selectedImageIndex = 0
@@ -222,7 +222,7 @@ struct THMedicalRecordEditView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    let record: THMedicalTimelineRecord
+    let record: THHistoryRecord
     
     @State private var selectedDate: Date
     @State private var medicalTitle: String
@@ -239,7 +239,7 @@ struct THMedicalRecordEditView: View {
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
     
-    init(record: THMedicalTimelineRecord) {
+    init(record: THHistoryRecord) {
         self.record = record
         _selectedDate = State(initialValue: record.date)
         _medicalTitle = State(initialValue: record.title)
@@ -381,7 +381,7 @@ struct THMedicalRecordEditView: View {
                     }
                 }
             }
-            .navigationTitle("edit_medical_record_nav_title".localized)
+            .navigationTitle("edit_history_nav_title".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -459,6 +459,6 @@ struct THMedicalRecordEditView: View {
 }
 
 #Preview {
-    THMedicalTimelineView()
-        .modelContainer(for: THMedicalTimelineRecord.self)
+    THHistoryView()
+        .modelContainer(for: THHistoryRecord.self)
 }

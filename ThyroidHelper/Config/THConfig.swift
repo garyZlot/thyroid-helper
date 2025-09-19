@@ -34,7 +34,7 @@ struct THConfig {
         }
     }
     
-    public static func indicatorsForType(_ type: THThyroidPanelRecord.CheckupType) -> [String] {
+    public static func indicatorsForType(_ type: THCheckupRecord.CheckupType) -> [String] {
         switch type {
         case .thyroidFunction5:
             return thyroidFunction5Indicators

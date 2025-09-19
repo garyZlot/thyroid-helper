@@ -10,7 +10,7 @@ import SwiftUI
 struct THPanelOCRResultView: View {
     @StateObject private var ocrService: THThyroidPanelOCRService
     let capturedImage: UIImage
-    let indicatorType: THThyroidPanelRecord.CheckupType
+    let indicatorType: THCheckupRecord.CheckupType
     let onConfirm: ([String: Double]) -> Void
     let onDateExtracted: (Date?) -> Void
     @Environment(\.dismiss) var dismiss
@@ -20,7 +20,7 @@ struct THPanelOCRResultView: View {
     @State private var showingImageViewer = false
 
     init(capturedImage: UIImage,
-         indicatorType: THThyroidPanelRecord.CheckupType,
+         indicatorType: THCheckupRecord.CheckupType,
          onConfirm: @escaping ([String: Double]) -> Void,
          onDateExtracted: @escaping (Date?) -> Void = { _ in }) {
         self.capturedImage = capturedImage

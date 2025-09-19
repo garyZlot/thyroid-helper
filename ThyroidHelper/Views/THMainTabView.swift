@@ -25,14 +25,14 @@ struct THMainTabView: View {
                     Label("trends".localized, systemImage: "chart.line.uptrend.xyaxis")
                 }
             
-            THTyroidPanelView()
+            THIndicatorsView()
                 .tabItem {
                     Label("indicators".localized, systemImage: "doc.text.fill")
                 }
             
-            THMedicalTimelineView()
+            THHistoryView()
                 .tabItem {
-                    Label("medical_records".localized, systemImage: "clock.fill")
+                    Label("history".localized, systemImage: "clock.fill")
                 }
             
             THProfileView()
@@ -47,7 +47,7 @@ struct THMainTabView: View {
     }
     
     private func addSampleDataIfNeeded() {
-        let descriptor = FetchDescriptor<THThyroidPanelRecord>()
+        let descriptor = FetchDescriptor<THCheckupRecord>()
         let existingRecords = try? modelContext.fetch(descriptor)
         
         if existingRecords?.isEmpty ?? true {
@@ -83,13 +83,13 @@ struct THMainTabView: View {
         try? modelContext.save()
     }
     
-    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THThyroidPanelRecord {
+    private func createSampleRecord(daysAgo: Int, indicators: [(String, Double, String, String)]) -> THCheckupRecord {
         let date = Calendar.current.date(byAdding: .day, value: -daysAgo, to: Date()) ?? Date()
-        let record = THThyroidPanelRecord(date: date, type: .thyroidFunction5)
+        let record = THCheckupRecord(date: date, type: .thyroidFunction5)
         
         for (name, value, unit, range) in indicators {
-            let status = THThyroidIndicator.determineStatus(value: value, normalRange: range)
-            let indicator = THThyroidIndicator(name: name, value: value, unit: unit, normalRange: range, status: status)
+            let status = THIndicatorRecord.determineStatus(value: value, normalRange: range)
+            let indicator = THIndicatorRecord(name: name, value: value, unit: unit, normalRange: range, status: status)
             indicator.checkupRecord = record
             record.indicators?.append(indicator)
         }
