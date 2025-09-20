@@ -47,7 +47,7 @@ struct THHistoryView: View {
                 }
             }
             .sheet(isPresented: $showingAddRecord) {
-                THAddRecordView(mode: .medicalHistory)
+                THAddHistoryView()
             }
             .sheet(item: $recordToEdit) { record in
                 THMedicalRecordEditView(record: record)

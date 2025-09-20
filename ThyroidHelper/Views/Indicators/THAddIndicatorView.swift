@@ -1,5 +1,5 @@
 //
-//  AddRecordView.swift
+//  THAddIndicatorView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/25.
@@ -8,20 +8,11 @@
 import SwiftUI
 import Vision
 import AVFoundation
-import PhotosUI
 import SwiftData
 
-struct THAddRecordView: View {
+struct THAddIndicatorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    
-    // 记录类型：甲状腺检查数据 或 医疗档案
-    enum RecordMode {
-        case checkupIndicator    // 甲状腺数据记录
-        case medicalHistory      // 医疗档案记录
-    }
-    
-    let mode: RecordMode
     
     @State private var selectedDate = Date()
     @State private var thyroidPanelType: THCheckupRecord.CheckupType = .thyroidFunction5
@@ -32,15 +23,7 @@ struct THAddRecordView: View {
     @State private var showingSuccessAlert = false
     @State private var duplicateRecord: THCheckupRecord?
     
-    // 医疗档案相关状态
-    @State private var medicalTitle = ""
-    @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var selectedImageDatas: [Data] = []
-    
     // OCR 相关状态
-    @StateObject private var ocrService = THMedicalRecordOCRService()
-    
-    // 图片相关状态
     @State private var showingImagePicker = false
     @State private var showingSourceActionSheet = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
@@ -49,10 +32,6 @@ struct THAddRecordView: View {
     
     // 手动输入状态
     @State private var showManualInput = false
-    
-    init(mode: RecordMode = .checkupIndicator) {
-        self.mode = mode
-    }
     
     struct IndicatorInput {
         var value: String = ""
@@ -68,24 +47,16 @@ struct THAddRecordView: View {
                 Section("section_checkup_info".localized) {
                     DatePicker("checkup_date".localized, selection: $selectedDate, displayedComponents: .date)
                     
-                    if mode == .checkupIndicator {
-                        // 甲状腺检查类型
-                        Picker("checkup_type".localized, selection: $thyroidPanelType) {
-                            ForEach(THCheckupRecord.CheckupType.allCases, id: \.self) { type in
-                                Text(type.localizedName).tag(type)
-                            }
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                    } else {
-                        LabeledContent("checkup_item".localized) {
-                            TextField("checkup_item_placeholder".localized, text: $medicalTitle)
-                                .multilineTextAlignment(.trailing)
-                                .foregroundColor(.secondary)
+                    // 甲状腺检查类型
+                    Picker("checkup_type".localized, selection: $thyroidPanelType) {
+                        ForEach(THCheckupRecord.CheckupType.allCases, id: \.self) { type in
+                            Text(type.localizedName).tag(type)
                         }
                     }
+                    .pickerStyle(MenuPickerStyle())
                 }
                 
-                Section(mode == .checkupIndicator ? "input_method".localized : "add_checkup_images".localized) {
+                Section("input_method".localized) {
                     VStack(spacing: 0) {
                         Button(action: {
                             showingSourceActionSheet = true
@@ -109,49 +80,28 @@ struct THAddRecordView: View {
                         
                         Divider()
                         
-                        if mode == .checkupIndicator {
-                            Button(action: {
-                                showManualInput = true
-                                if indicators.isEmpty {
-                                    setupDefaultIndicators()
-                                }
-                            }) {
-                                HStack {
-                                    Image(systemName: "hand.point.up.left.fill")
-                                        .font(.title2)
-                                        .foregroundColor(.green)
-                                    Text("manual_input_data".localized)
-                                        .font(.body)
-                                        .foregroundColor(.green)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.green)
-                                }
-                                .padding(.vertical, 12)
-                                .contentShape(Rectangle())
+                        Button(action: {
+                            showManualInput = true
+                            if indicators.isEmpty {
+                                setupDefaultIndicators()
                             }
-                            .buttonStyle(PlainButtonStyle())
-                        } else {
-                            // 医疗档案的图片选择
-                            PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
-                                HStack {
-                                    Image(systemName: "photo.on.rectangle.angled")
-                                        .font(.title2)
-                                        .foregroundColor(.green)
-                                    Text("upload_images_only".localized)
-                                        .font(.body)
-                                        .foregroundColor(.green)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(.green)
-                                }
-                                .padding(.vertical, 12)
-                                .contentShape(Rectangle())
+                        }) {
+                            HStack {
+                                Image(systemName: "hand.point.up.left.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.green)
+                                Text("manual_input_data".localized)
+                                    .font(.body)
+                                    .foregroundColor(.green)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.green)
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            .padding(.vertical, 12)
+                            .contentShape(Rectangle())
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
                 .actionSheet(isPresented: $showingSourceActionSheet) {
@@ -173,52 +123,8 @@ struct THAddRecordView: View {
                     )
                 }
                 
-                // OCR识别结果展示
-                if (mode == .medicalHistory && ocrService.isProcessing) {
-                    Section("ocr_processing_title".localized) {
-                        HStack {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                            Text("ocr_processing_message".localized)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding()
-                    }
-                }
-                
-                // 医疗档案的图片预览
-                if mode == .medicalHistory && !selectedImageDatas.isEmpty {
-                    Section("section_checkup_images".localized) {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHStack(spacing: 12) {
-                                ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
-                                    if let uiImage = UIImage(data: imageData) {
-                                        ZStack(alignment: .topTrailing) {
-                                            Image(uiImage: uiImage)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(width: 100, height: 100)
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            
-                                            Button {
-                                                selectedImageDatas.remove(at: index)
-                                            } label: {
-                                                Image(systemName: "xmark.circle.fill")
-                                                    .foregroundColor(.red)
-                                                    .background(Color.white, in: Circle())
-                                            }
-                                            .offset(x: 5, y: -5)
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
-                }
-                
                 // 甲状腺数据输入
-                if mode == .checkupIndicator && (showManualInput || !indicators.isEmpty) {
+                if showManualInput || !indicators.isEmpty {
                     Section("checkup_values".localized) {
                         ForEach(thyroidPanelType.indicators, id: \.self) { indicatorName in
                             IndicatorInputRow(
@@ -244,18 +150,8 @@ struct THAddRecordView: View {
                     TextField("notes_placeholder".localized, text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
-                
-                // 医疗档案 OCR识别的原始文本
-                if mode == .medicalHistory && !ocrService.recognizedText.isEmpty {
-                    Section("section_recognized_text".localized) {
-                        Text(ocrService.recognizedText)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .textSelection(.enabled)
-                    }
-                }
             }
-            .navigationTitle(mode == .checkupIndicator ? "add_checkup_indicator".localized : "add_medical_history".localized)
+            .navigationTitle("add_checkup_indicator".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -264,11 +160,7 @@ struct THAddRecordView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("save".localized) {
-                        if mode == .checkupIndicator {
-                            saveThyroidRecord()
-                        } else {
-                            saveMedicalRecord()
-                        }
+                        saveThyroidRecord()
                     }
                     .disabled(!canSave)
                 }
@@ -278,61 +170,23 @@ struct THAddRecordView: View {
             }
             .sheet(isPresented: $showingOCRResult) {
                 if let image = capturedImage {
-                    if mode == .checkupIndicator {
-                        THPanelOCRResultView(
-                            capturedImage: image,
-                            indicatorType: thyroidPanelType,
-                            onConfirm: { extractedData in
-                                handleThyroidOCRResult(extractedData)
-                            },
-                            onDateExtracted: { extractedDate in
-                                if let date = extractedDate {
-                                    selectedDate = date
-                                }
+                    THPanelOCRResultView(
+                        capturedImage: image,
+                        indicatorType: thyroidPanelType,
+                        onConfirm: { extractedData in
+                            handleThyroidOCRResult(extractedData)
+                        },
+                        onDateExtracted: { extractedDate in
+                            if let date = extractedDate {
+                                selectedDate = date
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
-                    if mode == .checkupIndicator {
-                        showingOCRResult = true
-                    } else {
-                        // 医疗档案模式：添加图片并开始OCR
-                        if let imageData = newImage.jpegData(compressionQuality: 0.8) {
-                            selectedImageDatas.append(imageData)
-                        }
-                        ocrService.processImage(newImage)
-                    }
-                }
-            }
-            .onChange(of: selectedPhotos) { _, newValue in
-                Task {
-                    // 处理医疗档案的多图片选择
-                    for photo in newValue {
-                        if let data = try? await photo.loadTransferable(type: Data.self) {
-                            if !selectedImageDatas.contains(data) {
-                                selectedImageDatas.append(data)
-                            }
-                        }
-                    }
-                    selectedPhotos.removeAll()
-                }
-            }
-            .onChange(of: ocrService.extractedDate) { _, newDate in
-                if let newDate = newDate {
-                    selectedDate = newDate
-                }
-            }
-            .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
-                if !newTitle.isEmpty && mode == .medicalHistory {
-                    medicalTitle = newTitle
-                }
-            }
-            .onChange(of: ocrService.extractedNotes) { _, newNotes in
-                if !newNotes.isEmpty {
-                    notes = newNotes
+                    showingOCRResult = true
                 }
             }
             .alert("record_already_exists".localized, isPresented: $showingDuplicateAlert) {
@@ -345,6 +199,13 @@ struct THAddRecordView: View {
                     let dateString = duplicate.date.localizedMedium
                     Text(String(format: "duplicate_record_message".localized, dateString, duplicate.type.rawValue))
                 }
+            }
+            .alert("save_success".localized, isPresented: $showingSuccessAlert) {
+                Button("ok".localized) {
+                    dismiss()
+                }
+            } message: {
+                Text("record_saved_successfully".localized)
             }
         }
     }
@@ -368,11 +229,7 @@ struct THAddRecordView: View {
     }
     
     private var canSave: Bool {
-        if mode == .checkupIndicator {
-            return !indicators.isEmpty && indicators.values.allSatisfy { $0.isValid }
-        } else {
-            return !medicalTitle.isEmpty || !selectedImageDatas.isEmpty
-        }
+        return !indicators.isEmpty && indicators.values.allSatisfy { $0.isValid }
     }
     
     private func setupDefaultIndicators() {
@@ -442,35 +299,16 @@ struct THAddRecordView: View {
         
         do {
             try modelContext.save()
-            showingSuccessAlert = true
+            showingSuccessAlert = true  // 显示成功提示
         } catch {
             print("❌ 保存甲状腺记录失败: \(error.localizedDescription)")
         }
     }
-    
-    private func saveMedicalRecord() {
-        let record = THHistoryRecord(
-            date: selectedDate,
-            title: medicalTitle,
-            imageDatas: selectedImageDatas,
-            notes: notes
-        )
-        
-        modelContext.insert(record)
-        
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            print("❌ 保存医疗档案失败: \(error.localizedDescription)")
-        }
-    }
-    
 }
 
 struct IndicatorInputRow: View {
     let name: String
-    @Binding var input: THAddRecordView.IndicatorInput
+    @Binding var input: THAddIndicatorView.IndicatorInput
     
     private var displayName: String {
         let tempIndicator = THIndicatorRecord(name: name, value: 0, unit: "", normalRange: "", status: .normal)
@@ -503,4 +341,11 @@ struct IndicatorInputRow: View {
             }
         }
     }
+}
+
+#Preview {
+    NavigationView {
+        THAddIndicatorView()
+    }
+    .modelContainer(for: THCheckupRecord.self)
 }

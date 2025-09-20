@@ -53,7 +53,7 @@ struct THHomeView: View {
             }
             .navigationTitle("app_title".localized)
             .sheet(isPresented: $showingAddRecord) {
-                THAddRecordView()
+                THAddIndicatorView()
             }
         }
     }

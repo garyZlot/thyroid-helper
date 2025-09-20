@@ -134,6 +134,7 @@
 "record_already_exists" = "Record Already Exists";
 "add_anyway" = "Add Anyway";
 "duplicate_record_message" = "A %@ record already exists on %@. Are you sure you want to add a new record?";
+"record_saved_successfully" = "Record saved successfully";
 
 /* Indicator Adjustment Row */
 "original_recognized_value_format" = "Original value: %.%df";
