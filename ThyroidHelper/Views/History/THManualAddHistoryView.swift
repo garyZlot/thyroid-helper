@@ -1,5 +1,5 @@
 //
-//  THAddHistoryView.swift
+//  THManualAddHistoryView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/20.
@@ -7,9 +7,8 @@
 
 import SwiftUI
 import PhotosUI
-import SwiftData
 
-struct THAddHistoryView: View {
+struct THManualAddHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
@@ -19,10 +18,7 @@ struct THAddHistoryView: View {
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data] = []
     
-    // OCR 相关状态
-    @StateObject private var ocrService = THHistoryCheckupOCRService()
-    
-    // 图片相关状态
+    // 相机相关状态
     @State private var showingImagePicker = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
@@ -80,17 +76,6 @@ struct THAddHistoryView: View {
                     .buttonStyle(PlainButtonStyle())
                 }
                 
-                // OCR识别处理中的提示
-                if ocrService.isProcessing {
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        Text("ocr_processing_message".localized)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                }
-                
                 // 图片预览
                 if !selectedImageDatas.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -123,33 +108,8 @@ struct THAddHistoryView: View {
                 TextField("content_placeholder".localized, text: $notes, axis: .vertical)
                     .lineLimit(5...10)
                     .textFieldStyle(.roundedBorder)
-                
-                // OCR识别的原始文本（如果有）
-                if !ocrService.recognizedText.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("section_recognized_text".localized)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Button("copy_text".localized) {
-                                UIPasteboard.general.string = ocrService.recognizedText
-                            }
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                        }
-                        
-                        Text(ocrService.recognizedText)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .textSelection(.enabled)
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
-                    }
-                }
             }
-            .navigationTitle("add_history_record".localized)
+            .navigationTitle("manual_add_history".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -170,49 +130,21 @@ struct THAddHistoryView: View {
             }
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
-                    // 添加图片到数据数组
                     if let imageData = newImage.jpegData(compressionQuality: 0.8) {
                         selectedImageDatas.append(imageData)
                     }
-                    // 开始OCR识别
-                    ocrService.processImage(newImage)
                 }
             }
             .onChange(of: selectedPhotos) { _, newValue in
                 Task {
-                    var newImages: [UIImage] = []
                     for photo in newValue {
                         if let data = try? await photo.loadTransferable(type: Data.self) {
                             if !selectedImageDatas.contains(data) {
                                 selectedImageDatas.append(data)
-                                // 收集新添加的图片用于OCR
-                                if let image = UIImage(data: data) {
-                                    newImages.append(image)
-                                }
                             }
                         }
                     }
                     selectedPhotos.removeAll()
-                    
-                    // 对第一张新图片进行OCR识别
-                    if let firstImage = newImages.first {
-                        ocrService.processImage(firstImage)
-                    }
-                }
-            }
-            .onChange(of: ocrService.extractedDate) { _, newDate in
-                if let newDate = newDate {
-                    selectedDate = newDate
-                }
-            }
-            .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
-                if !newTitle.isEmpty && title.isEmpty {
-                    title = newTitle
-                }
-            }
-            .onChange(of: ocrService.extractedNotes) { _, newNotes in
-                if !newNotes.isEmpty && notes.isEmpty {
-                    notes = newNotes
                 }
             }
         }
@@ -231,7 +163,6 @@ struct THAddHistoryView: View {
         )
         
         modelContext.insert(record)
-        
         do {
             try modelContext.save()
             dismiss()
@@ -239,11 +170,4 @@ struct THAddHistoryView: View {
             print("❌ 保存历史记录失败: \(error.localizedDescription)")
         }
     }
-}
-
-#Preview {
-    NavigationView {
-        THAddHistoryView()
-    }
-    .modelContainer(for: THHistoryRecord.self)
 }

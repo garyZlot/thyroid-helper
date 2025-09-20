@@ -245,3 +245,19 @@
 "indicator_anti_tg" = "Anti-Thyroglobulin Antibody (Anti-TG)";
 "indicator_anti_tpo" = "Anti-Thyroid Peroxidase Antibody (Anti-TPO)";
 "indicator_tg" = "Thyroglobulin (TG)";
+
+"choose_add_method" = "Choose how to add";
+"smart_add_from_images" = "Smart Add from Images";
+"auto_extract_info_from_reports" = "Auto extract info from medical reports";
+"manual_add" = "Manual Add";
+"manually_input_information" = "Manually input all information";
+"processing_images" = "Processing images...";
+"processing_image_format" = "Processing image %d/%d";
+"processing_completed" = "Processing completed";
+"processing_medical_reports" = "Recognizing medical reports";
+"records_created_format" = "%d records created";
+"done" = "Done";
+"medical_report" = "Medical Report";
+"ocr_failed_note" = "OCR recognition failed, please add information manually";
+"image_load_failed_note" = "Failed to load image";
+"manual_add_history" = "Manual Add History";

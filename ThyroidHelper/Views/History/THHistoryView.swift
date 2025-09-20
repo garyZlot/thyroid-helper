@@ -47,7 +47,7 @@ struct THHistoryView: View {
                 }
             }
             .sheet(isPresented: $showingAddRecord) {
-                THAddHistoryView()
+                THAddHistoryOptionsView()
             }
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)

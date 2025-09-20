@@ -11,7 +11,6 @@
 		2F1D7E4C2E78F30F009F5096 /* THDateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E4B2E78F305009F5096 /* THDateExtension.swift */; };
 		2F1D7E4F2E795B68009F5096 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2F1D7E4D2E795B68009F5096 /* Localizable.strings */; };
 		2F1D7E522E79AB33009F5096 /* THStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F1D7E512E79AB25009F5096 /* THStringExtension.swift */; };
-		2F272E852E7E50BA00AFC2EA /* THAddHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F272E842E7E50B700AFC2EA /* THAddHistoryView.swift */; };
 		2F272E872E7E534800AFC2EA /* THEditIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F272E862E7E534600AFC2EA /* THEditIndicatorView.swift */; };
 		2F272E892E7E5FAC00AFC2EA /* THEditHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F272E882E7E5FA300AFC2EA /* THEditHistoryView.swift */; };
 		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
@@ -22,6 +21,9 @@
 		2F78237F2E697EF000CDEF24 /* THHistoryCheckupOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78237E2E697EEE00CDEF24 /* THHistoryCheckupOCRService.swift */; };
 		2F7823822E697F8B00CDEF24 /* THImagesViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823812E697F7C00CDEF24 /* THImagesViewer.swift */; };
 		2FB2053D2E63148900BD4D6F /* THConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FB2053C2E63147F00BD4D6F /* THConfig.swift */; };
+		2FD5F6502E7E9FC7001CAED5 /* THBatchOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F64F2E7E9FB7001CAED5 /* THBatchOCRService.swift */; };
+		2FD5F6522E7EA0B9001CAED5 /* THAddHistoryOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F6512E7EA0B3001CAED5 /* THAddHistoryOptionsView.swift */; };
+		2FD5F6542E7EA4E7001CAED5 /* THManualAddHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F6532E7EA4DD001CAED5 /* THManualAddHistoryView.swift */; };
 		2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */; };
 		68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */; };
 		68426F7B2E5D7FF5008B17BA /* THPanelOCRResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */; };
@@ -56,7 +58,6 @@
 		2F1D7E4E2E795B68009F5096 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2F1D7E502E795BA2009F5096 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2F1D7E512E79AB25009F5096 /* THStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THStringExtension.swift; sourceTree = "<group>"; };
-		2F272E842E7E50B700AFC2EA /* THAddHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THAddHistoryView.swift; sourceTree = "<group>"; };
 		2F272E862E7E534600AFC2EA /* THEditIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THEditIndicatorView.swift; sourceTree = "<group>"; };
 		2F272E882E7E5FA300AFC2EA /* THEditHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THEditHistoryView.swift; sourceTree = "<group>"; };
 		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
@@ -67,6 +68,9 @@
 		2F78237E2E697EEE00CDEF24 /* THHistoryCheckupOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THHistoryCheckupOCRService.swift; sourceTree = "<group>"; };
 		2F7823812E697F7C00CDEF24 /* THImagesViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THImagesViewer.swift; sourceTree = "<group>"; };
 		2FB2053C2E63147F00BD4D6F /* THConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THConfig.swift; sourceTree = "<group>"; };
+		2FD5F64F2E7E9FB7001CAED5 /* THBatchOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THBatchOCRService.swift; sourceTree = "<group>"; };
+		2FD5F6512E7EA0B3001CAED5 /* THAddHistoryOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THAddHistoryOptionsView.swift; sourceTree = "<group>"; };
+		2FD5F6532E7EA4DD001CAED5 /* THManualAddHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THManualAddHistoryView.swift; sourceTree = "<group>"; };
 		2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDatabaseManager.swift; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THIndicatorOCRService.swift; sourceTree = "<group>"; };
 		68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultView.swift; sourceTree = "<group>"; };
@@ -124,6 +128,7 @@
 				2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */,
 				2F78237E2E697EEE00CDEF24 /* THHistoryCheckupOCRService.swift */,
 				68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */,
+				2FD5F64F2E7E9FB7001CAED5 /* THBatchOCRService.swift */,
 			);
 			path = OCR;
 			sourceTree = "<group>";
@@ -211,8 +216,9 @@
 		2FBB78C92E6BC09200360A3E /* History */ = {
 			isa = PBXGroup;
 			children = (
+				2FD5F6532E7EA4DD001CAED5 /* THManualAddHistoryView.swift */,
+				2FD5F6512E7EA0B3001CAED5 /* THAddHistoryOptionsView.swift */,
 				2F272E882E7E5FA300AFC2EA /* THEditHistoryView.swift */,
-				2F272E842E7E50B700AFC2EA /* THAddHistoryView.swift */,
 				2F78237A2E695A7200CDEF24 /* THHistoryView.swift */,
 			);
 			path = History;
@@ -406,6 +412,7 @@
 			files = (
 				689F17082E5C9E860047ABAB /* THDataExportView.swift in Sources */,
 				2F7823792E695A5E00CDEF24 /* THHistoryRecord.swift in Sources */,
+				2FD5F6542E7EA4E7001CAED5 /* THManualAddHistoryView.swift in Sources */,
 				689F170A2E5C9E8E0047ABAB /* THAboutView.swift in Sources */,
 				2F7823822E697F8B00CDEF24 /* THImagesViewer.swift in Sources */,
 				2F1D7E4C2E78F30F009F5096 /* THDateExtension.swift in Sources */,
@@ -427,6 +434,7 @@
 				2F1D7E522E79AB33009F5096 /* THStringExtension.swift in Sources */,
 				2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */,
 				2F78237F2E697EF000CDEF24 /* THHistoryCheckupOCRService.swift in Sources */,
+				2FD5F6522E7EA0B9001CAED5 /* THAddHistoryOptionsView.swift in Sources */,
 				2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */,
 				689F16FD2E5C9E040047ABAB /* THAddIndicatorView.swift in Sources */,
 				689F16FB2E5C9DEB0047ABAB /* THIndicatorsView.swift in Sources */,
@@ -436,12 +444,12 @@
 				68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */,
 				689F16F92E5C9DCE0047ABAB /* THTrendsView.swift in Sources */,
 				2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */,
-				2F272E852E7E50BA00AFC2EA /* THAddHistoryView.swift in Sources */,
 				68426F7F2E5D8063008B17BA /* THIndicatorAdjustmentRow.swift in Sources */,
 				2FB2053D2E63148900BD4D6F /* THConfig.swift in Sources */,
 				68426F832E5DC552008B17BA /* THImagePicker.swift in Sources */,
 				689F170C2E5C9F0F0047ABAB /* THIndicatorRecord.swift in Sources */,
 				689F16F52E5C9D8C0047ABAB /* THMainTabView.swift in Sources */,
+				2FD5F6502E7E9FC7001CAED5 /* THBatchOCRService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

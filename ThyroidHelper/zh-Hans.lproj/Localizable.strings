@@ -245,3 +245,19 @@
 "indicator_anti_tg" = "甲状腺球蛋白自身抗体 (A-TG)";
 "indicator_anti_tpo" = "甲状腺过氧化物酶自身抗体 (A-TPO)";
 "indicator_tg" = "甲状腺球蛋白 (TG)";
+
+"choose_add_method" = "请选择添加方式";
+"smart_add_from_images" = "图片识别添加";
+"auto_extract_info_from_reports" = "自动提取医疗报告信息";
+"manual_add" = "手动添加";
+"manually_input_information" = "手动输入所有信息";
+"processing_images" = "正在处理图片...";
+"processing_image_format" = "正在处理第 %d/%d 张图片";
+"processing_completed" = "处理完成";
+"processing_medical_reports" = "正在识别医疗报告";
+"records_created_format" = "已创建 %d 条记录";
+"done" = "完成";
+"medical_report" = "医疗报告";
+"ocr_failed_note" = "OCR识别失败，请手动添加信息";
+"image_load_failed_note" = "图片加载失败";
+"manual_add_history" = "手动添加历史记录";
