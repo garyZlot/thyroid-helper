@@ -3,7 +3,6 @@
 //  ThyroidHelper
 //
 //  Created by gdliu on 2025/9/20.
-//  Updated by gdlium2p on 2025/9/20.
 //
 
 import SwiftUI
@@ -21,14 +20,12 @@ struct THEditHistoryView: View {
     @State private var notes: String
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data]
-    @State private var showingPhotosPicker = false
     
     // OCR 相关状态
     @StateObject private var ocrService = THHistoryCheckupOCRService()
     
     // 图片相关状态
     @State private var showingImagePicker = false
-    @State private var showingSourceActionSheet = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
     
@@ -48,41 +45,49 @@ struct THEditHistoryView: View {
                 TextField("record_title_placeholder".localized, text: $title)
                     .textFieldStyle(.roundedBorder)
                 
-                Button(action: {
-                    showingSourceActionSheet = true
-                }) {
-                    HStack {
-                        Image(systemName: "photo")
-                            .font(.title2)
-                            .foregroundColor(.blue)
-                        Text("add_photos".localized)
-                            .font(.body)
-                            .foregroundColor(.blue)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundColor(.blue)
+                VStack(spacing: 0) {
+                    Button(action: {
+                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                            imagePickerSource = .camera
+                            showingImagePicker = true
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "camera")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                            Text("take_photo".localized)
+                                .font(.body)
+                                .foregroundColor(.blue)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.vertical, 12)
+                        .contentShape(Rectangle())
                     }
-                    .padding(.vertical, 12)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .actionSheet(isPresented: $showingSourceActionSheet) {
-                    ActionSheet(
-                        title: Text("select_photo_source".localized),
-                        buttons: [
-                            .default(Text("take_photo".localized)) {
-                                if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                                    imagePickerSource = .camera
-                                    showingImagePicker = true
-                                }
-                            },
-                            .default(Text("choose_from_library".localized)) {
-                                showingPhotosPicker = true
-                            },
-                            .cancel(Text("cancel".localized))
-                        ]
-                    )
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Divider()
+                    
+                    PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+                        HStack {
+                            Image(systemName: "photo")
+                                .font(.title2)
+                                .foregroundColor(.green)
+                            Text("choose_from_library".localized)
+                                .font(.body)
+                                .foregroundColor(.green)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        }
+                        .padding(.vertical, 12)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
                 // OCR识别处理中的提示
@@ -173,11 +178,6 @@ struct THEditHistoryView: View {
             .sheet(isPresented: $showingImagePicker) {
                 THImagePicker(image: $capturedImage, sourceType: imagePickerSource)
             }
-            .sheet(isPresented: $showingPhotosPicker) {
-                PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
-                    Text("select_photos".localized)
-                }
-            }
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
                     // 添加图片到数据数组
@@ -203,7 +203,6 @@ struct THEditHistoryView: View {
                         }
                     }
                     selectedPhotos.removeAll()
-                    showingPhotosPicker = false
                     
                     // 对第一张新图片进行OCR识别
                     if let firstImage = newImages.first {
