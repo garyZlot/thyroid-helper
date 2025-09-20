@@ -260,4 +260,9 @@
 "medical_report" = "医疗报告";
 "ocr_failed_note" = "OCR识别失败，请手动添加信息";
 "image_load_failed_note" = "图片加载失败";
-"manual_add_history" = "手动添加历史记录";
+"manual_add_history" = "添加历史记录";
+
+"add_history_record" = "添加历史记录";
+"record_date" = "日期";
+"record_title_placeholder" = "输入一个标题";
+"content_placeholder" = "输入详细内容...";

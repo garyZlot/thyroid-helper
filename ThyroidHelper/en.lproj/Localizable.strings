@@ -260,4 +260,9 @@
 "medical_report" = "Medical Report";
 "ocr_failed_note" = "OCR recognition failed, please add information manually";
 "image_load_failed_note" = "Failed to load image";
-"manual_add_history" = "Manual Add History";
+"manual_add_history" = "Add History";
+
+"add_history_record" = "Add History Record";
+"record_date" = "Date";
+"record_title_placeholder" = "Input history title";
+"content_placeholder" = "Input history content (optional)";

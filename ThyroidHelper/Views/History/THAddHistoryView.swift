@@ -1,5 +1,5 @@
 //
-//  THManualAddHistoryView.swift
+//  THAddHistoryView.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/9/20.
@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 
-struct THManualAddHistoryView: View {
+struct THAddHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     

@@ -97,7 +97,7 @@ struct THAddHistoryOptionsView: View {
                 // 手动添加完成后也关闭整个添加流程
                 dismiss()
             }) {
-                THManualAddHistoryView()
+                THAddHistoryView()
             }
             .sheet(isPresented: $showingBatchProgress) {
                 BatchProgressView(service: batchOCRService)
@@ -234,6 +234,6 @@ struct BatchProgressView: View {
 }
 
 #Preview("Manual Add") {
-    THManualAddHistoryView()
+    THAddHistoryView()
         .modelContainer(for: THHistoryRecord.self)
 }
