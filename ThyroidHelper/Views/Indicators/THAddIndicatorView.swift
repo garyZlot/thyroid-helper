@@ -20,7 +20,6 @@ struct THAddIndicatorView: View {
     @State private var indicators: [String: IndicatorInput] = [:]
     
     @State private var showingDuplicateAlert = false
-    @State private var showingSuccessAlert = false
     @State private var duplicateRecord: THCheckupRecord?
     
     // OCR 相关状态
@@ -200,13 +199,6 @@ struct THAddIndicatorView: View {
                     Text(String(format: "duplicate_record_message".localized, dateString, duplicate.type.rawValue))
                 }
             }
-            .alert("save_success".localized, isPresented: $showingSuccessAlert) {
-                Button("ok".localized) {
-                    dismiss()
-                }
-            } message: {
-                Text("record_saved_successfully".localized)
-            }
         }
     }
     
@@ -299,7 +291,7 @@ struct THAddIndicatorView: View {
         
         do {
             try modelContext.save()
-            showingSuccessAlert = true  // 显示成功提示
+            dismiss()
         } catch {
             print("❌ 保存甲状腺记录失败: \(error.localizedDescription)")
         }
