@@ -1,5 +1,5 @@
 //
-//  OCRServices.swift
+//  THIndicatorOCRService.swift
 //  ThyroidHelper
 //
 //  Created by gdlium2p on 2025/8/26.
@@ -12,7 +12,7 @@ import os.log
 
 /// 改进的OCR 识别服务
 @MainActor
-class THThyroidPanelOCRService: ObservableObject {
+class THIndicatorOCRService: ObservableObject {
     @Published var recognizedText = ""
     @Published var isProcessing = false
     @Published var extractedIndicators: [String: Double] = [:]

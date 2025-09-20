@@ -22,7 +22,7 @@ struct THEditHistoryView: View {
     @State private var selectedImageDatas: [Data]
     
     // OCR 相关状态
-    @StateObject private var ocrService = THMedicalRecordOCRService()
+    @StateObject private var ocrService = THHistoryCheckupOCRService()
     
     // 图片相关状态
     @State private var showingImagePicker = false

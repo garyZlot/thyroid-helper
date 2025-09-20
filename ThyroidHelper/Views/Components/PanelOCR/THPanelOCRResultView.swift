@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct THPanelOCRResultView: View {
-    @StateObject private var ocrService: THThyroidPanelOCRService
+    @StateObject private var ocrService: THIndicatorOCRService
     let capturedImage: UIImage
     let indicatorType: THCheckupRecord.CheckupType
     let onConfirm: ([String: Double]) -> Void
@@ -27,7 +27,7 @@ struct THPanelOCRResultView: View {
         self.indicatorType = indicatorType
         self.onConfirm = onConfirm
         self.onDateExtracted = onDateExtracted
-        _ocrService = StateObject(wrappedValue: THThyroidPanelOCRService(indicatorKeys: indicatorType.indicators))
+        _ocrService = StateObject(wrappedValue: THIndicatorOCRService(indicatorKeys: indicatorType.indicators))
     }
 
     var body: some View {
