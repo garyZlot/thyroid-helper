@@ -60,7 +60,7 @@ class THBatchOCRService: ObservableObject {
             }
             
             // 进行OCR识别
-            statusMessage = String(format: "ocr_recognizing_format".localized, currentImageIndex, totalImages)
+            statusMessage = String(format: "processing_image_format".localized, currentImageIndex, totalImages)
             let ocrResult = await performOCR(on: uiImage)
             
             // 创建历史记录

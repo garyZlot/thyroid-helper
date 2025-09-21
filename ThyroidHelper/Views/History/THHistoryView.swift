@@ -16,6 +16,7 @@ struct THHistoryView: View {
     @State private var showingManualAddHistory = false
     @State private var selectedImageItems: [PhotosPickerItem] = []
     @State private var showingImagePicker = false
+    @State private var showingBatchProgress = false
     @State private var recordToEdit: THHistoryRecord?
     @State private var isLoading = true
     
@@ -68,20 +69,19 @@ struct THHistoryView: View {
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)
             }
-            .sheet(isPresented: $showingImagePicker) {
-                ZStack {
-                    PhotosPicker(
-                        selection: $selectedImageItems,
-                        maxSelectionCount: 9,
-                        matching: .images
-                    ) {
-                        Color.clear
-                    }
-                }
+            .sheet(isPresented: $showingBatchProgress) {
+                BatchProgressView(service: batchOCRService)
+                    .interactiveDismissDisabled(true)
             }
+            .photosPicker(
+                isPresented: $showingImagePicker,
+                selection: $selectedImageItems,
+                maxSelectionCount: 9,
+                matching: .images
+            )
             .onChange(of: selectedImageItems) { _, newValue in
                 if !newValue.isEmpty {
-                    showingImagePicker = true
+                    showingBatchProgress = true
                     batchOCRService.processImagesAndCreateRecords(
                         from: newValue,
                         modelContext: modelContext
