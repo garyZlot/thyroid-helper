@@ -262,7 +262,10 @@
 "image_load_failed_note" = "图片加载失败";
 "manual_add_history" = "添加历史记录";
 
+"select_add_history_method" = "选择添加历史记录方式";
 "add_history_record" = "添加历史记录";
+"auto_extract_from_images" = "从图片自动提取信息";
+"manual_input_history" = "手动输入历史信息";
 "record_date" = "日期";
 "record_title_placeholder" = "输入一个标题";
 "content_placeholder" = "输入详细内容...";

@@ -262,7 +262,10 @@
 "image_load_failed_note" = "Failed to load image";
 "manual_add_history" = "Add History";
 
+"select_add_history_method" = "Select Add History Method";
+"auto_extract_from_images" = "Auto Extract from Images";
 "add_history_record" = "Add History Record";
+"manual_input_history" = "Manual Input History";
 "record_date" = "Date";
 "record_title_placeholder" = "Input history title";
 "content_placeholder" = "Input history content (optional)";

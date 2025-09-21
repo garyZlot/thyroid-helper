@@ -12,47 +12,180 @@ import PhotosUI
 struct THHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \THHistoryRecord.date, order: .reverse) private var records: [THHistoryRecord]
-    @State private var showingAddRecord = false
+    @State private var showingAddOptions = false
     @State private var recordToEdit: THHistoryRecord?
+    @State private var isLoading = true
     
     var body: some View {
         NavigationView {
-            VStack {
-                if records.isEmpty {
-                    ContentUnavailableView(
-                        "no_history_title".localized,
-                        systemImage: "clock",
-                        description: Text("no_history_description".localized)
-                    )
+            Group {
+                if isLoading {
+                    loadingView
+                } else if records.isEmpty {
+                    emptyStateView
                 } else {
                     List {
                         ForEach(records) { record in
                             TimelineRowView(record: record) {
                                 recordToEdit = record
                             }
+                            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                            .listRowSeparator(.hidden)
+                            .background(Color(.systemBackground))
+                            .cornerRadius(12)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
                         }
                         .onDelete(perform: deleteRecords)
                     }
-                    .listStyle(PlainListStyle())
+                    .listStyle(.plain)
+                    .background(Color(.systemGray6))
+                    .scrollContentBackground(.hidden)
                 }
             }
             .navigationTitle("history_nav_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingAddRecord = true
-                    } label: {
+                    Button(action: { showingAddOptions = true }) {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showingAddRecord) {
-                THAddHistoryOptionsView()
+            .sheet(isPresented: $showingAddOptions) {
+                addOptionsSheet
+                    .presentationDetents([.height(280)])
+                    .presentationCornerRadius(20)
+                    .presentationBackground(.ultraThinMaterial)
             }
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)
             }
+            .onAppear {
+                // 模拟加载延迟，实际项目中可移除
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isLoading = false
+                }
+            }
         }
+    }
+    
+    // 加载状态视图
+    private var loadingView: some View {
+        VStack(spacing: 20) {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: .accentColor))
+                .scaleEffect(1.5)
+            
+            Text("loading_history".localized)
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    // 空状态视图
+    private var emptyStateView: some View {
+        VStack(spacing: 24) {
+            Image(systemName: "doc.text.magnifyingglass")
+                .font(.system(size: 64))
+                .foregroundColor(.accentColor.opacity(0.3))
+            
+            Text("no_history_title".localized)
+                .font(.title)
+                .fontWeight(.semibold)
+            
+            Text("no_history_description".localized)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+            
+            Button(action: { showingAddOptions = true }) {
+                Text("add_first_record".localized)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 30)
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
+                    .shadow(color: .accentColor.opacity(0.2), radius: 10, x: 0, y: 4)
+            }
+        }
+        .padding()
+    }
+    
+    // 添加选项底部弹窗
+    private var addOptionsSheet: some View {
+        VStack(spacing: 0) {
+            Text("select_add_history_method".localized)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding()
+            
+            Divider()
+            
+            Button(action: {
+                showingAddOptions = false
+                // 图片识别添加逻辑
+                navigateToImageRecognition()
+            }) {
+                HStack(spacing: 16) {
+                    Image(systemName: "camera.viewfinder")
+                        .font(.title2)
+                        .foregroundColor(.blue)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("smart_add_from_images".localized)
+                            .font(.headline)
+                        Text("auto_extract_from_images".localized)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+            
+            Button(action: {
+                showingAddOptions = false
+                // 手动添加逻辑
+                navigateToManualAdd()
+            }) {
+                HStack(spacing: 16) {
+                    Image(systemName: "hand.point.up.left.fill")
+                        .font(.title2)
+                        .foregroundColor(.green)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("manual_add".localized)
+                            .font(.headline)
+                        Text("manual_input_history".localized)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+            
+            Button("cancel".localized, role: .cancel) {
+                showingAddOptions = false
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+        }
+        .foregroundColor(.primary)
     }
     
     private func deleteRecords(offsets: IndexSet) {
@@ -60,7 +193,26 @@ struct THHistoryView: View {
             for index in offsets {
                 modelContext.delete(records[index])
             }
+            
+            // 尝试保存上下文
+            do {
+                try modelContext.save()
+            } catch {
+                print("删除记录失败: \(error)")
+            }
         }
+    }
+    
+    // 导航到图片识别添加页面
+    private func navigateToImageRecognition() {
+        // 实现图片识别添加逻辑
+        print("导航到图片识别添加")
+    }
+    
+    // 导航到手动添加页面
+    private func navigateToManualAdd() {
+        // 实现手动添加逻辑
+        print("导航到手动添加")
     }
 }
 
@@ -72,23 +224,26 @@ struct TimelineRowView: View {
     @State private var isNotesExpanded = false
     
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            // 时间线圆点
-            VStack {
+        HStack(alignment: .top, spacing: 16) {
+            // 时间线圆点和连接线
+            VStack(spacing: 0) {
                 Circle()
-                    .fill(Color.blue)
+                    .fill(Color.accentColor)
                     .frame(width: 12, height: 12)
+                    .shadow(color: Color.accentColor.opacity(0.3), radius: 4, x: 0, y: 0)
+                
                 Rectangle()
-                    .fill(Color.gray.opacity(0.3))
-                    .frame(width: 2)
+                    .fill(Color(.systemGray3))
+                    .frame(width: 1)
+                    .frame(maxHeight: .infinity)
             }
             
-            // 内容
-            VStack(alignment: .leading, spacing: 8) {
+            // 内容区域
+            VStack(alignment: .leading, spacing: 10) {
                 // 时间和标题，以及编辑按钮
-                HStack(alignment: .top) {
+                HStack(alignment: .top, spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(record.date, style: .date)
+                        Text(record.date.formatted(date: .abbreviated, time: .omitted))
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
@@ -97,116 +252,35 @@ struct TimelineRowView: View {
                             .foregroundColor(.primary)
                     }
                     
-                    Spacer(minLength: 8)
+                    Spacer()
                     
                     // 编辑按钮
                     Button(action: onEdit) {
                         Image(systemName: "pencil")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                            .padding(8)
-                            .background(Color.blue.opacity(0.1))
+                            .font(.system(size: 16))
+                            .foregroundColor(.accentColor)
+                            .padding(6)
+                            .background(Color.accentColor.opacity(0.1))
                             .clipShape(Circle())
                     }
                     .buttonStyle(PlainButtonStyle())
+                    .transition(.scale.combined(with: .opacity))
                 }
-                .zIndex(10)
                 
                 // 图片网格
                 let allImages = record.imageDatas
                 if !allImages.isEmpty {
-                    if allImages.count == 1, let imageData = allImages.first, let uiImage = UIImage(data: imageData) {
-                        // 单张大图
-                        Button {
-                            selectedImageIndex = 0
-                            showingImageViewer = true
-                        } label: {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 200, height: 200)
-                                .clipped()
-                                .cornerRadius(8)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    } else {
-                        // 多张固定 3 列网格
-                        let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
-                        LazyVGrid(columns: columns, spacing: 8) {
-                            ForEach(Array(allImages.prefix(9).enumerated()), id: \.offset) { index, imageData in
-                                if let uiImage = UIImage(data: imageData) {
-                                    Button {
-                                        selectedImageIndex = index
-                                        showingImageViewer = true
-                                    } label: {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 100, height: 100)
-                                            .clipped()
-                                            .cornerRadius(8)
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
-                                }
-                            }
-                            
-                            // 超过9张显示更多
-                            if allImages.count > 9 {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color.gray.opacity(0.3))
-                                    .aspectRatio(1, contentMode: .fit)
-                                    .overlay(
-                                        VStack {
-                                            Image(systemName: "photo.stack")
-                                                .font(.title2)
-                                            Text("+\(allImages.count - 9)")
-                                                .font(.caption)
-                                        }
-                                        .foregroundColor(.secondary)
-                                    )
-                                    .onTapGesture {
-                                        selectedImageIndex = 9
-                                        showingImageViewer = true
-                                    }
-                            }
-                        }
-                    }
+                    imageGalleryView(images: allImages)
                 }
                 
-                // 内容及备注
+                // 备注内容
                 if !record.notes.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text("notes_section_title".localized)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            
-                            Spacer()
-                            
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    isNotesExpanded.toggle()
-                                }
-                            } label: {
-                                Image(systemName: isNotesExpanded ? "chevron.up" : "chevron.down")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        }
-                        
-                        Text(record.notes)
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .lineLimit(isNotesExpanded ? nil : 2)
-                            .animation(.easeInOut(duration: 0.3), value: isNotesExpanded)
-                    }
-                    .zIndex(1)
+                    notesSection
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, 8)
+        .padding(.trailing, 8)
         .fullScreenCover(isPresented: $showingImageViewer) {
             THImagesViewer(
                 imageDatas: record.imageDatas,
@@ -215,8 +289,105 @@ struct TimelineRowView: View {
             .ignoresSafeArea()
         }
     }
+    
+    // 图片画廊视图
+    private func imageGalleryView(images: [Data]) -> some View {
+        Group {
+            if images.count == 1, let imageData = images.first, let uiImage = UIImage(data: imageData) {
+                // 单张大图
+                Button(action: {
+                    selectedImageIndex = 0
+                    showingImageViewer = true
+                }) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 180)
+                        .clipped()
+                }
+            } else {
+                // 多图网格
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(images.indices, id: \.self) { index in
+                            if let uiImage = UIImage(data: images[index]) {
+                                Button(action: {
+                                    selectedImageIndex = index
+                                    showingImageViewer = true
+                                }) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 120, height: 120)
+                                        .clipped()
+                                        .cornerRadius(8)
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            }
+        }
+        // 轻量底部弹窗实现
+        .sheet(isPresented: $showingImageViewer) {
+            // 底部弹窗内容
+            VStack(spacing: 0) {
+                // 顶部工具栏
+                HStack {
+                    Spacer()
+                    Button("关闭") {
+                        showingImageViewer = false
+                    }
+                    .padding()
+                }
+                
+                // 图片查看器
+                THImagesViewer(
+                    imageDatas: images,
+                    initialIndex: selectedImageIndex
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .presentationDetents([.medium, .large]) // 轻量级底部弹窗支持中等和全屏尺寸
+            .presentationBackgroundInteraction(.enabled) // 允许背景交互
+        }
+    }
+    
+    // 备注部分
+    private var notesSection: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Text("notes_section_title".localized)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Button {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        isNotesExpanded.toggle()
+                    }
+                } label: {
+                    Image(systemName: isNotesExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+            
+            Text(record.notes)
+                .font(.body)
+                .foregroundColor(.secondary)
+                .lineLimit(isNotesExpanded ? nil : 2)
+                .animation(.easeInOut(duration: 0.3), value: isNotesExpanded)
+        }
+        .padding(.horizontal, 2)
+    }
 }
 
+// 预览
 #Preview {
     THHistoryView()
         .modelContainer(for: THHistoryRecord.self)
