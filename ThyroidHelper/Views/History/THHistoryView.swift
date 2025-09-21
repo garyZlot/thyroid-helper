@@ -13,6 +13,7 @@ struct THHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \THHistoryRecord.date, order: .reverse) private var records: [THHistoryRecord]
     @State private var showingAddOptions = false
+    @State private var showingManualAddHistory = false
     @State private var recordToEdit: THHistoryRecord?
     @State private var isLoading = true
     
@@ -56,6 +57,9 @@ struct THHistoryView: View {
                     .presentationDetents([.height(280)])
                     .presentationCornerRadius(20)
                     .presentationBackground(.ultraThinMaterial)
+            }
+            .sheet(isPresented: $showingManualAddHistory) {
+                THAddHistoryView()
             }
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)
@@ -211,8 +215,7 @@ struct THHistoryView: View {
     
     // 导航到手动添加页面
     private func navigateToManualAdd() {
-        // 实现手动添加逻辑
-        print("导航到手动添加")
+        showingManualAddHistory = true
     }
 }
 
