@@ -14,8 +14,12 @@ struct THHistoryView: View {
     @Query(sort: \THHistoryRecord.date, order: .reverse) private var records: [THHistoryRecord]
     @State private var showingAddOptions = false
     @State private var showingManualAddHistory = false
+    @State private var selectedImageItems: [PhotosPickerItem] = []
+    @State private var showingImagePicker = false
     @State private var recordToEdit: THHistoryRecord?
     @State private var isLoading = true
+    
+    @StateObject private var batchOCRService = THBatchOCRService()
     
     var body: some View {
         NavigationView {
@@ -63,6 +67,28 @@ struct THHistoryView: View {
             }
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                ZStack {
+                    PhotosPicker(
+                        selection: $selectedImageItems,
+                        maxSelectionCount: 9,
+                        matching: .images
+                    ) {
+                        Color.clear
+                    }
+                }
+            }
+            .onChange(of: selectedImageItems) { _, newValue in
+                if !newValue.isEmpty {
+                    showingImagePicker = true
+                    batchOCRService.processImagesAndCreateRecords(
+                        from: newValue,
+                        modelContext: modelContext
+                    ) {
+                        selectedImageItems.removeAll()
+                    }
+                }
             }
             .onAppear {
                 // 模拟加载延迟，实际项目中可移除
@@ -127,8 +153,7 @@ struct THHistoryView: View {
             
             Button(action: {
                 showingAddOptions = false
-                // 图片识别添加逻辑
-                navigateToImageRecognition()
+                showingImagePicker = true
             }) {
                 HStack(spacing: 16) {
                     Image(systemName: "camera.viewfinder")
@@ -205,12 +230,6 @@ struct THHistoryView: View {
                 print("删除记录失败: \(error)")
             }
         }
-    }
-    
-    // 导航到图片识别添加页面
-    private func navigateToImageRecognition() {
-        // 实现图片识别添加逻辑
-        print("导航到图片识别添加")
     }
     
     // 导航到手动添加页面
