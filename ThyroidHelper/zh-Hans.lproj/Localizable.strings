@@ -270,3 +270,6 @@
 "record_title_placeholder" = "输入一个标题";
 "content_placeholder" = "输入详细内容...";
 
+"loading_history" = "正在加载历史记录...";
+"use_camera_to_take_photo" = "使用相机拍摄照片";
+"select_from_photo_library" = "从相册中选择照片";

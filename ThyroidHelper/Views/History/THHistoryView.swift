@@ -38,7 +38,7 @@ struct THHistoryView: View {
                             .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                             .listRowSeparator(.hidden)
                             .background(Color(.systemBackground))
-                            .cornerRadius(12)
+                            //.cornerRadius(12)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
                         }
@@ -57,12 +57,29 @@ struct THHistoryView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingAddOptions) {
-                addOptionsSheet
-                    .presentationDetents([.height(280)])
-                    .presentationCornerRadius(20)
-                    .presentationBackground(.ultraThinMaterial)
-            }
+            .bottomActionSheet(isPresented: $showingAddOptions,
+                title: "select_add_history_method".localized,
+                options: [
+                    THBottomSheetOption(
+                        icon: "camera.viewfinder",
+                        iconColor: .blue,
+                        title: "smart_add_from_images".localized,
+                        subtitle: "auto_extract_from_images".localized
+                    ) {
+                        showingAddOptions = false
+                        showingImagePicker = true
+                    },
+                    THBottomSheetOption(
+                        icon: "hand.point.up.left.fill",
+                        iconColor: .green,
+                        title: "manual_add".localized,
+                        subtitle: "manual_input_history".localized
+                    ) {
+                        showingAddOptions = false
+                        navigateToManualAdd()
+                    }
+                ]
+            )
             .sheet(isPresented: $showingManualAddHistory) {
                 THAddHistoryView()
             }
@@ -141,81 +158,6 @@ struct THHistoryView: View {
         .padding()
     }
     
-    // 添加选项底部弹窗
-    private var addOptionsSheet: some View {
-        VStack(spacing: 0) {
-            Text("select_add_history_method".localized)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .padding()
-            
-            Divider()
-            
-            Button(action: {
-                showingAddOptions = false
-                showingImagePicker = true
-            }) {
-                HStack(spacing: 16) {
-                    Image(systemName: "camera.viewfinder")
-                        .font(.title2)
-                        .foregroundColor(.blue)
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("smart_add_from_images".localized)
-                            .font(.headline)
-                        Text("auto_extract_from_images".localized)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Divider()
-            
-            Button(action: {
-                showingAddOptions = false
-                // 手动添加逻辑
-                navigateToManualAdd()
-            }) {
-                HStack(spacing: 16) {
-                    Image(systemName: "hand.point.up.left.fill")
-                        .font(.title2)
-                        .foregroundColor(.green)
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("manual_add".localized)
-                            .font(.headline)
-                        Text("manual_input_history".localized)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Divider()
-            
-            Button("cancel".localized, role: .cancel) {
-                showingAddOptions = false
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-        }
-        .foregroundColor(.primary)
-    }
     
     private func deleteRecords(offsets: IndexSet) {
         withAnimation {
@@ -358,7 +300,7 @@ struct TimelineRowView: View {
                 // 顶部工具栏
                 HStack {
                     Spacer()
-                    Button("关闭") {
+                    Button("close".localized) {
                         showingImageViewer = false
                     }
                     .padding()

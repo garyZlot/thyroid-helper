@@ -103,24 +103,32 @@ struct THAddIndicatorView: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
-                .actionSheet(isPresented: $showingSourceActionSheet) {
-                    ActionSheet(
-                        title: Text("select_photo_source".localized),
-                        buttons: [
-                            .default(Text("take_photo".localized)) {
-                                if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                                    imagePickerSource = .camera
-                                    showingImagePicker = true
-                                }
-                            },
-                            .default(Text("choose_from_library".localized)) {
-                                imagePickerSource = .photoLibrary
+                .bottomActionSheet(
+                    isPresented: $showingSourceActionSheet,
+                    title: "select_photo_source".localized,
+                    options: [
+                        THBottomSheetOption(
+                            icon: "camera",
+                            iconColor: .blue,
+                            title: "take_photo".localized,
+                            subtitle: "use_camera_to_take_photo".localized
+                        ) {
+                            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                                imagePickerSource = .camera
                                 showingImagePicker = true
-                            },
-                            .cancel(Text("cancel".localized))
-                        ]
-                    )
-                }
+                            }
+                        },
+                        THBottomSheetOption(
+                            icon: "photo.on.rectangle",
+                            iconColor: .green,
+                            title: "choose_from_library".localized,
+                            subtitle: "select_from_photo_library".localized
+                        ) {
+                            imagePickerSource = .photoLibrary
+                            showingImagePicker = true
+                        }
+                    ]
+                )
                 
                 // 甲状腺数据输入
                 if showManualInput || !indicators.isEmpty {
