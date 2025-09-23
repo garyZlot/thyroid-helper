@@ -129,7 +129,7 @@
 "upload_images_only" = "Upload Images Only";
 "checkup_values" = "Checkup Values";
 "hide_input_fields" = "Hide Input Fields";
-"add_checkup_indicator" = "Add Indicator Record";
+"add_checkup_indicator" = "Add Indicator";
 "add_medical_history" = "Add History Record";
 "record_already_exists" = "Record Already Exists";
 "add_anyway" = "Add Anyway";

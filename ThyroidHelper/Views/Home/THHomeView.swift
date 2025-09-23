@@ -402,7 +402,7 @@ struct QuickActionButtons: View {
     var body: some View {
         HStack(spacing: 16) {
             Button(action: { showingAddRecord = true }) {
-                Label("camera_input".localized, systemImage: "camera.fill")
+                Label("add_checkup_indicator".localized, systemImage: "plus.circle.fill")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(.blue)
