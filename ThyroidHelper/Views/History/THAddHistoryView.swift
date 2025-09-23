@@ -34,7 +34,7 @@ struct THAddHistoryView: View {
                     .textFieldStyle(.roundedBorder)
                 
                 // 图片网格选择
-                Section("photos".localized) {
+                Section("history_section_photos".localized) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
                             // 显示已选择的图片
@@ -81,7 +81,7 @@ struct THAddHistoryView: View {
                     }
                 }
                 
-                Section("notes".localized) {
+                Section("history_section_notes".localized) {
                     TextField("content_placeholder".localized, text: $notes, axis: .vertical)
                         .lineLimit(5...10)
                         .textFieldStyle(.roundedBorder)

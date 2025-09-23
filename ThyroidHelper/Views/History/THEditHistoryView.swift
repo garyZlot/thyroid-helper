@@ -21,11 +21,9 @@ struct THEditHistoryView: View {
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data]
     
-    // OCR 相关状态
-    @StateObject private var ocrService = THHistoryCheckupOCRService()
-    
-    // 图片相关状态
     @State private var showingImagePicker = false
+    @State private var showingSourceActionSheet = false
+    @State private var showingPhotoPicker = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
     
@@ -45,64 +43,7 @@ struct THEditHistoryView: View {
                 TextField("record_title_placeholder".localized, text: $title)
                     .textFieldStyle(.roundedBorder)
                 
-                VStack(spacing: 0) {
-                    Button(action: {
-                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                            imagePickerSource = .camera
-                            showingImagePicker = true
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "camera")
-                                .font(.title2)
-                                .foregroundColor(.blue)
-                            Text("take_photo".localized)
-                                .font(.body)
-                                .foregroundColor(.blue)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                        }
-                        .padding(.vertical, 12)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    Divider()
-                    
-                    PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
-                        HStack {
-                            Image(systemName: "photo")
-                                .font(.title2)
-                                .foregroundColor(.green)
-                            Text("choose_from_library".localized)
-                                .font(.body)
-                                .foregroundColor(.green)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.green)
-                        }
-                        .padding(.vertical, 12)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                
-                // OCR识别处理中的提示
-                if ocrService.isProcessing {
-                    HStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        Text("ocr_processing_message".localized)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                }
-                
-                // 图片预览
-                if !selectedImageDatas.isEmpty {
+                Section("history_section_photos".localized) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
                             ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
@@ -115,7 +56,6 @@ struct THEditHistoryView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: 8))
                                         
                                         Button {
-                                            print("删除图片 at index \(index)")
                                             selectedImageDatas.remove(at: index)
                                         } label: {
                                             Image(systemName: "xmark.circle.fill")
@@ -126,38 +66,31 @@ struct THEditHistoryView: View {
                                     }
                                 }
                             }
+                            
+                            if selectedImageDatas.count < 9 {
+                                Button(action: {
+                                    showingSourceActionSheet = true
+                                }) {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(width: 100, height: 100)
+                                        .overlay(
+                                            Image(systemName: "plus")
+                                                .font(.largeTitle)
+                                                .foregroundColor(.gray)
+                                        )
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
                         }
-                        .padding(.horizontal)
+                        .padding(.vertical, 8)
                     }
                 }
                 
-                TextField("content_placeholder".localized, text: $notes, axis: .vertical)
-                    .lineLimit(5...10)
-                    .textFieldStyle(.roundedBorder)
-                
-                // OCR识别的原始文本（如果有）
-                if !ocrService.recognizedText.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("section_recognized_text".localized)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Button("copy_text".localized) {
-                                UIPasteboard.general.string = ocrService.recognizedText
-                            }
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                        }
-                        
-                        Text(ocrService.recognizedText)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .textSelection(.enabled)
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(8)
-                    }
+                Section("history_section_notes".localized) {
+                    TextField("content_placeholder".localized, text: $notes, axis: .vertical)
+                        .lineLimit(5...10)
+                        .textFieldStyle(.roundedBorder)
                 }
             }
             .navigationTitle("edit_history_nav_title".localized)
@@ -176,56 +109,64 @@ struct THEditHistoryView: View {
                     .disabled(!canSave)
                 }
             }
+            .bottomActionSheet(
+                isPresented: $showingSourceActionSheet,
+                title: "select_photo_source".localized,
+                options: [
+                    THBottomSheetOption(
+                        icon: "camera",
+                        iconColor: .blue,
+                        title: "take_photo".localized,
+                        subtitle: "use_camera_to_take_photo".localized
+                    ) {
+                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                            imagePickerSource = .camera
+                            showingImagePicker = true
+                        }
+                    },
+                    THBottomSheetOption(
+                        icon: "photo.on.rectangle",
+                        iconColor: .green,
+                        title: "choose_from_library".localized,
+                        subtitle: "select_from_photo_library".localized
+                    ) {
+                        showingPhotoPicker = true
+                    }
+                ]
+            )
             .sheet(isPresented: $showingImagePicker) {
                 THImagePicker(image: $capturedImage, sourceType: imagePickerSource)
             }
+            .photosPicker(isPresented: $showingPhotoPicker, selection: $selectedPhotos, maxSelectionCount: 9, matching: .images)
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
-                    // 添加图片到数据数组
                     if let imageData = newImage.jpegData(compressionQuality: 0.8) {
                         selectedImageDatas.append(imageData)
                     }
-                    // 开始OCR识别
-                    ocrService.processImage(newImage)
+                    capturedImage = nil
                 }
             }
             .onChange(of: selectedPhotos) { _, newValue in
+                print("📸 选择了 \(newValue.count) 张照片")
                 Task {
-                    var newImages: [UIImage] = []
-                    for photo in newValue {
-                        if let data = try? await photo.loadTransferable(type: Data.self) {
-                            if !selectedImageDatas.contains(data) {
-                                selectedImageDatas.append(data)
-                                // 收集新添加的图片用于OCR
-                                if let image = UIImage(data: data) {
-                                    newImages.append(image)
-                                }
+                    let photos = newValue
+                    selectedPhotos.removeAll()
+                    var newImages: [Data] = []
+                    
+                    for photo in photos {
+                        do {
+                            if let data = try await photo.loadTransferable(type: Data.self) {
+                                print("✅ 成功加载图片数据，大小: \(data.count) bytes")
+                                newImages.append(data)
                             }
+                        } catch {
+                            print("❌ 加载图片失败: \(error)")
                         }
                     }
-                    selectedPhotos.removeAll()
                     
-                    // 对第一张新图片进行OCR识别
-                    if let firstImage = newImages.first {
-                        ocrService.processImage(firstImage)
-                    }
-                }
-            }
-            .onChange(of: ocrService.extractedDate) { _, newDate in
-                if let newDate = newDate {
-                    selectedDate = newDate
-                }
-            }
-            .onChange(of: ocrService.extractedCheckupName) { _, newTitle in
-                if !newTitle.isEmpty {
-                    title = newTitle
-                }
-            }
-            .onChange(of: ocrService.extractedNotes) { _, newNotes in
-                if !newNotes.isEmpty {
-                    // 编辑时，如果已有内容，询问是否替换
-                    if notes.isEmpty {
-                        notes = newNotes
+                    await MainActor.run {
+                        selectedImageDatas.append(contentsOf: newImages)
+                        print("🎯 现在总共有 \(selectedImageDatas.count) 张图片")
                     }
                 }
             }
@@ -237,12 +178,9 @@ struct THEditHistoryView: View {
     }
     
     private func saveChanges() {
-        // 更新记录信息
         record.date = selectedDate
         record.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         record.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // 更新图片数据
         record.imageDatas = selectedImageDatas
         
         do {
@@ -252,22 +190,4 @@ struct THEditHistoryView: View {
             print("❌ 保存历史记录失败: \(error.localizedDescription)")
         }
     }
-}
-
-#Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: THHistoryRecord.self, configurations: config)
-    
-    let sampleRecord = THHistoryRecord(
-        date: Date(),
-        title: "甲状腺超声检查",
-        imageDatas: [],
-        notes: "检查结果正常"
-    )
-    container.mainContext.insert(sampleRecord)
-    
-    return NavigationView {
-        THEditHistoryView(record: sampleRecord)
-    }
-    .modelContainer(container)
 }

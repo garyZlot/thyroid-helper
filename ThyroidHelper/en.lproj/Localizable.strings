@@ -273,3 +273,5 @@
 "loading_history" = "Loading history...";
 "use_camera_to_take_photo" = "Take a photo with camera";
 "select_from_photo_library" = "Select photo from library";
+"history_section_photos" = "Photos";
+"history_section_notes" = "Content & Notes";
