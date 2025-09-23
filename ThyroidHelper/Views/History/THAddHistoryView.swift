@@ -16,7 +16,7 @@ struct THAddHistoryView: View {
     @State private var title = ""
     @State private var notes = ""
     @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var selectedImageDatas: [Data] = []
+    @State private var selectedImageDatas: [ImageData] = []
     
     // 相机相关状态
     @State private var showingImagePicker = false
@@ -24,6 +24,16 @@ struct THAddHistoryView: View {
     @State private var showingPhotoPicker = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
+    
+    // 为了避免删除时的索引问题，创建一个包含唯一ID的数据结构
+    struct ImageData: Identifiable, Equatable {
+        let id = UUID()
+        let data: Data
+        
+        static func == (lhs: ImageData, rhs: ImageData) -> Bool {
+            return lhs.id == rhs.id
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -38,23 +48,19 @@ struct THAddHistoryView: View {
                     let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
                     LazyVGrid(columns: columns, spacing: 8) {
                         // 显示已选择的图片
-                        ForEach(selectedImageDatas.indices, id: \.self) { index in
-                            if index < selectedImageDatas.count, let uiImage = UIImage(data: selectedImageDatas[index]) {
+                        ForEach(selectedImageDatas) { imageData in
+                            if let uiImage = UIImage(data: imageData.data) {
                                 ZStack(alignment: .topTrailing) {
                                     Image(uiImage: uiImage)
                                         .resizable()
-                                        .aspectRatio(1, contentMode: .fill) // 强制 1:1 比例
-                                        .frame(maxWidth: .infinity) // 让图片填满网格宽度
-                                        .frame(height: 100) // 固定高度
-                                        .clipped() // 裁剪超出部分
+                                        .aspectRatio(1, contentMode: .fill)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 100)
+                                        .clipped()
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                     
                                     Button {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            if index < selectedImageDatas.count {
-                                                selectedImageDatas.remove(at: index)
-                                            }
-                                        }
+                                        deleteImage(with: imageData.id)
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
                                             .font(.title3)
@@ -142,20 +148,34 @@ struct THAddHistoryView: View {
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
                     if let imageData = newImage.jpegData(compressionQuality: 0.8) {
-                        selectedImageDatas.append(imageData)
+                        selectedImageDatas.append(ImageData(data: imageData))
                     }
+                    capturedImage = nil // 清空，避免重复添加
                 }
             }
             .onChange(of: selectedPhotos) { _, newValue in
+                print("📸 选择了 \(newValue.count) 张照片")
                 Task {
+                    var newImages: [ImageData] = []
+                    
                     for photo in newValue {
-                        if let data = try? await photo.loadTransferable(type: Data.self) {
-                            if !selectedImageDatas.contains(data) {
-                                selectedImageDatas.append(data)
+                        do {
+                            if let data = try await photo.loadTransferable(type: Data.self) {
+                                print("✅ 成功加载图片数据，大小: \(data.count) bytes")
+                                let newItem = ImageData(data: data)
+                                newImages.append(newItem)
                             }
+                        } catch {
+                            print("❌ 加载图片失败: \(error)")
                         }
                     }
-                    selectedPhotos.removeAll()
+                    
+                    // 回到主线程更新 UI
+                    await MainActor.run {
+                        selectedImageDatas.append(contentsOf: newImages)
+                        selectedPhotos.removeAll()
+                        print("🎯 现在总共有 \(selectedImageDatas.count) 张图片")
+                    }
                 }
             }
         }
@@ -165,11 +185,23 @@ struct THAddHistoryView: View {
         return !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
+    // 独立的删除方法，避免在闭包中的复杂逻辑
+    private func deleteImage(with id: UUID) {
+        print("🗑️ 准备删除图片，ID: \(id)")
+        print("🗑️ 删除前有 \(selectedImageDatas.count) 张图片")
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedImageDatas.removeAll { $0.id == id }
+        }
+        
+        print("🗑️ 删除后有 \(selectedImageDatas.count) 张图片")
+    }
+    
     private func saveRecord() {
         let record = THHistoryRecord(
             date: selectedDate,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            imageDatas: selectedImageDatas,
+            imageDatas: selectedImageDatas.map { $0.data }, // 提取 Data 数组
             notes: notes.trimmingCharacters(in: .whitespacesAndNewlines)
         )
         
