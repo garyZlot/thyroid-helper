@@ -117,6 +117,7 @@ extension View {
                 options: options,
                 cancelTitle: cancelTitle,
                 onDismiss: {
+                    print("BottomActionSheet dismissed")
                     isPresented.wrappedValue = false
                 }
             )

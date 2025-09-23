@@ -58,7 +58,9 @@ struct THAddIndicatorView: View {
                 Section("input_method".localized) {
                     VStack(spacing: 0) {
                         Button(action: {
+                            print("Before setting showingSourceActionSheet: \(showingSourceActionSheet)")
                             showingSourceActionSheet = true
+                            print("After setting showingSourceActionSheet: \(showingSourceActionSheet)")
                         }) {
                             HStack {
                                 Image(systemName: "camera.viewfinder")
@@ -80,9 +82,13 @@ struct THAddIndicatorView: View {
                         Divider()
                         
                         Button(action: {
-                            showManualInput = true
-                            if indicators.isEmpty {
-                                setupDefaultIndicators()
+                            showManualInput.toggle()
+                            if showManualInput {
+                                if indicators.isEmpty {
+                                    setupDefaultIndicators()
+                                }
+                            } else {
+                                indicators.removeAll()
                             }
                         }) {
                             HStack {
@@ -103,32 +109,6 @@ struct THAddIndicatorView: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
-                .bottomActionSheet(
-                    isPresented: $showingSourceActionSheet,
-                    title: "select_photo_source".localized,
-                    options: [
-                        THBottomSheetOption(
-                            icon: "camera",
-                            iconColor: .blue,
-                            title: "take_photo".localized,
-                            subtitle: "use_camera_to_take_photo".localized
-                        ) {
-                            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                                imagePickerSource = .camera
-                                showingImagePicker = true
-                            }
-                        },
-                        THBottomSheetOption(
-                            icon: "photo.on.rectangle",
-                            iconColor: .green,
-                            title: "choose_from_library".localized,
-                            subtitle: "select_from_photo_library".localized
-                        ) {
-                            imagePickerSource = .photoLibrary
-                            showingImagePicker = true
-                        }
-                    ]
-                )
                 
                 // 甲状腺数据输入
                 if showManualInput || !indicators.isEmpty {
@@ -172,27 +152,8 @@ struct THAddIndicatorView: View {
                     .disabled(!canSave)
                 }
             }
-            .sheet(isPresented: $showingImagePicker) {
-                THImagePicker(image: $capturedImage, sourceType: imagePickerSource)
-            }
-            .sheet(isPresented: $showingOCRResult) {
-                if let image = capturedImage {
-                    THPanelOCRResultView(
-                        capturedImage: image,
-                        indicatorType: thyroidPanelType,
-                        onConfirm: { extractedData in
-                            handleThyroidOCRResult(extractedData)
-                        },
-                        onDateExtracted: { extractedDate in
-                            if let date = extractedDate {
-                                selectedDate = date
-                            }
-                        }
-                    )
-                }
-            }
             .onChange(of: capturedImage) { _, newImage in
-                if let newImage = newImage {
+                if newImage != nil {
                     showingOCRResult = true
                 }
             }
@@ -206,6 +167,51 @@ struct THAddIndicatorView: View {
                     let dateString = duplicate.date.localizedMedium
                     Text(String(format: "duplicate_record_message".localized, dateString, duplicate.type.rawValue))
                 }
+            }
+        }
+        .bottomActionSheet(
+            isPresented: $showingSourceActionSheet,
+            title: "select_photo_source".localized,
+            options: [
+                THBottomSheetOption(
+                    icon: "camera",
+                    iconColor: .blue,
+                    title: "take_photo".localized,
+                    subtitle: "use_camera_to_take_photo".localized
+                ) {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        imagePickerSource = .camera
+                        showingImagePicker = true
+                    }
+                },
+                THBottomSheetOption(
+                    icon: "photo.on.rectangle",
+                    iconColor: .green,
+                    title: "choose_from_library".localized,
+                    subtitle: "select_from_photo_library".localized
+                ) {
+                    imagePickerSource = .photoLibrary
+                    showingImagePicker = true
+                }
+            ]
+        )
+        .sheet(isPresented: $showingImagePicker) {
+            THImagePicker(image: $capturedImage, sourceType: imagePickerSource)
+        }
+        .sheet(isPresented: $showingOCRResult) {
+            if let image = capturedImage {
+                THPanelOCRResultView(
+                    capturedImage: image,
+                    indicatorType: thyroidPanelType,
+                    onConfirm: { extractedData in
+                        handleThyroidOCRResult(extractedData)
+                    },
+                    onDateExtracted: { extractedDate in
+                        if let date = extractedDate {
+                            selectedDate = date
+                        }
+                    }
+                )
             }
         }
     }
