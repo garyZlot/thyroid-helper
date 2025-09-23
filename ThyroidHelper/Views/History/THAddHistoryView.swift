@@ -16,7 +16,7 @@ struct THAddHistoryView: View {
     @State private var title = ""
     @State private var notes = ""
     @State private var selectedPhotos: [PhotosPickerItem] = []
-    @State private var selectedImageDatas: [ImageData] = []
+    @State private var selectedImageDatas: [Data] = []
     
     // 相机相关状态
     @State private var showingImagePicker = false
@@ -24,16 +24,6 @@ struct THAddHistoryView: View {
     @State private var showingPhotoPicker = false
     @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var capturedImage: UIImage?
-    
-    // 为了避免删除时的索引问题，创建一个包含唯一ID的数据结构
-    struct ImageData: Identifiable, Equatable {
-        let id = UUID()
-        let data: Data
-        
-        static func == (lhs: ImageData, rhs: ImageData) -> Bool {
-            return lhs.id == rhs.id
-        }
-    }
     
     var body: some View {
         NavigationStack {
@@ -45,53 +35,50 @@ struct THAddHistoryView: View {
                 
                 // 图片网格选择
                 Section("photos".localized) {
-                    let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        // 显示已选择的图片
-                        ForEach(selectedImageDatas) { imageData in
-                            if let uiImage = UIImage(data: imageData.data) {
-                                ZStack(alignment: .topTrailing) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .aspectRatio(1, contentMode: .fill)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 100)
-                                        .clipped()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    
-                                    Button {
-                                        print("🗑️ 删除图片按钮点击，ID: \(imageData.id)")
-                                        deleteImage(with: imageData.id)
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .font(.title3)
-                                            .foregroundColor(.red)
-                                            .background(Color.white, in: Circle())
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 12) {
+                            // 显示已选择的图片
+                            ForEach(Array(selectedImageDatas.enumerated()), id: \.offset) { index, imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 100, height: 100)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        
+                                        Button {
+                                            print("删除图片 at index \(index)")
+                                            selectedImageDatas.remove(at: index)
+                                        } label: {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundColor(.red)
+                                                .background(Color.white, in: Circle())
+                                        }
+                                        .offset(x: 5, y: -5)
                                     }
-                                    .offset(x: 5, y: -5)
                                 }
                             }
-                        }
-                        
-                        // "+" 添加按钮，总是显示在最后
-                        if selectedImageDatas.count < 9 { // 限制最多9张图片
-                            Button(action: {
-                                showingSourceActionSheet = true
-                            }) {
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(maxWidth: .infinity) // 与图片保持一致的宽度
-                                    .frame(height: 100)
-                                    .overlay(
-                                        Image(systemName: "plus")
-                                            .font(.largeTitle)
-                                            .foregroundColor(.gray)
-                                    )
+                            
+                            // "+" 添加按钮，总是显示在最后
+                            if selectedImageDatas.count < 9 { // 限制最多9张图片
+                                Button(action: {
+                                    showingSourceActionSheet = true
+                                }) {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(width: 100, height: 100)
+                                        .overlay(
+                                            Image(systemName: "plus")
+                                                .font(.largeTitle)
+                                                .foregroundColor(.gray)
+                                        )
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
-                            .buttonStyle(PlainButtonStyle())
                         }
+                        .padding(.vertical, 8)
                     }
-                    .padding(.vertical, 8)
                 }
                 
                 Section("notes".localized) {
@@ -149,9 +136,9 @@ struct THAddHistoryView: View {
             .onChange(of: capturedImage) { _, newImage in
                 if let newImage = newImage {
                     if let imageData = newImage.jpegData(compressionQuality: 0.8) {
-                        selectedImageDatas.append(ImageData(data: imageData))
+                        selectedImageDatas.append(imageData)
                     }
-                    capturedImage = nil // 清空，避免重复添加
+                    capturedImage = nil
                 }
             }
             .onChange(of: selectedPhotos) { _, newValue in
@@ -159,14 +146,13 @@ struct THAddHistoryView: View {
                 Task {
                     let photos = newValue
                     selectedPhotos.removeAll()
-                    var newImages: [ImageData] = []
+                    var newImages: [Data] = []
                     
                     for photo in photos {
                         do {
                             if let data = try await photo.loadTransferable(type: Data.self) {
                                 print("✅ 成功加载图片数据，大小: \(data.count) bytes")
-                                let newItem = ImageData(data: data)
-                                newImages.append(newItem)
+                                newImages.append(data)
                             }
                         } catch {
                             print("❌ 加载图片失败: \(error)")
@@ -187,23 +173,11 @@ struct THAddHistoryView: View {
         return !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    // 独立的删除方法，避免在闭包中的复杂逻辑
-    private func deleteImage(with id: UUID) {
-        print("🗑️ 准备删除图片，ID: \(id)")
-        print("🗑️ 删除前有 \(selectedImageDatas.count) 张图片")
-        
-        withAnimation(.easeInOut(duration: 0.2)) {
-            selectedImageDatas.removeAll { $0.id == id }
-        }
-        
-        print("🗑️ 删除后有 \(selectedImageDatas.count) 张图片")
-    }
-    
     private func saveRecord() {
         let record = THHistoryRecord(
             date: selectedDate,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            imageDatas: selectedImageDatas.map { $0.data }, // 提取 Data 数组
+            imageDatas: selectedImageDatas,
             notes: notes.trimmingCharacters(in: .whitespacesAndNewlines)
         )
         
