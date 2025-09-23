@@ -115,6 +115,7 @@ struct THEditHistoryView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: 8))
                                         
                                         Button {
+                                            print("删除图片 at index \(index)")
                                             selectedImageDatas.remove(at: index)
                                         } label: {
                                             Image(systemName: "xmark.circle.fill")

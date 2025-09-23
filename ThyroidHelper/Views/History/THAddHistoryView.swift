@@ -60,6 +60,7 @@ struct THAddHistoryView: View {
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                     
                                     Button {
+                                        print("🗑️ 删除图片按钮点击，ID: \(imageData.id)")
                                         deleteImage(with: imageData.id)
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
@@ -156,9 +157,11 @@ struct THAddHistoryView: View {
             .onChange(of: selectedPhotos) { _, newValue in
                 print("📸 选择了 \(newValue.count) 张照片")
                 Task {
+                    let photos = newValue
+                    selectedPhotos.removeAll()
                     var newImages: [ImageData] = []
                     
-                    for photo in newValue {
+                    for photo in photos {
                         do {
                             if let data = try await photo.loadTransferable(type: Data.self) {
                                 print("✅ 成功加载图片数据，大小: \(data.count) bytes")
@@ -173,7 +176,6 @@ struct THAddHistoryView: View {
                     // 回到主线程更新 UI
                     await MainActor.run {
                         selectedImageDatas.append(contentsOf: newImages)
-                        selectedPhotos.removeAll()
                         print("🎯 现在总共有 \(selectedImageDatas.count) 张图片")
                     }
                 }
