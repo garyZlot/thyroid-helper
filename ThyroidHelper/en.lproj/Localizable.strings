@@ -290,4 +290,5 @@
 "icloud_signin_required" = "iCloud Sign-in Required";
 "icloud_signin_message" = "To use data synchronization features, please sign in to your iCloud account in Settings first.";
 "go_to_settings" = "Go to Settings";
+"medical_disclaimer_title" = "Medical Disclaimer";
 

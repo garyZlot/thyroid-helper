@@ -290,3 +290,4 @@
 "icloud_signin_required" = "需要登录 iCloud";
 "icloud_signin_message" = "要使用数据同步功能，请先在设置中登录您的 iCloud 账户。";
 "go_to_settings" = "前往设置";
+"medical_disclaimer_title" = "医疗免责声明";
