@@ -295,3 +295,15 @@
 "status_low" = "偏低";
 "status_normal" = "正常";
 "status_high" = "偏高";
+
+"checkup_data_export" = "检查数据导出";
+"additional_exports" = "其他导出";
+"history_records_export" = "历史记录导出";
+"pdf_format_only" = "(仅PDF格式)";
+"export_checkup_data" = "导出检查数据";
+"export_history_records" = "导出历史记录";
+"no_history_data_to_export" = "没有历史记录可导出";
+"history_records_pdf_title" = "甲状腺助手 - 历史记录";
+"exporting" = "导出中...";
+"pdf_image_label_format" = "图片 %d";
+"pdf_notes_title" = "备注：";

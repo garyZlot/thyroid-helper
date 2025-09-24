@@ -17,7 +17,8 @@ struct THDataExportView: View {
     @State private var exportURL: URL?
     @State private var showingError = false
     @State private var errorMessage = ""
-    @State private var isExporting = false
+    @State private var isExportingCheckup = false
+    @State private var isExportingHistory = false
     
     var body: some View {
         Form {
@@ -42,7 +43,7 @@ struct THDataExportView: View {
                     Spacer()
                     if let earliest = checkupRecords.min(by: { $0.date < $1.date }),
                        let latest = checkupRecords.max(by: { $0.date < $1.date }) {
-                        Text("\(earliest.date.formatted(date: .abbreviated, time: .omitted)) - \(latest.date.formatted(date: .abbreviated, time: .omitted))")
+                        Text("\(earliest.date.formatted(date: .numeric, time: .omitted)) - \(latest.date.formatted(date: .numeric, time: .omitted))")
                             .foregroundColor(.secondary)
                     } else {
                         Text("no_data".localized)
@@ -51,7 +52,7 @@ struct THDataExportView: View {
                 }
                 
                 Button(action: exportCheckupData) {
-                    if isExporting {
+                    if isExportingCheckup {
                         HStack {
                             ProgressView()
                                 .scaleEffect(0.8)
@@ -63,11 +64,11 @@ struct THDataExportView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .disabled(checkupRecords.isEmpty || isExporting)
+                .disabled(checkupRecords.isEmpty || isExportingCheckup || isExportingHistory)
             }
             
             // 次要功能 - 历史记录导出
-            Section {
+            Section("additional_exports".localized) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("history_records_export".localized)
@@ -85,7 +86,7 @@ struct THDataExportView: View {
                 }
                 
                 Button(action: exportHistoryData) {
-                    if isExporting {
+                    if isExportingHistory {
                         HStack {
                             ProgressView()
                                 .scaleEffect(0.8)
@@ -93,16 +94,11 @@ struct THDataExportView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        Label("export_history_records".localized, systemImage: "doc.richtext")
-                            .font(.subheadline)
+                        Label("export_history_records".localized, systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .disabled(historyRecords.isEmpty || isExporting)
-            } header: {
-                Text("additional_exports".localized)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                .disabled(historyRecords.isEmpty || isExportingCheckup || isExportingHistory)
             }
             
             Section {
@@ -133,7 +129,7 @@ struct THDataExportView: View {
             return
         }
         
-        isExporting = true
+        isExportingCheckup = true
         
         Task {
             do {
@@ -161,7 +157,7 @@ struct THDataExportView: View {
                     await MainActor.run {
                         exportURL = fileURL
                         showingShareSheet = true
-                        isExporting = false
+                        isExportingCheckup = false
                     }
                 } else {
                     throw NSError(domain: "export_error".localized, code: -1, userInfo: [NSLocalizedDescriptionKey: "file_creation_failed".localized])
@@ -171,7 +167,7 @@ struct THDataExportView: View {
                 await MainActor.run {
                     errorMessage = error.localizedDescription
                     showingError = true
-                    isExporting = false
+                    isExportingCheckup = false
                 }
             }
         }
@@ -185,7 +181,7 @@ struct THDataExportView: View {
             return
         }
         
-        isExporting = true
+        isExportingHistory = true
         
         Task {
             do {
@@ -204,7 +200,7 @@ struct THDataExportView: View {
                     await MainActor.run {
                         exportURL = fileURL
                         showingShareSheet = true
-                        isExporting = false
+                        isExportingHistory = false
                     }
                 } else {
                     throw NSError(domain: "export_error".localized, code: -1, userInfo: [NSLocalizedDescriptionKey: "file_creation_failed".localized])
@@ -214,7 +210,7 @@ struct THDataExportView: View {
                 await MainActor.run {
                     errorMessage = error.localizedDescription
                     showingError = true
-                    isExporting = false
+                    isExportingHistory = false
                 }
             }
         }
@@ -349,7 +345,7 @@ struct THDataExportView: View {
                         title.draw(at: CGPoint(x: 50, y: 50), withAttributes: titleAttributes)
                         
                         let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
+                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                         let exportDate = String(format: "export_time_format".localized, dateFormatter.string(from: Date()))
                         let dateAttributes = [
                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12),
@@ -366,7 +362,7 @@ struct THDataExportView: View {
                             }
                             
                             let recordDateFormatter = DateFormatter()
-                            recordDateFormatter.dateFormat = "yyyy年MM月dd日"
+                            recordDateFormatter.dateFormat = "yyyy-MM-dd"
                             let recordTitle = "\(recordDateFormatter.string(from: record.date)) - \(record.type.localizedName)"
                             
                             let recordAttributes = [
@@ -469,7 +465,7 @@ struct THDataExportView: View {
                         
                         // 导出时间
                         let dateFormatter = DateFormatter()
-                        dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
+                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                         let exportDate = String(format: "export_time_format".localized, dateFormatter.string(from: Date()))
                         let dateAttributes = [
                             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
@@ -479,7 +475,7 @@ struct THDataExportView: View {
                         yPosition += 40
                         
                         let recordDateFormatter = DateFormatter()
-                        recordDateFormatter.dateFormat = "yyyy年MM月dd日"
+                        recordDateFormatter.dateFormat = "yyyy-MM-dd"
                         
                         // 按时间降序排序历史记录
                         let sortedHistoryRecords = self.historyRecords.sorted { $0.date > $1.date }
@@ -557,7 +553,7 @@ struct THDataExportView: View {
                                         
                                         // 如果有多张图片，添加图片标号
                                         if record.imageDatas.count > 1 {
-                                            let imageLabel = "图片 \(imageIndex + 1)"
+                                            let imageLabel = String(format: "pdf_image_label_format".localized, imageIndex + 1)
                                             let labelAttributes = [
                                                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12),
                                                 NSAttributedString.Key.foregroundColor: UIColor.gray
@@ -577,7 +573,7 @@ struct THDataExportView: View {
                                     yPosition = margins
                                 }
                                 
-                                let notesTitle = "备注："
+                                let notesTitle = "pdf_notes_title".localized
                                 let notesTitleAttributes = [
                                     NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14),
                                     NSAttributedString.Key.foregroundColor: UIColor.darkGray

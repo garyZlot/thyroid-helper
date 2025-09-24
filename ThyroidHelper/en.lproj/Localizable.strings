@@ -296,3 +296,14 @@
 "status_normal" = "Normal";
 "status_high" = "Above Normal";
 
+"checkup_data_export" = "Checkup Data Export";
+"additional_exports" = "Additional Exports";
+"history_records_export" = "History Records Export";
+"pdf_format_only" = "(Only PDF Format)";
+"export_checkup_data" = "Export Checkup Data";
+"export_history_records" = "Export History Records";
+"no_history_data_to_export" = "No history data to export";
+"history_records_pdf_title" = "Thyroid Helper - History Records";
+"exporting" = "Exporting...";
+"pdf_image_label_format" = "Image %d";
+"pdf_notes_title" = "Notes:";
