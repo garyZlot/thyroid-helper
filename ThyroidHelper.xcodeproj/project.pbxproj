@@ -212,6 +212,9 @@
 			isa = PBXGroup;
 			children = (
 				689F16FE2E5C9E1F0047ABAB /* THProfileView.swift */,
+				689F17092E5C9E8C0047ABAB /* THAboutView.swift */,
+				689F17072E5C9E850047ABAB /* THDataExportView.swift */,
+				689F17052E5C9E7A0047ABAB /* THNotificationSettingsView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -311,22 +314,11 @@
 				2FBB78C52E6BBE7900360A3E /* Trends */,
 				2FBB78C42E6BBE4C00360A3E /* Home */,
 				2F7823802E697F6100CDEF24 /* Components */,
-				689F17042E5C9E6E0047ABAB /* Settings */,
 				689F16F42E5C9D8A0047ABAB /* THMainTabView.swift */,
 				689F16F22E5C9D700047ABAB /* THLoginView.swift */,
 				689F16F02E5C9D570047ABAB /* THContentView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		689F17042E5C9E6E0047ABAB /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				689F17092E5C9E8C0047ABAB /* THAboutView.swift */,
-				689F17072E5C9E850047ABAB /* THDataExportView.swift */,
-				689F17052E5C9E7A0047ABAB /* THNotificationSettingsView.swift */,
-			);
-			path = Settings;
 			sourceTree = "<group>";
 		};
 		689F170D2E5CA11D0047ABAB /* Frameworks */ = {

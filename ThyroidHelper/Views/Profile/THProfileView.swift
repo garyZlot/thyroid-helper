@@ -46,12 +46,12 @@ struct THProfileView: View {
                     .padding(.vertical, 8)
                 }
                 
-                // 数据统计
-                Section("data_statistics".localized) {
-                    StatRow(title: "checkup_records".localized, value: String(format: "records_count_format".localized, records.count))
-                    StatRow(title: "recent_checkup".localized, value: lastCheckupText)
-                    StatRow(title: "data_sync".localized, value: cloudManager.isSignedInToiCloud ? "enabled".localized : "disabled".localized)
-                }
+//                // 数据统计
+//                Section("data_statistics".localized) {
+//                    StatRow(title: "checkup_records".localized, value: String(format: "records_count_format".localized, records.count))
+//                    StatRow(title: "recent_checkup".localized, value: lastCheckupText)
+//                    StatRow(title: "data_sync".localized, value: cloudManager.isSignedInToiCloud ? "enabled".localized : "disabled".localized)
+//                }
                 
                 // 设置选项
                 Section("settings".localized) {

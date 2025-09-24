@@ -275,3 +275,11 @@
 "select_from_photo_library" = "Select photo from library";
 "history_section_photos" = "Photos";
 "history_section_notes" = "Content & Notes";
+
+// THCloudKitManager
+"sync_status_not_synced" = "Not Synced";
+"sync_status_icloud_connected" = "iCloud Connected";
+"sync_status_please_sign_in_icloud" = "Please Sign In to iCloud";
+"sync_status_icloud_unavailable" = "iCloud Unavailable";
+"sync_status_icloud_temporarily_unavailable" = "iCloud Temporarily Unavailable. Please verify your credentials in Settings.";
+"user_name_default" = "User";

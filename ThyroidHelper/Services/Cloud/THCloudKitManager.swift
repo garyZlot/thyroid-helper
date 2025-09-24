@@ -14,7 +14,7 @@ class THCloudKitManager: ObservableObject {
     @Published var isSignedInToiCloud = false
     @Published var userName = ""
     @Published var userEmail = ""
-    @Published var syncStatus = "未同步"
+    @Published var syncStatus = "sync_status_not_synced".localized
     
     private let container = CKContainer.default()
     
@@ -28,17 +28,17 @@ class THCloudKitManager: ObservableObject {
                 switch status {
                 case .available:
                     self?.isSignedInToiCloud = true
-                    self?.syncStatus = "已连接iCloud"
+                    self?.syncStatus = "sync_status_icloud_connected".localized
                     self?.fetchUserInfo()
                 case .noAccount:
                     self?.isSignedInToiCloud = false
-                    self?.syncStatus = "请登录iCloud"
+                    self?.syncStatus = "sync_status_please_sign_in_icloud".localized
                 case .restricted, .couldNotDetermine:
                     self?.isSignedInToiCloud = false
-                    self?.syncStatus = "iCloud不可用"
+                    self?.syncStatus = "sync_status_icloud_unavailable".localized
                 case .temporarilyUnavailable:
                     self?.isSignedInToiCloud = false
-                    self?.syncStatus = "iCloud暂时不可用，请在设置中验证您的凭据"
+                    self?.syncStatus = "sync_status_icloud_temporarily_unavailable".localized
                 @unknown default:
                     self?.isSignedInToiCloud = false
                 }
@@ -52,8 +52,7 @@ class THCloudKitManager: ObservableObject {
                 self?.container.discoverUserIdentity(withUserRecordID: recordID) { identity, error in
                     DispatchQueue.main.async {
                         if let identity = identity {
-                            self?.userName = identity.nameComponents?.formatted() ?? "用户"
-                            // 注意：邮箱需要用户授权才能获取
+                            self?.userName = identity.nameComponents?.formatted() ?? "user_name_default".localized
                         }
                     }
                 }
