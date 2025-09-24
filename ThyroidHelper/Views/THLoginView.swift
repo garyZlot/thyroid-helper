@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import _AuthenticationServices_SwiftUI
+import AuthenticationServices
 
 struct THLoginView: View {
     @EnvironmentObject var authManager: THAuthenticationManager
@@ -39,7 +39,7 @@ struct THLoginView: View {
                 FeatureRow(icon: "camera.fill", title: "feature_photo_recognition".localized, description: "feature_photo_recognition_desc".localized)
                 FeatureRow(icon: "chart.line.uptrend.xyaxis", title: "feature_trend_analysis".localized, description: "feature_trend_analysis_desc".localized)
                 FeatureRow(icon: "icloud.fill", title: "feature_cloud_sync".localized, description: "feature_cloud_sync_desc".localized)
-                FeatureRow(icon: "bell.fill", title: "feature_smart_reminder".localized, description: "feature_smart_reminder_desc".localized)
+                FeatureRow(icon: "square.and.arrow.up.on.square", title: "feature_professional_export".localized, description: "feature_professional_export_desc".localized)
             }
             .padding(.horizontal, 30)
             

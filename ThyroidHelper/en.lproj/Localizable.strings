@@ -307,3 +307,6 @@
 "exporting" = "Exporting...";
 "pdf_image_label_format" = "Image %d";
 "pdf_notes_title" = "Notes:";
+"feature_data_export" = "Multi-format Data Export";
+"feature_professional_export" = "Professional Export";
+"feature_professional_export_desc" = "Multi-format export with professional medical reports";

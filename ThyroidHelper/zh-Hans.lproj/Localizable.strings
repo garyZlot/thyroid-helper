@@ -307,3 +307,6 @@
 "exporting" = "导出中...";
 "pdf_image_label_format" = "图片 %d";
 "pdf_notes_title" = "备注：";
+"feature_data_export" = "多种格式数据导出";
+"feature_professional_export" = "专业导出";
+"feature_professional_export_desc" = "支持多格式导出，生成专业医疗报告";

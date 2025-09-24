@@ -52,8 +52,8 @@ struct THAboutView: View {
                         )
                         
                         THFeatureRow(
-                            icon: "bell",
-                            title: "feature_smart_reminders".localized,
+                            icon: "square.and.arrow.up.on.square",
+                            title: "feature_data_export".localized,
                             color: .purple
                         )
                         
