@@ -69,21 +69,23 @@ struct THProfileView: View {
                         }
                     }) {
                         HStack {
-                            Image(systemName: cloudManager.actionButtonIcon)
-                                .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
-                                .scaleEffect(cloudManager.isRefreshing ? 0.9 : 1.0)
-                                .opacity(cloudManager.isRefreshing ? 0.7 : 1.0)
-                                .animation(
-                                    cloudManager.isRefreshing ?
-                                    .easeInOut(duration: 1.2).repeatForever(autoreverses: true) :
-                                    .easeInOut(duration: 0.3),
-                                    value: cloudManager.isRefreshing
-                                )
+                            ZStack {
+                                Image(systemName: cloudManager.actionButtonIcon)
+                                    .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
+                                    .opacity(cloudManager.isRefreshing ? 0.3 : 1.0)
+                                
+                                if cloudManager.isRefreshing {
+                                    ProgressView()
+                                        .scaleEffect(0.8)
+                                        .tint(.blue)
+                                }
+                            }
                             
-                            Text(cloudManager.isRefreshing ? "refreshing".localized : cloudManager.actionButtonText)
+                            Text(cloudManager.actionButtonText)
                                 .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
-                                .animation(.easeInOut(duration: 0.3), value: cloudManager.isRefreshing)
+                                .padding(.horizontal, 10)
                         }
+                        .animation(.easeInOut(duration: 0.3), value: cloudManager.isRefreshing)
                     }
                     .disabled(cloudManager.isRefreshing)
                     
