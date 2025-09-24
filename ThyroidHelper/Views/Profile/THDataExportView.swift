@@ -10,7 +10,8 @@ import SwiftData
 import UIKit
 
 struct THDataExportView: View {
-    @Query private var records: [THCheckupRecord]
+    @Query private var checkupRecords: [THCheckupRecord]
+    @Query private var historyRecords: [THHistoryRecord]
     @State private var exportFormat = "CSV"
     @State private var showingShareSheet = false
     @State private var exportURL: URL?
@@ -20,28 +21,27 @@ struct THDataExportView: View {
     
     var body: some View {
         Form {
-            Section("export_format".localized) {
+            // 主要功能 - 检查记录导出
+            Section("checkup_data_export".localized) {
                 Picker("file_format".localized, selection: $exportFormat) {
                     Text("CSV").tag("CSV")
                     Text("PDF").tag("PDF")
                     Text("JSON").tag("JSON")
                 }
                 .pickerStyle(.segmented)
-            }
-            
-            Section("data_range".localized) {
+                
                 HStack {
                     Text("checkup_records".localized)
                     Spacer()
-                    Text(String(format: "records_count_format".localized, records.count))
+                    Text(String(format: "records_count_format".localized, checkupRecords.count))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
                     Text("time_range".localized)
                     Spacer()
-                    if let earliest = records.min(by: { $0.date < $1.date }),
-                       let latest = records.max(by: { $0.date < $1.date }) {
+                    if let earliest = checkupRecords.min(by: { $0.date < $1.date }),
+                       let latest = checkupRecords.max(by: { $0.date < $1.date }) {
                         Text("\(earliest.date.formatted(date: .abbreviated, time: .omitted)) - \(latest.date.formatted(date: .abbreviated, time: .omitted))")
                             .foregroundColor(.secondary)
                     } else {
@@ -49,19 +49,60 @@ struct THDataExportView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-            }
-            
-            Section {
-                Button(action: exportData) {
+                
+                Button(action: exportCheckupData) {
                     if isExporting {
-                        ProgressView()
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        HStack {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("exporting".localized)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        Label("export_data".localized, systemImage: "square.and.arrow.up")
+                        Label("export_checkup_data".localized, systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .disabled(records.isEmpty || isExporting)
+                .disabled(checkupRecords.isEmpty || isExporting)
+            }
+            
+            // 次要功能 - 历史记录导出
+            Section {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("history_records_export".localized)
+                            .font(.subheadline)
+                        Text("pdf_format_only".localized)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Text(String(format: "records_count_format".localized, historyRecords.count))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Button(action: exportHistoryData) {
+                    if isExporting {
+                        HStack {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("exporting".localized)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        Label("export_history_records".localized, systemImage: "doc.richtext")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+                .disabled(historyRecords.isEmpty || isExporting)
+            } header: {
+                Text("additional_exports".localized)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
             
             Section {
@@ -84,8 +125,9 @@ struct THDataExportView: View {
         }
     }
     
-    private func exportData() {
-        guard !records.isEmpty else {
+    // MARK: - 检查记录导出
+    private func exportCheckupData() {
+        guard !checkupRecords.isEmpty else {
             errorMessage = "no_data_to_export".localized
             showingError = true
             return
@@ -93,33 +135,29 @@ struct THDataExportView: View {
         
         isExporting = true
         
-        // 使用异步任务确保文件完全写入
         Task {
             do {
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 
-                // 生成安全的文件名
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
                 let safeDateString = dateFormatter.string(from: Date())
-                let fileName = "thyroid_export_\(safeDateString).\(exportFormat.lowercased())"
+                let fileName = "thyroid_checkup_export_\(safeDateString).\(exportFormat.lowercased())"
                 
                 let fileURL = documentsPath.appendingPathComponent(fileName)
                 
                 switch exportFormat {
                 case "CSV":
-                    try await exportToCSV(fileURL: fileURL)
+                    try await exportCheckupToCSV(fileURL: fileURL)
                 case "JSON":
-                    try await exportToJSON(fileURL: fileURL)
+                    try await exportCheckupToJSON(fileURL: fileURL)
                 case "PDF":
-                    try await exportToPDF(fileURL: fileURL)
+                    try await exportCheckupToPDF(fileURL: fileURL)
                 default:
                     break
                 }
                 
-                // 确保文件存在且可读
                 if FileManager.default.fileExists(atPath: fileURL.path) {
-                    // 在主线程更新UI
                     await MainActor.run {
                         exportURL = fileURL
                         showingShareSheet = true
@@ -139,8 +177,51 @@ struct THDataExportView: View {
         }
     }
     
-    // MARK: - CSV导出
-    private func exportToCSV(fileURL: URL) async throws {
+    // MARK: - 历史记录导出
+    private func exportHistoryData() {
+        guard !historyRecords.isEmpty else {
+            errorMessage = "no_history_data_to_export".localized
+            showingError = true
+            return
+        }
+        
+        isExporting = true
+        
+        Task {
+            do {
+                let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+                let safeDateString = dateFormatter.string(from: Date())
+                let fileName = "thyroid_history_export_\(safeDateString).pdf"
+                
+                let fileURL = documentsPath.appendingPathComponent(fileName)
+                
+                try await exportHistoryToPDF(fileURL: fileURL)
+                
+                if FileManager.default.fileExists(atPath: fileURL.path) {
+                    await MainActor.run {
+                        exportURL = fileURL
+                        showingShareSheet = true
+                        isExporting = false
+                    }
+                } else {
+                    throw NSError(domain: "export_error".localized, code: -1, userInfo: [NSLocalizedDescriptionKey: "file_creation_failed".localized])
+                }
+                
+            } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    showingError = true
+                    isExporting = false
+                }
+            }
+        }
+    }
+    
+    // MARK: - 检查记录CSV导出
+    private func exportCheckupToCSV(fileURL: URL) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
@@ -150,12 +231,11 @@ struct THDataExportView: View {
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyy-MM-dd"
                     
-                    for record in self.records.sorted(by: { $0.date > $1.date }) {
+                    for record in self.checkupRecords.sorted(by: { $0.date > $1.date }) {
                         let dateString = dateFormatter.string(from: record.date)
                         let notes = record.notes ?? ""
                         
                         if let indicators = record.indicators, !indicators.isEmpty {
-                            // 按照standardOrder排序指标
                             let sortedIndicators = indicators.sorted { indicator1, indicator2 in
                                 let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
                                 let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
@@ -163,29 +243,24 @@ struct THDataExportView: View {
                             }
                             
                             for indicator in sortedIndicators {
-                                // 格式化数值
                                 let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                 let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                 
-                                // 转义可能包含逗号的字段
                                 let escapedNotes = notes.replacingOccurrences(of: "\"", with: "\"\"")
                                 let escapedRange = indicator.normalRange.replacingOccurrences(of: "\"", with: "\"\"")
                                 
                                 csvString += "\(dateString),\(record.type.localizedName),\(indicator.name),\(formattedValue),\(indicator.unit),\"\(escapedRange)\",\(indicator.status.localizedName),\"\(escapedNotes)\"\n"
                             }
                         } else {
-                            // 没有指标的情况
                             let escapedNotes = notes.replacingOccurrences(of: "\"", with: "\"\"")
                             csvString += "\(dateString),\(record.type.localizedName),,,,,\"\(escapedNotes)\"\n"
                         }
                     }
                     
-                    // 确保使用UTF-8 with BOM来避免中文乱码
                     let bom = Data([0xEF, 0xBB, 0xBF])
                     let csvData = bom + csvString.data(using: .utf8)!
                     try csvData.write(to: fileURL)
                     
-                    // 强制同步文件系统
                     try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileURL.path)
                     
                     continuation.resume()
@@ -196,8 +271,8 @@ struct THDataExportView: View {
         }
     }
     
-    // MARK: - JSON导出
-    private func exportToJSON(fileURL: URL) async throws {
+    // MARK: - 检查记录JSON导出
+    private func exportCheckupToJSON(fileURL: URL) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
@@ -207,7 +282,7 @@ struct THDataExportView: View {
                     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     dateFormatter.timeZone = TimeZone.current
                     
-                    for record in self.records.sorted(by: { $0.date > $1.date }) {
+                    for record in self.checkupRecords.sorted(by: { $0.date > $1.date }) {
                         var recordDict: [String: Any] = [
                             "id": record.id,
                             "date": dateFormatter.string(from: record.date),
@@ -216,7 +291,6 @@ struct THDataExportView: View {
                         ]
                         
                         if let indicators = record.indicators {
-                            // 按照standardOrder排序指标
                             let sortedIndicators = indicators.sorted { indicator1, indicator2 in
                                 let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
                                 let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
@@ -225,7 +299,6 @@ struct THDataExportView: View {
                             
                             var indicatorsArray: [[String: Any]] = []
                             for indicator in sortedIndicators {
-                                // 格式化数值
                                 let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                 let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                 
@@ -247,7 +320,6 @@ struct THDataExportView: View {
                     let jsonData = try JSONSerialization.data(withJSONObject: exportData, options: .prettyPrinted)
                     try jsonData.write(to: fileURL)
                     
-                    // 强制同步文件系统
                     try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileURL.path)
                     
                     continuation.resume()
@@ -258,8 +330,8 @@ struct THDataExportView: View {
         }
     }
     
-    // MARK: - PDF导出
-    private func exportToPDF(fileURL: URL) async throws {
+    // MARK: - 检查记录PDF导出
+    private func exportCheckupToPDF(fileURL: URL) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
@@ -287,14 +359,12 @@ struct THDataExportView: View {
                         
                         var yPosition: CGFloat = 120
                         
-                        for record in self.records.sorted(by: { $0.date > $1.date }) {
-                            // 检查是否需要换页
+                        for record in self.checkupRecords.sorted(by: { $0.date > $1.date }) {
                             if yPosition > pageRect.height - 100 {
                                 context.beginPage()
                                 yPosition = 50
                             }
                             
-                            // 记录标题
                             let recordDateFormatter = DateFormatter()
                             recordDateFormatter.dateFormat = "yyyy年MM月dd日"
                             let recordTitle = "\(recordDateFormatter.string(from: record.date)) - \(record.type.localizedName)"
@@ -308,7 +378,6 @@ struct THDataExportView: View {
                             yPosition += 30
                             
                             if let indicators = record.indicators, !indicators.isEmpty {
-                                // 按照standardOrder排序指标
                                 let sortedIndicators = indicators.sorted { indicator1, indicator2 in
                                     let index1 = THConfig.standardOrder.firstIndex(of: indicator1.name) ?? Int.max
                                     let index2 = THConfig.standardOrder.firstIndex(of: indicator2.name) ?? Int.max
@@ -316,13 +385,11 @@ struct THDataExportView: View {
                                 }
                                 
                                 for indicator in sortedIndicators {
-                                    // 检查是否需要换页
                                     if yPosition > pageRect.height - 50 {
                                         context.beginPage()
                                         yPosition = 50
                                     }
                                     
-                                    // 格式化数值
                                     let decimalPlaces = THConfig.decimalPlaces(for: indicator.name)
                                     let formattedValue = indicator.value.formatted(decimalPlaces: decimalPlaces)
                                     
@@ -343,9 +410,7 @@ struct THDataExportView: View {
                                 }
                             }
                             
-                            // 添加备注
                             if let notes = record.notes, !notes.isEmpty {
-                                // 检查是否需要换页
                                 if yPosition > pageRect.height - 50 {
                                     context.beginPage()
                                     yPosition = 50
@@ -361,13 +426,210 @@ struct THDataExportView: View {
                                 yPosition += 30
                             }
                             
-                            yPosition += 20 // 记录之间的间距
+                            yPosition += 20
                         }
                     }
                     
                     try data.write(to: fileURL)
+                    try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileURL.path)
                     
-                    // 强制同步文件系统
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    // MARK: - 历史记录PDF导出
+    private func exportHistoryToPDF(fileURL: URL) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4尺寸
+                    let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: UIGraphicsPDFRendererFormat())
+                    let margins: CGFloat = 40
+                    let contentWidth = pageRect.width - 2 * margins
+                    
+                    let data = renderer.pdfData { context in
+                        var yPosition: CGFloat = margins
+                        var isFirstPage = true
+                        
+                        // 开始第一页
+                        context.beginPage()
+                        
+                        // 标题
+                        let title = "history_records_pdf_title".localized
+                        let titleAttributes = [
+                            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 24),
+                            NSAttributedString.Key.foregroundColor: UIColor.black
+                        ]
+                        title.draw(at: CGPoint(x: margins, y: yPosition), withAttributes: titleAttributes)
+                        yPosition += 40
+                        
+                        // 导出时间
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy年MM月dd日 HH:mm"
+                        let exportDate = String(format: "export_time_format".localized, dateFormatter.string(from: Date()))
+                        let dateAttributes = [
+                            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                            NSAttributedString.Key.foregroundColor: UIColor.gray
+                        ]
+                        exportDate.draw(at: CGPoint(x: margins, y: yPosition), withAttributes: dateAttributes)
+                        yPosition += 40
+                        
+                        let recordDateFormatter = DateFormatter()
+                        recordDateFormatter.dateFormat = "yyyy年MM月dd日"
+                        
+                        // 按时间降序排序历史记录
+                        let sortedHistoryRecords = self.historyRecords.sorted { $0.date > $1.date }
+                        
+                        for (index, record) in sortedHistoryRecords.enumerated() {
+                            // 检查页面空间，预留足够空间给标题和部分内容
+                            let requiredSpace: CGFloat = 150 // 标题 + 部分内容的最小空间
+                            if yPosition > pageRect.height - requiredSpace {
+                                context.beginPage()
+                                yPosition = margins
+                                isFirstPage = false
+                            }
+                            
+                            // 记录标题
+                            let recordTitle = "\(index + 1). \(record.title)"
+                            let titleRect = CGRect(x: margins, y: yPosition, width: contentWidth, height: 30)
+                            let titleAttributes = [
+                                NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18),
+                                NSAttributedString.Key.foregroundColor: UIColor.black
+                            ]
+                            recordTitle.draw(in: titleRect, withAttributes: titleAttributes)
+                            yPosition += 35
+                            
+                            // 记录日期
+                            let dateText = recordDateFormatter.string(from: record.date)
+                            let dateTextAttributes = [
+                                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                                NSAttributedString.Key.foregroundColor: UIColor.gray
+                            ]
+                            dateText.draw(at: CGPoint(x: margins, y: yPosition), withAttributes: dateTextAttributes)
+                            yPosition += 25
+                            
+                            // 处理图片 - 放大显示确保清晰度
+                            if !record.imageDatas.isEmpty {
+                                for (imageIndex, imageData) in record.imageDatas.enumerated() {
+                                    if let image = UIImage(data: imageData) {
+                                        // 计算合适的图片尺寸 - 占用更多页面空间以确保清晰度
+                                        let maxImageWidth = contentWidth
+                                        let maxImageHeight: CGFloat = 400 // 增加最大高度
+                                        
+                                        let imageAspectRatio = image.size.width / image.size.height
+                                        var imageWidth = maxImageWidth
+                                        var imageHeight = imageWidth / imageAspectRatio
+                                        
+                                        if imageHeight > maxImageHeight {
+                                            imageHeight = maxImageHeight
+                                            imageWidth = imageHeight * imageAspectRatio
+                                        }
+                                        
+                                        // 检查是否需要换页
+                                        if yPosition + imageHeight > pageRect.height - margins {
+                                            context.beginPage()
+                                            yPosition = margins
+                                        }
+                                        
+                                        // 绘制图片
+                                        let imageRect = CGRect(
+                                            x: margins + (contentWidth - imageWidth) / 2, // 居中
+                                            y: yPosition,
+                                            width: imageWidth,
+                                            height: imageHeight
+                                        )
+                                        
+                                        // 添加图片边框
+                                        let borderRect = imageRect.insetBy(dx: -1, dy: -1)
+                                        UIColor.lightGray.setStroke()
+                                        let borderPath = UIBezierPath(rect: borderRect)
+                                        borderPath.lineWidth = 1
+                                        borderPath.stroke()
+                                        
+                                        // 绘制图片
+                                        image.draw(in: imageRect)
+                                        
+                                        yPosition += imageHeight + 15
+                                        
+                                        // 如果有多张图片，添加图片标号
+                                        if record.imageDatas.count > 1 {
+                                            let imageLabel = "图片 \(imageIndex + 1)"
+                                            let labelAttributes = [
+                                                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12),
+                                                NSAttributedString.Key.foregroundColor: UIColor.gray
+                                            ]
+                                            imageLabel.draw(at: CGPoint(x: margins + (contentWidth - imageWidth) / 2, y: yPosition), withAttributes: labelAttributes)
+                                            yPosition += 20
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // 备注内容
+                            if !record.notes.isEmpty {
+                                // 检查是否需要换页
+                                if yPosition > pageRect.height - 100 {
+                                    context.beginPage()
+                                    yPosition = margins
+                                }
+                                
+                                let notesTitle = "备注："
+                                let notesTitleAttributes = [
+                                    NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 14),
+                                    NSAttributedString.Key.foregroundColor: UIColor.darkGray
+                                ]
+                                notesTitle.draw(at: CGPoint(x: margins, y: yPosition), withAttributes: notesTitleAttributes)
+                                yPosition += 20
+                                
+                                // 计算备注文本需要的高度
+                                let notesAttributes = [
+                                    NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                                    NSAttributedString.Key.foregroundColor: UIColor.black
+                                ]
+                                
+                                let availableHeight = pageRect.height - yPosition - margins
+                                let notesRect = CGRect(x: margins, y: yPosition, width: contentWidth, height: availableHeight)
+                                
+                                let notesString = NSAttributedString(string: record.notes, attributes: notesAttributes)
+                                let textSize = notesString.boundingRect(
+                                    with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                    context: nil
+                                ).size
+                                
+                                // 如果文本太长需要换页
+                                if textSize.height > availableHeight - 20 {
+                                    context.beginPage()
+                                    yPosition = margins
+                                }
+                                
+                                let finalNotesRect = CGRect(x: margins, y: yPosition, width: contentWidth, height: textSize.height)
+                                notesString.draw(in: finalNotesRect)
+                                yPosition += textSize.height + 30
+                            }
+                            
+                            // 记录之间的分隔线和间距
+                            yPosition += 10
+                            if index < sortedHistoryRecords.count - 1 {
+                                // 绘制分隔线
+                                let separatorY = yPosition
+                                UIColor.lightGray.setStroke()
+                                let separatorPath = UIBezierPath()
+                                separatorPath.move(to: CGPoint(x: margins, y: separatorY))
+                                separatorPath.addLine(to: CGPoint(x: pageRect.width - margins, y: separatorY))
+                                separatorPath.lineWidth = 0.5
+                                separatorPath.stroke()
+                                
+                                yPosition += 20
+                            }
+                        }
+                    }
+                    
+                    try data.write(to: fileURL)
                     try FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: fileURL.path)
                     
                     continuation.resume()
