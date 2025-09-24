@@ -41,10 +41,14 @@ struct THProfileView: View {
                                 Image(systemName: cloudManager.isSignedInToiCloud ? "icloud.fill" : "icloud.slash")
                                     .foregroundColor(cloudManager.statusColor)
                                     .font(.caption)
+                                    // 添加状态变化动画
+                                    .animation(.easeInOut(duration: 0.3), value: cloudManager.isSignedInToiCloud)
                                 
                                 Text(cloudManager.syncStatus)
                                     .font(.caption)
                                     .foregroundColor(cloudManager.statusColor)
+                                    // 添加状态文本变化动画
+                                    .animation(.easeInOut(duration: 0.3), value: cloudManager.syncStatus)
                             }
                         }
                         
@@ -57,14 +61,31 @@ struct THProfileView: View {
                 Section("data_management".localized) {
                     Button(action: {
                         if cloudManager.isSignedInToiCloud {
+                            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+                            impactFeedback.impactOccurred()
                             cloudManager.checkiCloudStatus()
                         } else {
                             showingCloudAlert = true
                         }
                     }) {
-                        Label(cloudManager.actionButtonText, systemImage: cloudManager.actionButtonIcon)
-                            .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
+                        HStack {
+                            Image(systemName: cloudManager.actionButtonIcon)
+                                .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
+                                .scaleEffect(cloudManager.isRefreshing ? 0.9 : 1.0)
+                                .opacity(cloudManager.isRefreshing ? 0.7 : 1.0)
+                                .animation(
+                                    cloudManager.isRefreshing ?
+                                    .easeInOut(duration: 1.2).repeatForever(autoreverses: true) :
+                                    .easeInOut(duration: 0.3),
+                                    value: cloudManager.isRefreshing
+                                )
+                            
+                            Text(cloudManager.isRefreshing ? "refreshing".localized : cloudManager.actionButtonText)
+                                .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
+                                .animation(.easeInOut(duration: 0.3), value: cloudManager.isRefreshing)
+                        }
                     }
+                    .disabled(cloudManager.isRefreshing)
                     
                     Button(action: { showingDeleteAlert = true }) {
                         Label("clear_all_data".localized, systemImage: "trash")

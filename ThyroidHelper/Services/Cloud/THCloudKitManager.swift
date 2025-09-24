@@ -15,6 +15,7 @@ class THCloudKitManager: ObservableObject {
     @Published var userName = ""
     @Published var userEmail = ""
     @Published var syncStatus = "sync_status_not_synced".localized
+    @Published var isRefreshing = false
     
     private let container = CKContainer.default()
     
@@ -23,25 +24,33 @@ class THCloudKitManager: ObservableObject {
     }
     
     func checkiCloudStatus() {
+        isRefreshing = true
+        
         container.accountStatus { [weak self] status, error in
             DispatchQueue.main.async {
-                switch status {
-                case .available:
-                    self?.isSignedInToiCloud = true
-                    self?.syncStatus = "sync_status_icloud_connected".localized
-                    self?.fetchUserInfo()
-                case .noAccount:
-                    self?.isSignedInToiCloud = false
-                    self?.syncStatus = "sync_status_please_sign_in_icloud".localized
-                case .restricted, .couldNotDetermine:
-                    self?.isSignedInToiCloud = false
-                    self?.syncStatus = "sync_status_icloud_unavailable".localized
-                case .temporarilyUnavailable:
-                    self?.isSignedInToiCloud = false
-                    self?.syncStatus = "sync_status_icloud_temporarily_unavailable".localized
-                @unknown default:
-                    self?.isSignedInToiCloud = false
-                    self?.syncStatus = "sync_status_unknown_error".localized
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        switch status {
+                        case .available:
+                            self?.isSignedInToiCloud = true
+                            self?.syncStatus = "sync_status_icloud_connected".localized
+                            self?.fetchUserInfo()
+                        case .noAccount:
+                            self?.isSignedInToiCloud = false
+                            self?.syncStatus = "sync_status_please_sign_in_icloud".localized
+                        case .restricted, .couldNotDetermine:
+                            self?.isSignedInToiCloud = false
+                            self?.syncStatus = "sync_status_icloud_unavailable".localized
+                        case .temporarilyUnavailable:
+                            self?.isSignedInToiCloud = false
+                            self?.syncStatus = "sync_status_icloud_temporarily_unavailable".localized
+                        @unknown default:
+                            self?.isSignedInToiCloud = false
+                            self?.syncStatus = "sync_status_unknown_error".localized
+                        }
+                        
+                        self?.isRefreshing = false
+                    }
                 }
             }
         }
