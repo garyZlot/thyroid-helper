@@ -27,15 +27,23 @@ class THIndicatorRecord {
     }
     
     enum IndicatorStatus: String, CaseIterable, Codable {
-        case low = "偏低"
-        case normal = "正常"
-        case high = "偏高"
+        case low = "low"
+        case normal = "normal"
+        case high = "high"
         
         var color: String {
             switch self {
             case .low: return "blue"
             case .normal: return "green"
             case .high: return "red"
+            }
+        }
+        
+        var localizedName: String {
+            switch self {
+            case .low: return "status_low".localized
+            case .normal: return "status_normal".localized
+            case .high: return "status_high".localized
             }
         }
     }

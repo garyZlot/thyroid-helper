@@ -171,7 +171,7 @@ struct THDataExportView: View {
                                 let escapedNotes = notes.replacingOccurrences(of: "\"", with: "\"\"")
                                 let escapedRange = indicator.normalRange.replacingOccurrences(of: "\"", with: "\"\"")
                                 
-                                csvString += "\(dateString),\(record.type.localizedName),\(indicator.name),\(formattedValue),\(indicator.unit),\"\(escapedRange)\",\(indicator.status.rawValue),\"\(escapedNotes)\"\n"
+                                csvString += "\(dateString),\(record.type.localizedName),\(indicator.name),\(formattedValue),\(indicator.unit),\"\(escapedRange)\",\(indicator.status.localizedName),\"\(escapedNotes)\"\n"
                             }
                         } else {
                             // 没有指标的情况
@@ -234,7 +234,7 @@ struct THDataExportView: View {
                                     "value": formattedValue,
                                     "unit": indicator.unit,
                                     "normalRange": indicator.normalRange,
-                                    "status": indicator.status.rawValue
+                                    "status": indicator.status.localizedName
                                 ]
                                 indicatorsArray.append(indicatorDict)
                             }
@@ -331,7 +331,7 @@ struct THDataExportView: View {
                                                              formattedValue,
                                                              indicator.unit,
                                                              indicator.normalRange,
-                                                             indicator.status.rawValue)
+                                                             indicator.status.localizedName)
                                     
                                     let indicatorAttributes = [
                                         NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),

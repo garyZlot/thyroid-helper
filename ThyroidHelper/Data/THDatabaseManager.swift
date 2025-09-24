@@ -5,10 +5,26 @@
 //  Created by gdliu on 2025/9/19.
 //
 
+import SwiftUI
 import SwiftData
 import Foundation
 
 struct THDatabaseManager {
+    
+    static func clearEntity<T: PersistentModel>(_ type: T.Type, in context: ModelContext) {
+        do {
+            let fetchDescriptor = FetchDescriptor<T>()
+            let items = try context.fetch(fetchDescriptor)
+            for item in items {
+                context.delete(item)
+            }
+            try context.save()
+            print("已清空数据: \(type)")
+        } catch {
+            print("清空数据失败: \(type), error: \(error)")
+        }
+    }
+    
     static func migrateDatabase(modelContext: ModelContext) {
         let key = "hasMigratedCheckupType"
         guard !UserDefaults.standard.bool(forKey: key) else {

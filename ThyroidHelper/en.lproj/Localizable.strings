@@ -292,3 +292,7 @@
 "go_to_settings" = "Go to Settings";
 "medical_disclaimer_title" = "Medical Disclaimer";
 
+"status_low" = "Below Normal";
+"status_normal" = "Normal";
+"status_high" = "Above Normal";
+
