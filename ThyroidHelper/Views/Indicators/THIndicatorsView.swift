@@ -18,11 +18,27 @@ struct THIndicatorsView: View {
         NavigationView {
             Group {
                 if records.isEmpty {
-                    ContentUnavailableView(
-                        "no_records_title".localized,
-                        systemImage: "doc.text",
-                        description: Text("no_records_description".localized)
-                    )
+                    VStack(spacing: 24) {
+                        ContentUnavailableView(
+                            "no_records_title".localized,
+                            systemImage: "doc.text",
+                            description: Text("no_records_description".localized)
+                        )
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, -8)
+                        
+                        Button(action: { showingAddRecord = true }) {
+                            Text("add_checkup_indicator".localized)
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 30)
+                                .background(Color.accentColor)
+                                .cornerRadius(10)
+                                .shadow(color: .accentColor.opacity(0.2), radius: 10, x: 0, y: 4)
+                        }
+                    }
+                    .padding()
                 } else {
                     List {
                         ForEach(records) { record in

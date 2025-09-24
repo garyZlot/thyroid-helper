@@ -28,7 +28,27 @@ struct THHistoryView: View {
                 if isLoading {
                     loadingView
                 } else if records.isEmpty {
-                    emptyStateView
+                    VStack(spacing: 24) {
+                        ContentUnavailableView(
+                            "no_history_title".localized,
+                            systemImage: "doc.text",
+                            description: Text("no_history_description".localized)
+                        )
+                        .fixedSize(horizontal: false, vertical: true) 
+                        .padding(.bottom, -8)
+                        
+                        Button(action: { showingAddOptions = true }) {
+                            Text("add_history_record".localized)
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 30)
+                                .background(Color.accentColor)
+                                .cornerRadius(10)
+                                .shadow(color: .accentColor.opacity(0.2), radius: 10, x: 0, y: 4)
+                        }
+                    }
+                    .padding()
                 } else {
                     List {
                         ForEach(records) { record in
@@ -145,7 +165,7 @@ struct THHistoryView: View {
                 .padding(.horizontal, 40)
             
             Button(action: { showingAddOptions = true }) {
-                Text("add_first_record".localized)
+                Text("add_history_record".localized)
                     .font(.headline)
                     .foregroundColor(.white)
                     .padding(.vertical, 12)

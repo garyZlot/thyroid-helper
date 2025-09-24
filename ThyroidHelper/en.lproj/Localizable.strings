@@ -233,7 +233,7 @@
 "personal_center" = "Personal Center";
 "clear_data" = "Clear Data";
 "confirm_clear" = "Confirm Clear";
-"clear_data_warning" = "This operation will delete all local checkup records and cannot be undone.";
+"clear_data_warning_with_icloud" = "This will permanently delete all checkup records, including data synced to iCloud. This action cannot be undone and will also delete data on your other devices.";
 "no_records" = "No Records";
 
 "checkup_thyroid_function" = "Thyroid Function Panel";
@@ -283,3 +283,11 @@
 "sync_status_icloud_unavailable" = "iCloud Unavailable";
 "sync_status_icloud_temporarily_unavailable" = "iCloud Temporarily Unavailable. Please verify your credentials in Settings.";
 "user_name_default" = "User";
+
+// Profile
+"sync_status_unknown_error" = "Unknown Error";
+"sign_in_to_icloud" = "Sign in to iCloud";
+"icloud_signin_required" = "iCloud Sign-in Required";
+"icloud_signin_message" = "To use data synchronization features, please sign in to your iCloud account in Settings first.";
+"go_to_settings" = "Go to Settings";
+

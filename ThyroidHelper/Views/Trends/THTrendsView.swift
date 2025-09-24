@@ -11,21 +11,51 @@ import _SwiftData_SwiftUI
 
 struct THTrendsView: View {
     @Query(sort: \THCheckupRecord.date, order: .forward) private var records: [THCheckupRecord]
+    @State private var showingAddRecord = false
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    ForEach(THConfig.standardOrder, id: \.self) { indicatorName in
-                        TrendChartCard(
-                            indicatorName: indicatorName,
-                            data: getTrendData(for: indicatorName)
+            Group {
+                if records.isEmpty {
+                    VStack(spacing: 24) {
+                        ContentUnavailableView(
+                            "no_records_title".localized,
+                            systemImage: "doc.text",
+                            description: Text("no_records_description".localized)
                         )
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, -8)
+                        
+                        Button(action: { showingAddRecord = true }) {
+                            Text("add_checkup_indicator".localized)
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 30)
+                                .background(Color.accentColor)
+                                .cornerRadius(10)
+                                .shadow(color: .accentColor.opacity(0.2), radius: 10, x: 0, y: 4)
+                        }
+                    }
+                    .padding()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            ForEach(THConfig.standardOrder, id: \.self) { indicatorName in
+                                TrendChartCard(
+                                    indicatorName: indicatorName,
+                                    data: getTrendData(for: indicatorName)
+                                )
+                            }
+                        }
+                        .padding()
                     }
                 }
-                .padding()
             }
             .navigationTitle("indicators_trend".localized)
+        }
+        .sheet(isPresented: $showingAddRecord) {
+            THAddIndicatorView()
         }
     }
     

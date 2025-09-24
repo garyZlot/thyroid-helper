@@ -41,6 +41,7 @@ class THCloudKitManager: ObservableObject {
                     self?.syncStatus = "sync_status_icloud_temporarily_unavailable".localized
                 @unknown default:
                     self?.isSignedInToiCloud = false
+                    self?.syncStatus = "sync_status_unknown_error".localized
                 }
             }
         }
@@ -60,10 +61,33 @@ class THCloudKitManager: ObservableObject {
         }
     }
     
+    func handleiCloudAction() {
+        if isSignedInToiCloud {
+            // 如果已登录，只刷新状态
+            checkiCloudStatus()
+        } else {
+            // 如果未登录，引导用户到设置
+            requestiCloudPermission()
+        }
+    }
+    
     func requestiCloudPermission() {
         // 引导用户到设置中登录iCloud
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsURL)
         }
+    }
+    
+    // 获取 iCloud 状态的描述文本和颜色
+    var statusColor: Color {
+        return isSignedInToiCloud ? .green : .orange
+    }
+    
+    var actionButtonText: String {
+        return isSignedInToiCloud ? "refresh_cloud_status".localized : "sign_in_to_icloud".localized
+    }
+    
+    var actionButtonIcon: String {
+        return isSignedInToiCloud ? "icloud.and.arrow.down" : "icloud.and.arrow.up"
     }
 }

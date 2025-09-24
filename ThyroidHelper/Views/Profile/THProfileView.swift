@@ -15,6 +15,7 @@ struct THProfileView: View {
     @Query private var records: [THCheckupRecord]
     
     @State private var showingDeleteAlert = false
+    @State private var showingCloudAlert = false
     
     var body: some View {
         NavigationStack {
@@ -36,9 +37,15 @@ struct THProfileView: View {
                                     .foregroundColor(.secondary)
                             }
                             
-                            Text(cloudManager.syncStatus)
-                                .font(.caption)
-                                .foregroundColor(cloudManager.isSignedInToiCloud ? .green : .orange)
+                            HStack(spacing: 4) {
+                                Image(systemName: cloudManager.isSignedInToiCloud ? "icloud.fill" : "icloud.slash")
+                                    .foregroundColor(cloudManager.statusColor)
+                                    .font(.caption)
+                                
+                                Text(cloudManager.syncStatus)
+                                    .font(.caption)
+                                    .foregroundColor(cloudManager.statusColor)
+                            }
                         }
                         
                         Spacer()
@@ -46,12 +53,24 @@ struct THProfileView: View {
                     .padding(.vertical, 8)
                 }
                 
-//                // 数据统计
-//                Section("data_statistics".localized) {
-//                    StatRow(title: "checkup_records".localized, value: String(format: "records_count_format".localized, records.count))
-//                    StatRow(title: "recent_checkup".localized, value: lastCheckupText)
-//                    StatRow(title: "data_sync".localized, value: cloudManager.isSignedInToiCloud ? "enabled".localized : "disabled".localized)
-//                }
+                // 数据管理
+                Section("data_management".localized) {
+                    Button(action: {
+                        if cloudManager.isSignedInToiCloud {
+                            cloudManager.checkiCloudStatus()
+                        } else {
+                            showingCloudAlert = true
+                        }
+                    }) {
+                        Label(cloudManager.actionButtonText, systemImage: cloudManager.actionButtonIcon)
+                            .foregroundColor(cloudManager.isSignedInToiCloud ? .blue : .orange)
+                    }
+                    
+                    Button(action: { showingDeleteAlert = true }) {
+                        Label("clear_all_data".localized, systemImage: "trash")
+                            .foregroundColor(.red)
+                    }
+                }
                 
                 // 设置选项
                 Section("settings".localized) {
@@ -68,18 +87,6 @@ struct THProfileView: View {
                     }
                 }
                 
-                // 数据管理
-                Section("data_management".localized) {
-                    Button(action: { cloudManager.checkiCloudStatus() }) {
-                        Label("refresh_cloud_status".localized, systemImage: "icloud.and.arrow.down")
-                    }
-                    
-                    Button(action: { showingDeleteAlert = true }) {
-                        Label("clear_all_data".localized, systemImage: "trash")
-                            .foregroundColor(.red)
-                    }
-                }
-                
                 // 账户
                 Section("account".localized) {
                     Button(action: { authManager.signOut() }) {
@@ -89,6 +96,9 @@ struct THProfileView: View {
                 }
             }
             .navigationTitle("personal_center".localized)
+            .refreshable {
+                cloudManager.checkiCloudStatus()
+            }
         }
         .alert("clear_data".localized, isPresented: $showingDeleteAlert) {
             Button("cancel".localized, role: .cancel) { }
@@ -96,7 +106,26 @@ struct THProfileView: View {
                 clearAllData()
             }
         } message: {
-            Text("clear_data_warning".localized)
+            Text("clear_data_warning_with_icloud".localized)
+        }
+        .alert("icloud_signin_required".localized, isPresented: $showingCloudAlert) {
+            Button("cancel".localized, role: .cancel) { }
+            Button("go_to_settings".localized) {
+                cloudManager.requestiCloudPermission()
+            }
+        } message: {
+            Text("icloud_signin_message".localized)
+        }
+        .alert("icloud_signin_required".localized, isPresented: $showingCloudAlert) {
+            Button("cancel".localized, role: .cancel) { }
+            Button("go_to_settings".localized) {
+                cloudManager.requestiCloudPermission()
+            }
+        } message: {
+            Text("icloud_signin_message".localized)
+        }
+        .onAppear {
+            cloudManager.checkiCloudStatus()
         }
     }
     
