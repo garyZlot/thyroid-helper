@@ -25,9 +25,9 @@
 /* 提醒设置 */
 "enable_custom_reminder" = "启用自定义提醒";
 "checkup_date" = "复查日期";
-"custom_reminder_header_format" = "自定义%@提醒";
+"custom_reminder_header_format" = "自定义复查提醒";
 "custom_reminder_footer" = "开启后，将使用您设置的日期作为复查提醒，而不是自动计算的日期。";
-"set_reminder_title_format" = "设置%@提醒";
+"set_reminder_title_format" = "设置复查提醒";
 "cancel" = "取消";
 "save" = "保存";
 "save_reminder_error" = "保存提醒设置失败";
@@ -188,6 +188,7 @@
 "enable_checkup_reminders" = "开启复查提醒";
 "advance_reminder" = "提前提醒";
 "days" = "天数";
+"1_day" = "1天";
 "7_days" = "7天";
 "14_days" = "14天";
 "30_days" = "30天";

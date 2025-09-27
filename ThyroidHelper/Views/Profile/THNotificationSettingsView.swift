@@ -23,6 +23,7 @@ struct THNotificationSettingsView: View {
                         Text("advance_reminder".localized)
                         Spacer()
                         Picker("days".localized, selection: $reminderDays) {
+                            Text("1_day".localized).tag(1)
                             Text("7_days".localized).tag(7)
                             Text("14_days".localized).tag(14)
                             Text("30_days".localized).tag(30)

@@ -25,9 +25,9 @@
 /* Reminder Settings */
 "enable_custom_reminder" = "Enable Custom Reminder";
 "checkup_date" = "Checkup Date";
-"custom_reminder_header_format" = "Custom %@ Reminder";
+"custom_reminder_header_format" = "Custom Checkup Reminder";
 "custom_reminder_footer" = "When enabled, your set date will be used for checkup reminders instead of automatically calculated dates.";
-"set_reminder_title_format" = "Set %@ Reminder";
+"set_reminder_title_format" = "Set checkup Reminder";
 "cancel" = "Cancel";
 "save" = "Save";
 "save_reminder_error" = "Failed to save reminder settings";
@@ -188,6 +188,7 @@
 "enable_checkup_reminders" = "Enable Checkup Reminders";
 "advance_reminder" = "Advance Reminder";
 "days" = "Days";
+"1_day" = "1 day";
 "7_days" = "7 days";
 "14_days" = "14 days";
 "30_days" = "30 days";
