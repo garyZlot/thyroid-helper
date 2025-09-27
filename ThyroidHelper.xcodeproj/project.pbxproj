@@ -16,6 +16,7 @@
 		2F3308622E6E8CE200468DB6 /* THDateExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */; };
 		2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */; };
 		2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */; };
+		2F6AB4472E8816A000426DA1 /* THNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F6AB4462E88169500426DA1 /* THNotificationManager.swift */; };
 		2F7823792E695A5E00CDEF24 /* THHistoryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7823782E695A5D00CDEF24 /* THHistoryRecord.swift */; };
 		2F78237B2E695A7500CDEF24 /* THHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78237A2E695A7200CDEF24 /* THHistoryView.swift */; };
 		2F78237F2E697EF000CDEF24 /* THHistoryCheckupOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F78237E2E697EEE00CDEF24 /* THHistoryCheckupOCRService.swift */; };
@@ -64,6 +65,7 @@
 		2F3308612E6E8CDD00468DB6 /* THDateExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDateExtractionService.swift; sourceTree = "<group>"; };
 		2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDoubleExtension.swift; sourceTree = "<group>"; };
 		2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THImageZoomViewer.swift; sourceTree = "<group>"; };
+		2F6AB4462E88169500426DA1 /* THNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THNotificationManager.swift; sourceTree = "<group>"; };
 		2F7823782E695A5D00CDEF24 /* THHistoryRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THHistoryRecord.swift; sourceTree = "<group>"; };
 		2F78237A2E695A7200CDEF24 /* THHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THHistoryView.swift; sourceTree = "<group>"; };
 		2F78237E2E697EEE00CDEF24 /* THHistoryCheckupOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THHistoryCheckupOCRService.swift; sourceTree = "<group>"; };
@@ -144,6 +146,14 @@
 				2F4B1DF52E63EB6D000EE005 /* THDoubleExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		2F6AB4452E88168100426DA1 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				2F6AB4462E88169500426DA1 /* THNotificationManager.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		2F7823802E697F6100CDEF24 /* Components */ = {
@@ -298,6 +308,7 @@
 		689F16EA2E5C9CEC0047ABAB /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				2F6AB4452E88168100426DA1 /* Notification */,
 				2F7934832E6BBB680022EFE6 /* Cloud */,
 				2F07068C2E6BB79F006F4DE8 /* OCR */,
 				2F07068B2E6BB738006F4DE8 /* Authentication */,
@@ -423,6 +434,7 @@
 				689F16EE2E5C9D1F0047ABAB /* THAuthenticationManager.swift in Sources */,
 				689F16F72E5C9DB00047ABAB /* THHomeView.swift in Sources */,
 				689F16EC2E5C9CF80047ABAB /* THCloudKitManager.swift in Sources */,
+				2F6AB4472E8816A000426DA1 /* THNotificationManager.swift in Sources */,
 				689F16FF2E5C9E220047ABAB /* THProfileView.swift in Sources */,
 				2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */,
 				2F78237B2E695A7500CDEF24 /* THHistoryView.swift in Sources */,
