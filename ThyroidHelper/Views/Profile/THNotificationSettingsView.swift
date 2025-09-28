@@ -56,7 +56,7 @@ struct THNotificationSettingsView: View {
                         .onChange(of: enableReminders) { oldValue, newValue in
                             saveSettings()
                             if newValue {
-                                scheduleCheckupReminders()
+                                checkupReminderChanged()
                             } else {
                                 cancelCheckupReminders()
                             }
@@ -77,7 +77,7 @@ struct THNotificationSettingsView: View {
                             .onChange(of: reminderDays) { oldValue, newValue in
                                 saveSettings()
                                 if enableReminders {
-                                    scheduleCheckupReminders()
+                                    checkupReminderChanged()
                                 }
                             }
                         }
@@ -201,7 +201,7 @@ struct THNotificationSettingsView: View {
                     self.notificationPermissionStatus = .authorized
                     // 权限获取成功后，如果相关设置已开启，则安排通知
                     if self.enableReminders {
-                        self.scheduleCheckupReminders()
+                        self.checkupReminderChanged()
                     }
                     if self.dailyReminder {
                         self.scheduleDailyReminders()
@@ -222,7 +222,7 @@ struct THNotificationSettingsView: View {
     
     // MARK: - Notification Scheduling
     
-    private func scheduleCheckupReminders() {
+    private func checkupReminderChanged() {
         guard notificationPermissionStatus == .authorized else { return }
         
         // 取消现有的复查提醒
@@ -275,68 +275,3 @@ struct THNotificationSettingsView: View {
         THNotificationManager.shared.sendTestNotification()
     }
 }
-
-// MARK: - Notification Manager Extension
-extension THNotificationSettingsView {
-    
-    /// 静态方法：根据检查记录安排复查提醒
-    static func scheduleCheckupReminders(for records: [THCheckupRecord], reminderDays: Int = 14) {
-        guard UserDefaults.standard.bool(forKey: "EnableCheckupReminders") else { return }
-        
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            guard settings.authorizationStatus == .authorized else { return }
-            
-            // 取消现有提醒
-            UNUserNotificationCenter.current().removePendingNotificationRequests(
-                withIdentifiers: ["checkup_reminder_thyroid", "checkup_reminder_thyroglobulin"]
-            )
-            
-            // 按类型分组记录
-            let groupedRecords = Dictionary(grouping: records) { $0.type }
-            
-            for (checkupType, typeRecords) in groupedRecords {
-                guard let latestRecord = typeRecords.max(by: { $0.date < $1.date }) else { continue }
-                
-                // 计算下次复查日期（根据检查类型的默认间隔）
-                let nextCheckupDate = Calendar.current.date(
-                    byAdding: checkupType.defaultInterval,
-                    to: latestRecord.date
-                ) ?? Date()
-                
-                // 计算提醒日期（提前指定天数）
-                let reminderDate = Calendar.current.date(
-                    byAdding: .day,
-                    value: -reminderDays,
-                    to: nextCheckupDate
-                ) ?? Date()
-                
-                // 只有当提醒日期在未来时才安排通知
-                if reminderDate > Date() {
-                    let content = UNMutableNotificationContent()
-                    content.title = "checkup_reminder_title".localized
-                    content.body = String(format: "checkup_reminder_body_format".localized,
-                                        checkupType.localizedName,
-                                        DateFormatter.localizedString(from: nextCheckupDate, dateStyle: .medium, timeStyle: .none))
-                    content.sound = .default
-                    content.badge = 1
-                    content.categoryIdentifier = "CHECKUP_REMINDER"
-                    
-                    let trigger = UNCalendarNotificationTrigger(
-                        dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: reminderDate),
-                        repeats: false
-                    )
-                    
-                    let identifier = "checkup_reminder_\(checkupType.rawValue)"
-                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-                    
-                    UNUserNotificationCenter.current().add(request) { error in
-                        if let error = error {
-                            print("Error scheduling checkup reminder: \(error)")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-

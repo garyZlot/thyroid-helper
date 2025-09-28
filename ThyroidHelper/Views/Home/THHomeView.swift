@@ -141,6 +141,10 @@ struct CheckupReminderCard: View {
     
     private func updateView() {
         refreshID = UUID()
+        
+        Task {
+            await  THNotificationManager.shared.updateNotificationByCheckupDateChange()
+        }
     }
     
     var body: some View {
@@ -269,20 +273,7 @@ struct ReminderDatePickerView: View {
          onSave: (() -> Void)? = nil) {
         self._isPresented = isPresented
         self.reminderSetting = reminderSetting
-        
-        // 设置合理的默认时间
-        if let customDate = reminderSetting.customReminderDate {
-            self._selectedDate = State(initialValue: customDate)
-        } else {
-            // 默认设置为明天上午9点
-            let calendar = Calendar.current
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
-            var dateComponents = calendar.dateComponents([.year, .month, .day], from: tomorrow)
-            dateComponents.hour = 9  // 上午9点
-            dateComponents.minute = 0
-            self._selectedDate = State(initialValue: calendar.date(from: dateComponents) ?? Date())
-        }
-        
+        self._selectedDate = State(initialValue: reminderSetting.customReminderDate ?? Date())
         self._isEnabled = State(initialValue: reminderSetting.isCustomReminderEnabled)
         self._showHint = showHint
         self.onSave = onSave
@@ -299,9 +290,9 @@ struct ReminderDatePickerView: View {
                             "checkup_date".localized,
                             selection: $selectedDate,
                             in: Date()...,
-                            displayedComponents: [.date, .hourAndMinute]
+                            displayedComponents: .date
                         )
-                        .datePickerStyle(.compact)
+                        .datePickerStyle(GraphicalDatePickerStyle())
                     }
                 } header: {
                     Text("custom_reminder_header_format".localized(reminderSetting.checkupType.displayName))

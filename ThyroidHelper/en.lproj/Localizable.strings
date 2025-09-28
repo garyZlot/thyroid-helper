@@ -225,7 +225,7 @@
 
 /* Notification Content */
 "checkup_reminder_title" = "Checkup Reminder";
-"checkup_reminder_body_format" = "Your %@ examination is due soon, please complete the checkup by %@";
+"checkup_reminder_body_format" = "Your next checkup is on %@, please schedule your examination in time";
 "daily_medication_reminder_title" = "Medication Reminder";
 "daily_medication_reminder_body" = "Remember to take your thyroid medication on time";
 "test_notification_title" = "Test Notification";

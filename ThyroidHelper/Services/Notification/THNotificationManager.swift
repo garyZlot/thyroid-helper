@@ -68,6 +68,10 @@ class THNotificationManager: ObservableObject {
         UNUserNotificationCenter.current().setNotificationCategories([checkupCategory])
     }
     
+    public func updateNotificationByCheckupDateChange() async {
+        await self.updateCheckupRemindersWithDays(nil)
+    }
+    
     private func observeSettingsChanges() {
         NotificationCenter.default.addObserver(
             self,
@@ -87,7 +91,7 @@ class THNotificationManager: ObservableObject {
     }
     
     @MainActor
-    private func updateCheckupRemindersWithDays(_ reminderDays: Int) async {
+    private func updateCheckupRemindersWithDays(_ reminderDays: Int?) async {
         guard let container = modelContainer else {
             print("ModelContainer not available")
             return
@@ -108,14 +112,24 @@ class THNotificationManager: ObservableObject {
             )
             let checkupRecords = try context.fetch(recordsRequest)
             
-            // 更新提醒天数设置
-            UserDefaults.standard.set(reminderDays, forKey: "CheckupReminderDays")
-            UserDefaults.standard.synchronize()
+            // 声明变量并设置默认值
+            var aheadReminderDays: Int = 7
+
+            // 如果有新值则更新并保存
+            if let newReminderDays = reminderDays {
+                aheadReminderDays = newReminderDays
+                UserDefaults.standard.set(aheadReminderDays, forKey: "CheckupReminderDays")
+            } else {
+                aheadReminderDays = UserDefaults.standard.integer(forKey: "CheckupReminderDays")
+                if aheadReminderDays == 0 {
+                    aheadReminderDays = 7
+                }
+            }
             
             // 重新安排提醒
             scheduleCheckupReminders(with: reminderSettings, checkupRecords: checkupRecords)
             
-            print("已根据新的提前天数(\(reminderDays)天)更新复查提醒")
+            print("已根据新的提前天数(\(aheadReminderDays)天)更新复查提醒")
             
         } catch {
             print("更新复查提醒失败: \(error)")
@@ -198,7 +212,6 @@ class THNotificationManager: ObservableObject {
         let content = UNMutableNotificationContent()
         content.title = "checkup_reminder_title".localized
         content.body = String(format: "checkup_reminder_body_format".localized,
-                            setting.checkupType.localizedName,
                             formatDate(nextCheckupDate))
         content.sound = .default
         content.badge = 1
@@ -208,7 +221,6 @@ class THNotificationManager: ObservableObject {
             "nextCheckupDate": nextCheckupDate.timeIntervalSince1970
         ]
         
-        // 设置在上午9点提醒
         var reminderComponents = Calendar.current.dateComponents([.year, .month, .day], from: reminderDate)
         reminderComponents.hour = 9
         reminderComponents.minute = 0
@@ -221,7 +233,14 @@ class THNotificationManager: ObservableObject {
             if let error = error {
                 print("Error scheduling checkup reminder: \(error)")
             } else {
-                print("Scheduled checkup reminder for \(setting.checkupType.localizedName) on \(reminderDate)")
+                if let scheduledDate = Calendar.current.date(from: reminderComponents) {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateStyle = .medium
+                    dateFormatter.timeStyle = .short
+                    print("Scheduled checkup reminder for \(setting.checkupType.localizedName) on \(dateFormatter.string(from: scheduledDate))")
+                } else {
+                    print("Scheduled checkup reminder for \(setting.checkupType.localizedName) but could not calculate date")
+                }
             }
         }
     }

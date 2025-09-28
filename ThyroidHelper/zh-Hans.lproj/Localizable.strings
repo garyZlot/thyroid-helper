@@ -225,7 +225,7 @@
 
 /* 通知内容 */
 "checkup_reminder_title" = "复查提醒";
-"checkup_reminder_body_format" = "您的%@检查即将到期，建议在%@前完成复查";
+"checkup_reminder_body_format" = "您的下次复查日期是 %@，请及时安排检查";
 "daily_medication_reminder_title" = "用药提醒";
 "daily_medication_reminder_body" = "记得按时服用您的甲状腺药物";
 "test_notification_title" = "测试通知";
