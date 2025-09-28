@@ -79,7 +79,47 @@ class THNotificationManager: ObservableObject {
     
     @objc private func scheduleCheckupRemindersFromNotification(_ notification: Notification) {
         guard let reminderDays = notification.userInfo?["reminderDays"] as? Int else { return }
-        // 这里需要从数据库获取最新记录，可能需要在调用处传入ModelContext
+        
+        // 从数据库获取最新数据并更新通知
+        Task {
+            await updateCheckupRemindersWithDays(reminderDays)
+        }
+    }
+    
+    @MainActor
+    private func updateCheckupRemindersWithDays(_ reminderDays: Int) async {
+        guard let container = modelContainer else {
+            print("ModelContainer not available")
+            return
+        }
+        
+        let context = container.mainContext
+        
+        do {
+            // 获取提醒设置
+            let reminderRequest = FetchDescriptor<THReminderSetting>(
+                sortBy: [SortDescriptor(\.lastUpdated, order: .reverse)]
+            )
+            let reminderSettings = try context.fetch(reminderRequest)
+            
+            // 获取检查记录
+            let recordsRequest = FetchDescriptor<THCheckupRecord>(
+                sortBy: [SortDescriptor(\.date, order: .reverse)]
+            )
+            let checkupRecords = try context.fetch(recordsRequest)
+            
+            // 更新提醒天数设置
+            UserDefaults.standard.set(reminderDays, forKey: "CheckupReminderDays")
+            UserDefaults.standard.synchronize()
+            
+            // 重新安排提醒
+            scheduleCheckupReminders(with: reminderSettings, checkupRecords: checkupRecords)
+            
+            print("已根据新的提前天数(\(reminderDays)天)更新复查提醒")
+            
+        } catch {
+            print("更新复查提醒失败: \(error)")
+        }
     }
     
     // MARK: - Permission Management
@@ -368,7 +408,7 @@ class THNotificationManager: ObservableObject {
             UIApplication.shared.applicationIconBadgeNumber = count
         }
     }
-    
+    /// 延迟提醒（当用户点击延迟时调用）
     func postponeReminder(for identifier: String, by days: Int = 7) {
         // 先取消现有通知
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
@@ -396,4 +436,3 @@ class THNotificationManager: ObservableObject {
         }
     }
 }
-

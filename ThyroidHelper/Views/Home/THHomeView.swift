@@ -253,7 +253,7 @@ struct CheckupReminderCard: View {
     }
 }
 
-// 更新日期选择器视图
+// 更新的日期选择器视图 - 支持时间选择
 struct ReminderDatePickerView: View {
     @Binding var isPresented: Bool
     @State var selectedDate: Date
@@ -269,7 +269,20 @@ struct ReminderDatePickerView: View {
          onSave: (() -> Void)? = nil) {
         self._isPresented = isPresented
         self.reminderSetting = reminderSetting
-        self._selectedDate = State(initialValue: reminderSetting.customReminderDate ?? Date())
+        
+        // 设置合理的默认时间
+        if let customDate = reminderSetting.customReminderDate {
+            self._selectedDate = State(initialValue: customDate)
+        } else {
+            // 默认设置为明天上午9点
+            let calendar = Calendar.current
+            let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+            var dateComponents = calendar.dateComponents([.year, .month, .day], from: tomorrow)
+            dateComponents.hour = 9  // 上午9点
+            dateComponents.minute = 0
+            self._selectedDate = State(initialValue: calendar.date(from: dateComponents) ?? Date())
+        }
+        
         self._isEnabled = State(initialValue: reminderSetting.isCustomReminderEnabled)
         self._showHint = showHint
         self.onSave = onSave
@@ -286,9 +299,9 @@ struct ReminderDatePickerView: View {
                             "checkup_date".localized,
                             selection: $selectedDate,
                             in: Date()...,
-                            displayedComponents: .date
+                            displayedComponents: [.date, .hourAndMinute]
                         )
-                        .datePickerStyle(GraphicalDatePickerStyle())
+                        .datePickerStyle(.compact)
                     }
                 } header: {
                     Text("custom_reminder_header_format".localized(reminderSetting.checkupType.displayName))
@@ -314,6 +327,17 @@ struct ReminderDatePickerView: View {
         }
     }
     
+    // 设置选定日期的时间
+    private func setTimeToDate(hour: Int, minute: Int) {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
+        components.hour = hour
+        components.minute = minute
+        if let newDate = calendar.date(from: components) {
+            selectedDate = newDate
+        }
+    }
+    
     private func saveSettings() {
         reminderSetting.customReminderDate = isEnabled ? selectedDate : nil
         reminderSetting.isCustomReminderEnabled = isEnabled
@@ -331,7 +355,6 @@ struct ReminderDatePickerView: View {
         }
     }
 }
-
 
 struct IndicatorCard: View {
     let indicator: THIndicatorRecord
