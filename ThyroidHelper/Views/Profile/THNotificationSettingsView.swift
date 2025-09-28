@@ -24,7 +24,6 @@ struct THNotificationSettingsView: View {
     private let reminderTimeKey = "DailyReminderTime"
     
     var body: some View {
-        NavigationView {
             Form {
                 // 权限状态部分
                 if notificationPermissionStatus != .authorized {
@@ -149,7 +148,6 @@ struct THNotificationSettingsView: View {
             } message: {
                 Text("permission_denied_message".localized)
             }
-        }
     }
     
     // MARK: - Settings Management

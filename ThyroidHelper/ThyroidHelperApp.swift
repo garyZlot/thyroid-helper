@@ -22,7 +22,7 @@ struct ThyroidHelperApp: App {
         do {
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             print("数据库位置: \(modelConfiguration.url)")
-            //THDatabaseManager.clearEntity(THCheckupRecord.self, in: container.mainContext)
+            THDatabaseManager.clearEntity(THReminderSetting.self, in: container.mainContext)
             THDatabaseManager.migrateDatabase(modelContext: container.mainContext)
             return container
         } catch {
