@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   ThyroidHelper
 
@@ -43,84 +43,59 @@
 "indicator_rising_format" = "📈 指标呈上升趋势 (+%.2f)";
 "indicator_falling_format" = "📉 指标呈下降趋势 (%.2f)";
 
-/* Empty state */
+/* 空状态 */
 "no_records_title" = "暂无检查记录";
 "no_records_description" = "添加您的第一条检查记录";
-
-/* Navigation */
-"checkup_indicators_title" = "检查指标";
-
-/* Edit Record View */
-"section_checkup_info" = "检查信息";
-"checkup_date" = "检查日期";
-"section_notes" = "备注";
-"notes_placeholder" = "添加备注信息...";
-"cancel" = "取消";
-"save" = "保存";
-"save_failed_format" = "保存失败: %@";
-
-/* Indicator Edit */
-"value_placeholder" = "数值";
-"reference_range_format" = "参考范围: %@";
-
-/* Empty state */
 "no_history_title" = "暂无历史数据";
 "no_history_description" = "添加您的第一条医疗历史";
 
-/* Navigation */
+/* 导航 */
+"checkup_indicators_title" = "检查指标";
 "history_nav_title" = "历史";
 "edit_history_nav_title" = "编辑历史记录";
 
-/* Timeline */
-"notes_section_title" = "内容及备注";
-
-/* Edit Record View */
+/* 编辑记录视图 */
 "section_checkup_info" = "检查信息";
-"checkup_date" = "检查日期";
+"section_notes" = "备注";
+"notes_placeholder" = "添加备注信息...";
+"save_failed_format" = "保存失败: %@";
+"value_placeholder" = "数值";
+"reference_range_format" = "参考范围: %@";
 "checkup_item" = "检查项目";
 "checkup_item_placeholder" = "例如：甲状腺B超检查（可选）";
 
+/* 图片管理 */
 "section_images" = "图片管理";
 "add_photo" = "拍照添加";
 "select_photos" = "选择图片";
 "select_photo_source" = "选择图片来源";
 "take_photo" = "拍照";
 "choose_from_library" = "从相册选择";
-"cancel" = "取消";
+"section_checkup_images" = "检查图片";
 
+/* OCR相关 */
 "ocr_processing_title" = "正在识别...";
 "ocr_processing_message" = "正在识别图片内容...";
-
-"section_checkup_images" = "检查图片";
-"section_notes" = "内容及备注";
-"notes_placeholder" = "添加备注信息...";
 "section_recognized_text" = "识别内容";
-
-"save" = "保存";
-"save_failed_format" = "保存医疗档案失败: %@";
-
-/* OCR Raw Text View */
 "ocr_raw_text_title" = "OCR识别原始文本";
 "no_text_recognized" = "未识别到任何文本";
 "recognized_text" = "识别文本";
 "close" = "关闭";
-
-/* OCR Result View */
 "ocr_processing_report" = "正在识别检查报告...";
 "ocr_error_title" = "识别出错";
 "retry_recognition" = "重新识别";
 "view_raw_text" = "查看原文";
 "confirm_data" = "确认数据";
 "recognition_result" = "识别结果";
-
-/* OCR Results Section */
 "recognized_indicators" = "识别到的指标";
 "indicators_count_format" = "%d 项";
 "no_thyroid_indicators_recognized" = "未识别到甲状腺指标";
 "ensure_clear_image_prompt" = "请确保图片清晰，包含FT3、FT4、TSH、A-TG、A-TPO等指标数值";
 "manual_adjustment_hint" = "可以手动调整识别不准确的数值";
+"ocr_failed_note" = "OCR识别失败，请手动添加信息";
+"image_load_failed_note" = "图片加载失败";
 
-/* Add Record View */
+/* 添加记录视图 */
 "checkup_type" = "检查类型";
 "input_method" = "录入方式";
 "add_checkup_images" = "添加检查图片";
@@ -135,19 +110,45 @@
 "add_anyway" = "仍然添加";
 "duplicate_record_message" = "在 %@ 已存在一条 %@ 记录，确定要添加新记录吗？";
 "record_saved_successfully" = "记录保存成功";
-
-/* Indicator Adjustment Row */
 "original_recognized_value_format" = "原识别值: %.%df";
 "restore" = "恢复";
+"choose_add_method" = "请选择添加方式";
+"smart_add_from_images" = "图片识别添加";
+"auto_extract_info_from_reports" = "自动提取医疗报告信息";
+"manual_add" = "手动添加";
+"manually_input_information" = "手动输入所有信息";
+"processing_images" = "正在处理图片...";
+"processing_image_format" = "正在处理第 %d/%d 张图片";
+"processing_completed" = "处理完成";
+"processing_medical_reports" = "正在识别医疗报告";
+"records_created_format" = "已创建 %d 条记录";
+"done" = "完成";
+"medical_report" = "医疗报告";
 
-/* Images Viewer */
+/* 历史记录相关 */
+"notes_section_title" = "内容及备注";
+"manual_add_history" = "添加历史记录";
+"select_add_history_method" = "选择添加历史记录方式";
+"add_history_record" = "添加历史记录";
+"auto_extract_from_images" = "从图片自动提取信息";
+"manual_input_history" = "手动输入历史信息";
+"record_date" = "日期";
+"record_title_placeholder" = "输入一个标题";
+"content_placeholder" = "输入详细内容...";
+"loading_history" = "正在加载历史记录...";
+"use_camera_to_take_photo" = "使用相机拍摄照片";
+"select_from_photo_library" = "从相册中选择照片";
+"history_section_photos" = "图片";
+"history_section_notes" = "内容及备注";
+
+/* 图片查看器 */
 "page_indicator_format" = " %d / %d ";
 "save_to_photos" = "保存到相册";
 "share" = "分享";
 "saved_to_photos" = "已保存到相册";
 "ok" = "好的";
 
-/* About View */
+/* 关于页面 */
 "version_1_0_0" = "版本 1.0.0";
 "app_introduction" = "应用介绍";
 "app_description" = "甲状腺复查助手是专为甲状腺疾病患者设计的健康管理工具，帮助您：";
@@ -155,14 +156,18 @@
 "feature_visualize_trends" = "可视化展示指标趋势";
 "feature_smart_reminders" = "智能提醒复查时间";
 "feature_icloud_sync" = "安全的iCloud数据同步";
+"feature_data_export" = "多种格式数据导出";
+"feature_professional_export" = "专业导出";
+"feature_professional_export_desc" = "支持多格式导出，生成专业医疗报告";
 "technical_support" = "技术支持";
 "user_feedback" = "用户反馈";
 "privacy_policy" = "隐私政策";
 "user_agreement" = "用户协议";
 "medical_disclaimer" = "本应用仅用于健康数据记录，不提供医疗建议。如有健康问题，请咨询专业医生。";
 "about" = "关于";
+"medical_disclaimer_title" = "医疗免责声明";
 
-/* Data Export View */
+/* 数据导出页面 */
 "export_format" = "导出格式";
 "file_format" = "文件格式";
 "data_range" = "数据范围";
@@ -182,23 +187,55 @@
 "export_time_format" = "导出时间: %@";
 "pdf_indicator_format" = "%@: %@ %@ (参考范围: %@) - %@";
 "pdf_notes_format" = "备注: %@";
+"checkup_data_export" = "检查数据导出";
+"additional_exports" = "其他导出";
+"history_records_export" = "历史记录导出";
+"pdf_format_only" = "(仅PDF格式)";
+"export_checkup_data" = "导出检查数据";
+"export_history_records" = "导出历史记录";
+"no_history_data_to_export" = "没有历史记录可导出";
+"history_records_pdf_title" = "甲状腺助手 - 历史记录";
+"exporting" = "导出中...";
+"pdf_image_label_format" = "图片 %d";
+"pdf_notes_title" = "备注：";
 
-/* Notification Settings View */
+/* 通知设置页面 */
+"notification_settings" = "通知设置";
 "checkup_reminders" = "复查提醒";
-"enable_checkup_reminders" = "开启复查提醒";
+"enable_checkup_reminders" = "启用复查提醒";
 "advance_reminder" = "提前提醒";
 "days" = "天数";
 "1_day" = "1天";
+"3_days" = "3天";
 "7_days" = "7天";
 "14_days" = "14天";
 "30_days" = "30天";
+"checkup_reminder_description" = "将在您下次复查日期前的指定天数提醒您";
 "daily_reminders" = "日常提醒";
 "daily_medication_reminder" = "每日用药提醒";
 "reminder_time" = "提醒时间";
-"notification_permission_note" = "提醒功能需要您授权应用发送通知";
-"notification_settings" = "通知设置";
+"daily_reminder_description" = "每天在指定时间提醒您按时用药";
+"notification_permission_required" = "需要通知权限";
+"notification_permission_description" = "请允许应用发送通知，以便及时提醒您复查和用药";
+"enable_notifications" = "开启通知";
+"permission_denied" = "权限被拒绝";
+"permission_denied_message" = "请在系统设置中允许通知权限，以便接收提醒";
+"notification_settings_info" = "通知设置将保存在本地，确保您能及时收到复查和用药提醒。";
+"notification_permission_note" = "请在系统设置中允许通知权限。";
 
-/* Login View */
+/* 通知内容 */
+"checkup_reminder_title" = "复查提醒";
+"checkup_reminder_body_format" = "您的%@检查即将到期，建议在%@前完成复查";
+"daily_medication_reminder_title" = "用药提醒";
+"daily_medication_reminder_body" = "记得按时服用您的甲状腺药物";
+"test_notification_title" = "测试通知";
+"test_notification_body" = "通知功能正常工作！";
+"postponed_reminder_title" = "延期提醒";
+"postponed_reminder_body" = "您的复查提醒已延期7天";
+"view_checkup_reminder" = "查看";
+"postpone_reminder" = "延期";
+
+/* 登录页面 */
 "app_subtitle" = "科学管理检查数据，守护甲状腺健康";
 "feature_photo_recognition" = "拍照识别";
 "feature_photo_recognition_desc" = "智能识别检查报告数值";
@@ -210,14 +247,14 @@
 "feature_smart_reminder_desc" = "不错过每次复查时间";
 "apple_signin_note" = "使用Apple ID登录，数据加密存储";
 
-/* Main Tab View */
+/* 主标签页 */
 "home" = "首页";
 "trends" = "趋势";
 "indicators" = "指标";
 "history" = "历史";
 "profile" = "我的";
 
-/* Profile View */
+/* 个人中心页面 */
 "user" = "用户";
 "data_statistics" = "数据统计";
 "recent_checkup" = "最近检查";
@@ -237,9 +274,9 @@
 "clear_data_warning_with_icloud" = "此操作将永久删除所有检查记录，包括已同步到 iCloud 的数据。删除后无法恢复，其他设备上的数据也会被同步删除。";
 "no_records" = "无记录";
 
+/* 检查类型和指标 */
 "checkup_thyroid_function" = "甲功五项";
 "checkup_thyroglobulin" = "甲状腺球蛋白";
-
 "indicator_ft3" = "游离三碘甲状腺原氨酸 (FT3)";
 "indicator_ft4" = "游离甲状腺素 (FT4)";
 "indicator_tsh" = "促甲状腺激素 (TSH)";
@@ -247,114 +284,20 @@
 "indicator_anti_tpo" = "甲状腺过氧化物酶自身抗体 (A-TPO)";
 "indicator_tg" = "甲状腺球蛋白 (TG)";
 
-"choose_add_method" = "请选择添加方式";
-"smart_add_from_images" = "图片识别添加";
-"auto_extract_info_from_reports" = "自动提取医疗报告信息";
-"manual_add" = "手动添加";
-"manually_input_information" = "手动输入所有信息";
-"processing_images" = "正在处理图片...";
-"processing_image_format" = "正在处理第 %d/%d 张图片";
-"processing_completed" = "处理完成";
-"processing_medical_reports" = "正在识别医疗报告";
-"records_created_format" = "已创建 %d 条记录";
-"done" = "完成";
-"medical_report" = "医疗报告";
-"ocr_failed_note" = "OCR识别失败，请手动添加信息";
-"image_load_failed_note" = "图片加载失败";
-"manual_add_history" = "添加历史记录";
+/* 状态 */
+"status_low" = "偏低";
+"status_normal" = "正常";
+"status_high" = "偏高";
 
-"select_add_history_method" = "选择添加历史记录方式";
-"add_history_record" = "添加历史记录";
-"auto_extract_from_images" = "从图片自动提取信息";
-"manual_input_history" = "手动输入历史信息";
-"record_date" = "日期";
-"record_title_placeholder" = "输入一个标题";
-"content_placeholder" = "输入详细内容...";
-
-"loading_history" = "正在加载历史记录...";
-"use_camera_to_take_photo" = "使用相机拍摄照片";
-"select_from_photo_library" = "从相册中选择照片";
-"history_section_photos" = "图片";
-"history_section_notes" = "内容及备注";
-
-// THCloudKitManager
+/* CloudKit同步相关 */
 "sync_status_not_synced" = "未同步";
 "sync_status_icloud_connected" = "已连接iCloud";
 "sync_status_please_sign_in_icloud" = "请登录iCloud";
 "sync_status_icloud_unavailable" = "iCloud不可用";
 "sync_status_icloud_temporarily_unavailable" = "iCloud暂时不可用，请在设置中验证您的凭据";
 "user_name_default" = "用户";
-
-// Profile
 "sync_status_unknown_error" = "未知错误";
 "sign_in_to_icloud" = "登录 iCloud";
 "icloud_signin_required" = "需要登录 iCloud";
 "icloud_signin_message" = "要使用数据同步功能，请先在设置中登录您的 iCloud 账户。";
 "go_to_settings" = "前往设置";
-"medical_disclaimer_title" = "医疗免责声明";
-
-"status_low" = "偏低";
-"status_normal" = "正常";
-"status_high" = "偏高";
-
-"checkup_data_export" = "检查数据导出";
-"additional_exports" = "其他导出";
-"history_records_export" = "历史记录导出";
-"pdf_format_only" = "(仅PDF格式)";
-"export_checkup_data" = "导出检查数据";
-"export_history_records" = "导出历史记录";
-"no_history_data_to_export" = "没有历史记录可导出";
-"history_records_pdf_title" = "甲状腺助手 - 历史记录";
-"exporting" = "导出中...";
-"pdf_image_label_format" = "图片 %d";
-"pdf_notes_title" = "备注：";
-"feature_data_export" = "多种格式数据导出";
-"feature_professional_export" = "专业导出";
-"feature_professional_export_desc" = "支持多格式导出，生成专业医疗报告";
-
-// 通知功能相关的本地化字符串
-// Localizable.strings
-
-/* 通知设置界面 */
-"notification_settings" = "通知设置";
-"checkup_reminders" = "复查提醒";
-"daily_reminders" = "日常提醒";
-"enable_checkup_reminders" = "启用复查提醒";
-"advance_reminder" = "提前提醒";
-"1_day" = "1天";
-"3_days" = "3天";
-"7_days" = "7天";
-"14_days" = "14天";
-"30_days" = "30天";
-"checkup_reminder_description" = "将在您下次复查日期前的指定天数提醒您";
-
-"daily_medication_reminder" = "每日用药提醒";
-"reminder_time" = "提醒时间";
-"daily_reminder_description" = "每天在指定时间提醒您按时用药";
-
-/* 权限相关 */
-"notification_permission_required" = "需要通知权限";
-"notification_permission_description" = "请允许应用发送通知，以便及时提醒您复查和用药";
-"enable_notifications" = "开启通知";
-"permission_denied" = "权限被拒绝";
-"permission_denied_message" = "请在系统设置中允许通知权限，以便接收提醒";
-"go_to_settings" = "前往设置";
-"cancel" = "取消";
-
-/* 说明信息 */
-"notification_settings_info" = "通知设置将保存在本地，确保您能及时收到复查和用药提醒。";
-"notification_permission_note" = "请在系统设置中允许通知权限。";
-
-/* 通知内容 */
-"checkup_reminder_title" = "复查提醒";
-"checkup_reminder_body_format" = "您的%@检查即将到期，建议在%@前完成复查";
-"daily_medication_reminder_title" = "用药提醒";
-"daily_medication_reminder_body" = "记得按时服用您的甲状腺药物";
-"test_notification_title" = "测试通知";
-"test_notification_body" = "通知功能正常工作！";
-"postponed_reminder_title" = "延期提醒";
-"postponed_reminder_body" = "您的复查提醒已延期7天";
-
-/* 通知动作按钮 */
-"view_checkup_reminder" = "查看";
-"postpone_reminder" = "延期";

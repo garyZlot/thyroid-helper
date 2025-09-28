@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   ThyroidHelper
 
@@ -46,79 +46,54 @@
 /* Empty state */
 "no_records_title" = "No records available";
 "no_records_description" = "Add your first record";
-
-/* Navigation */
-"checkup_indicators_title" = "Checkup Indicators";
-
-/* Edit Record View */
-"section_checkup_info" = "Checkup Info";
-"checkup_date" = "Checkup Date";
-"section_notes" = "Notes";
-"notes_placeholder" = "Add notes...";
-"cancel" = "Cancel";
-"save" = "Save";
-"save_failed_format" = "Save failed: %@";
-
-/* Indicator Edit */
-"value_placeholder" = "Value";
-"reference_range_format" = "Reference: %@";
-
-/* Empty state */
 "no_history_title" = "No history available";
 "no_history_description" = "Add your first medical history";
 
 /* Navigation */
+"checkup_indicators_title" = "Checkup Indicators";
 "history_nav_title" = "History";
 "edit_history_nav_title" = "Edit History";
 
-/* Timeline */
-"notes_section_title" = "Notes";
-
 /* Edit Record View */
 "section_checkup_info" = "Checkup Info";
-"checkup_date" = "Checkup Date";
+"section_notes" = "Notes";
+"notes_placeholder" = "Add notes...";
+"save_failed_format" = "Save failed: %@";
+"value_placeholder" = "Value";
+"reference_range_format" = "Reference: %@";
 "checkup_item" = "Checkup Item";
 "checkup_item_placeholder" = "e.g. Thyroid ultrasound (optional)";
 
+/* Image Management */
 "section_images" = "Image Management";
 "add_photo" = "Take Photo";
 "select_photos" = "Select Photos";
 "select_photo_source" = "Choose Image Source";
 "take_photo" = "Take Photo";
 "choose_from_library" = "Choose from Library";
-"cancel" = "Cancel";
+"section_checkup_images" = "Checkup Images";
 
+/* OCR Related */
 "ocr_processing_title" = "Processing...";
 "ocr_processing_message" = "Recognizing image content...";
-
-"section_checkup_images" = "Checkup Images";
-"section_notes" = "Notes";
-"notes_placeholder" = "Add notes...";
 "section_recognized_text" = "Recognized Text";
-
-"save" = "Save";
-"save_failed_format" = "Save medical history failed: %@";
-
-/* OCR Raw Text View */
 "ocr_raw_text_title" = "OCR Recognized Raw Text";
 "no_text_recognized" = "No text recognized";
 "recognized_text" = "Recognized Text";
 "close" = "Close";
-
-/* OCR Result View */
 "ocr_processing_report" = "Processing checkup report...";
 "ocr_error_title" = "Recognition Error";
 "retry_recognition" = "Retry Recognition";
 "view_raw_text" = "View Raw Text";
 "confirm_data" = "Confirm Data";
 "recognition_result" = "Recognition Result";
-
-/* OCR Results Section */
 "recognized_indicators" = "Recognized Indicators";
 "indicators_count_format" = "%d items";
 "no_thyroid_indicators_recognized" = "No thyroid indicators recognized";
 "ensure_clear_image_prompt" = "Please ensure the image is clear and contains values for FT3, FT4, TSH, A-TG, A-TPO and other indicators";
 "manual_adjustment_hint" = "You can manually adjust inaccurate recognition values";
+"ocr_failed_note" = "OCR recognition failed, please add information manually";
+"image_load_failed_note" = "Failed to load image";
 
 /* Add Record View */
 "checkup_type" = "Checkup Type";
@@ -135,10 +110,36 @@
 "add_anyway" = "Add Anyway";
 "duplicate_record_message" = "A %@ record already exists on %@. Are you sure you want to add a new record?";
 "record_saved_successfully" = "Record saved successfully";
-
-/* Indicator Adjustment Row */
 "original_recognized_value_format" = "Original value: %.%df";
 "restore" = "Restore";
+"choose_add_method" = "Choose how to add";
+"smart_add_from_images" = "Smart Add from Images";
+"auto_extract_info_from_reports" = "Auto extract info from medical reports";
+"manual_add" = "Manual Add";
+"manually_input_information" = "Manually input all information";
+"processing_images" = "Processing images...";
+"processing_image_format" = "Processing image %d/%d";
+"processing_completed" = "Processing completed";
+"processing_medical_reports" = "Recognizing medical reports";
+"records_created_format" = "%d records created";
+"done" = "Done";
+"medical_report" = "Medical Report";
+
+/* History Records */
+"notes_section_title" = "Notes";
+"manual_add_history" = "Add History";
+"select_add_history_method" = "Select Add History Method";
+"auto_extract_from_images" = "Auto Extract from Images";
+"add_history_record" = "Add History Record";
+"manual_input_history" = "Manual Input History";
+"record_date" = "Date";
+"record_title_placeholder" = "Input history title";
+"content_placeholder" = "Input history content (optional)";
+"loading_history" = "Loading history...";
+"use_camera_to_take_photo" = "Take a photo with camera";
+"select_from_photo_library" = "Select photo from library";
+"history_section_photos" = "Photos";
+"history_section_notes" = "Content & Notes";
 
 /* Images Viewer */
 "page_indicator_format" = " %d / %d ";
@@ -155,12 +156,16 @@
 "feature_visualize_trends" = "Visualize indicator trends";
 "feature_smart_reminders" = "Smart checkup reminders";
 "feature_icloud_sync" = "Secure iCloud data sync";
+"feature_data_export" = "Multi-format Data Export";
+"feature_professional_export" = "Professional Export";
+"feature_professional_export_desc" = "Multi-format export with professional medical reports";
 "technical_support" = "Technical Support";
 "user_feedback" = "User Feedback";
 "privacy_policy" = "Privacy Policy";
 "user_agreement" = "User Agreement";
 "medical_disclaimer" = "This app is only for health data recording and does not provide medical advice. Please consult a professional doctor for health issues.";
 "about" = "About";
+"medical_disclaimer_title" = "Medical Disclaimer";
 
 /* Data Export View */
 "export_format" = "Export Format";
@@ -182,21 +187,53 @@
 "export_time_format" = "Export time: %@";
 "pdf_indicator_format" = "%@: %@ %@ (Reference: %@) - %@";
 "pdf_notes_format" = "Notes: %@";
+"checkup_data_export" = "Checkup Data Export";
+"additional_exports" = "Additional Exports";
+"history_records_export" = "History Records Export";
+"pdf_format_only" = "(Only PDF Format)";
+"export_checkup_data" = "Export Checkup Data";
+"export_history_records" = "Export History Records";
+"no_history_data_to_export" = "No history data to export";
+"history_records_pdf_title" = "Thyroid Helper - History Records";
+"exporting" = "Exporting...";
+"pdf_image_label_format" = "Image %d";
+"pdf_notes_title" = "Notes:";
 
 /* Notification Settings View */
+"notification_settings" = "Notification Settings";
 "checkup_reminders" = "Checkup Reminders";
 "enable_checkup_reminders" = "Enable Checkup Reminders";
 "advance_reminder" = "Advance Reminder";
 "days" = "Days";
 "1_day" = "1 day";
+"3_days" = "3 Days";
 "7_days" = "7 days";
 "14_days" = "14 days";
 "30_days" = "30 days";
+"checkup_reminder_description" = "You'll be reminded the specified number of days before your next checkup";
 "daily_reminders" = "Daily Reminders";
 "daily_medication_reminder" = "Daily Medication Reminder";
 "reminder_time" = "Reminder Time";
-"notification_permission_note" = "Reminder features require you to authorize the app to send notifications";
-"notification_settings" = "Notification Settings";
+"daily_reminder_description" = "Daily reminder to take your thyroid medication at the specified time";
+"notification_permission_required" = "Notification Permission Required";
+"notification_permission_description" = "Please allow notifications to receive timely reminders for checkups and medication";
+"enable_notifications" = "Enable Notifications";
+"permission_denied" = "Permission Denied";
+"permission_denied_message" = "Please allow notification permission in system settings to receive reminders";
+"notification_settings_info" = "Notification settings are saved locally to ensure you receive timely checkup and medication reminders.";
+"notification_permission_note" = "Please allow notification permission in system settings.";
+
+/* Notification Content */
+"checkup_reminder_title" = "Checkup Reminder";
+"checkup_reminder_body_format" = "Your %@ examination is due soon, please complete the checkup by %@";
+"daily_medication_reminder_title" = "Medication Reminder";
+"daily_medication_reminder_body" = "Remember to take your thyroid medication on time";
+"test_notification_title" = "Test Notification";
+"test_notification_body" = "Notification feature is working properly!";
+"postponed_reminder_title" = "Postponed Reminder";
+"postponed_reminder_body" = "Your checkup reminder has been postponed for 7 days";
+"view_checkup_reminder" = "View";
+"postpone_reminder" = "Postpone";
 
 /* Login View */
 "app_subtitle" = "Scientifically manage checkup data, protect thyroid health";
@@ -237,9 +274,9 @@
 "clear_data_warning_with_icloud" = "This will permanently delete all checkup records, including data synced to iCloud. This action cannot be undone and will also delete data on your other devices.";
 "no_records" = "No Records";
 
+/* Checkup Types and Indicators */
 "checkup_thyroid_function" = "Thyroid Function Panel";
 "checkup_thyroglobulin" = "Thyroglobulin";
-
 "indicator_ft3" = "Free Triiodothyronine (FT3)";
 "indicator_ft4" = "Free Thyroxine (FT4)";
 "indicator_tsh" = "Thyroid-Stimulating Hormone (TSH)";
@@ -247,111 +284,20 @@
 "indicator_anti_tpo" = "Anti-Thyroid Peroxidase Antibody (Anti-TPO)";
 "indicator_tg" = "Thyroglobulin (TG)";
 
-"choose_add_method" = "Choose how to add";
-"smart_add_from_images" = "Smart Add from Images";
-"auto_extract_info_from_reports" = "Auto extract info from medical reports";
-"manual_add" = "Manual Add";
-"manually_input_information" = "Manually input all information";
-"processing_images" = "Processing images...";
-"processing_image_format" = "Processing image %d/%d";
-"processing_completed" = "Processing completed";
-"processing_medical_reports" = "Recognizing medical reports";
-"records_created_format" = "%d records created";
-"done" = "Done";
-"medical_report" = "Medical Report";
-"ocr_failed_note" = "OCR recognition failed, please add information manually";
-"image_load_failed_note" = "Failed to load image";
-"manual_add_history" = "Add History";
+/* Status */
+"status_low" = "Below Normal";
+"status_normal" = "Normal";
+"status_high" = "Above Normal";
 
-"select_add_history_method" = "Select Add History Method";
-"auto_extract_from_images" = "Auto Extract from Images";
-"add_history_record" = "Add History Record";
-"manual_input_history" = "Manual Input History";
-"record_date" = "Date";
-"record_title_placeholder" = "Input history title";
-"content_placeholder" = "Input history content (optional)";
-
-"loading_history" = "Loading history...";
-"use_camera_to_take_photo" = "Take a photo with camera";
-"select_from_photo_library" = "Select photo from library";
-"history_section_photos" = "Photos";
-"history_section_notes" = "Content & Notes";
-
-// THCloudKitManager
+/* CloudKit Sync Related */
 "sync_status_not_synced" = "Not Synced";
 "sync_status_icloud_connected" = "iCloud Connected";
 "sync_status_please_sign_in_icloud" = "Please Sign In to iCloud";
 "sync_status_icloud_unavailable" = "iCloud Unavailable";
 "sync_status_icloud_temporarily_unavailable" = "iCloud Temporarily Unavailable. Please verify your credentials in Settings.";
 "user_name_default" = "User";
-
-// Profile
 "sync_status_unknown_error" = "Unknown Error";
 "sign_in_to_icloud" = "Sign in to iCloud";
 "icloud_signin_required" = "iCloud Sign-in Required";
 "icloud_signin_message" = "To use data synchronization features, please sign in to your iCloud account in Settings first.";
 "go_to_settings" = "Go to Settings";
-"medical_disclaimer_title" = "Medical Disclaimer";
-
-"status_low" = "Below Normal";
-"status_normal" = "Normal";
-"status_high" = "Above Normal";
-
-"checkup_data_export" = "Checkup Data Export";
-"additional_exports" = "Additional Exports";
-"history_records_export" = "History Records Export";
-"pdf_format_only" = "(Only PDF Format)";
-"export_checkup_data" = "Export Checkup Data";
-"export_history_records" = "Export History Records";
-"no_history_data_to_export" = "No history data to export";
-"history_records_pdf_title" = "Thyroid Helper - History Records";
-"exporting" = "Exporting...";
-"pdf_image_label_format" = "Image %d";
-"pdf_notes_title" = "Notes:";
-"feature_data_export" = "Multi-format Data Export";
-"feature_professional_export" = "Professional Export";
-"feature_professional_export_desc" = "Multi-format export with professional medical reports";
-
-/* Notification Settings UI */
-"notification_settings" = "Notification Settings";
-"checkup_reminders" = "Checkup Reminders";
-"daily_reminders" = "Daily Reminders";
-"enable_checkup_reminders" = "Enable Checkup Reminders";
-"advance_reminder" = "Advance Reminder";
-"1_day" = "1 Day";
-"3_days" = "3 Days";
-"7_days" = "7 Days";
-"14_days" = "14 Days";
-"30_days" = "30 Days";
-"checkup_reminder_description" = "You'll be reminded the specified number of days before your next checkup";
-
-"daily_medication_reminder" = "Daily Medication Reminder";
-"reminder_time" = "Reminder Time";
-"daily_reminder_description" = "Daily reminder to take your thyroid medication at the specified time";
-
-/* Permission Related */
-"notification_permission_required" = "Notification Permission Required";
-"notification_permission_description" = "Please allow notifications to receive timely reminders for checkups and medication";
-"enable_notifications" = "Enable Notifications";
-"permission_denied" = "Permission Denied";
-"permission_denied_message" = "Please allow notification permission in system settings to receive reminders";
-"go_to_settings" = "Go to Settings";
-"cancel" = "Cancel";
-
-/* Info */
-"notification_settings_info" = "Notification settings are saved locally to ensure you receive timely checkup and medication reminders.";
-"notification_permission_note" = "Please allow notification permission in system settings.";
-
-/* Notification Content */
-"checkup_reminder_title" = "Checkup Reminder";
-"checkup_reminder_body_format" = "Your %@ examination is due soon, please complete the checkup by %@";
-"daily_medication_reminder_title" = "Medication Reminder";
-"daily_medication_reminder_body" = "Remember to take your thyroid medication on time";
-"test_notification_title" = "Test Notification";
-"test_notification_body" = "Notification feature is working properly!";
-"postponed_reminder_title" = "Postponed Reminder";
-"postponed_reminder_body" = "Your checkup reminder has been postponed for 7 days";
-
-/* Notification Action Buttons */
-"view_checkup_reminder" = "View";
-"postpone_reminder" = "Postpone";
