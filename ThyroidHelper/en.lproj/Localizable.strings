@@ -311,3 +311,47 @@
 "feature_data_export" = "Multi-format Data Export";
 "feature_professional_export" = "Professional Export";
 "feature_professional_export_desc" = "Multi-format export with professional medical reports";
+
+/* Notification Settings UI */
+"notification_settings" = "Notification Settings";
+"checkup_reminders" = "Checkup Reminders";
+"daily_reminders" = "Daily Reminders";
+"enable_checkup_reminders" = "Enable Checkup Reminders";
+"advance_reminder" = "Advance Reminder";
+"1_day" = "1 Day";
+"3_days" = "3 Days";
+"7_days" = "7 Days";
+"14_days" = "14 Days";
+"30_days" = "30 Days";
+"checkup_reminder_description" = "You'll be reminded the specified number of days before your next checkup";
+
+"daily_medication_reminder" = "Daily Medication Reminder";
+"reminder_time" = "Reminder Time";
+"daily_reminder_description" = "Daily reminder to take your thyroid medication at the specified time";
+
+/* Permission Related */
+"notification_permission_required" = "Notification Permission Required";
+"notification_permission_description" = "Please allow notifications to receive timely reminders for checkups and medication";
+"enable_notifications" = "Enable Notifications";
+"permission_denied" = "Permission Denied";
+"permission_denied_message" = "Please allow notification permission in system settings to receive reminders";
+"go_to_settings" = "Go to Settings";
+"cancel" = "Cancel";
+
+/* Info */
+"notification_settings_info" = "Notification settings are saved locally to ensure you receive timely checkup and medication reminders.";
+"notification_permission_note" = "Please allow notification permission in system settings.";
+
+/* Notification Content */
+"checkup_reminder_title" = "Checkup Reminder";
+"checkup_reminder_body_format" = "Your %@ examination is due soon, please complete the checkup by %@";
+"daily_medication_reminder_title" = "Medication Reminder";
+"daily_medication_reminder_body" = "Remember to take your thyroid medication on time";
+"test_notification_title" = "Test Notification";
+"test_notification_body" = "Notification feature is working properly!";
+"postponed_reminder_title" = "Postponed Reminder";
+"postponed_reminder_body" = "Your checkup reminder has been postponed for 7 days";
+
+/* Notification Action Buttons */
+"view_checkup_reminder" = "View";
+"postpone_reminder" = "Postpone";

@@ -118,21 +118,7 @@ struct THNotificationSettingsView: View {
                 }
                 .disabled(notificationPermissionStatus != .authorized)
                 
-                // 当前通知状态
-                if notificationPermissionStatus == .authorized {
-                    Section("notification_status".localized) {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("notifications_enabled".localized)
-                        }
-                        
-                        Button("test_notification".localized) {
-                            sendTestNotification()
-                        }
-                        .foregroundColor(.blue)
-                    }
-                }
+
                 
                 // 说明信息
                 Section {
@@ -288,19 +274,7 @@ struct THNotificationSettingsView: View {
     }
     
     private func sendTestNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "test_notification_title".localized
-        content.body = "test_notification_body".localized
-        content.sound = .default
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
-        let request = UNNotificationRequest(identifier: "test_notification", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error sending test notification: \(error)")
-            }
-        }
+        THNotificationManager.shared.sendTestNotification()
     }
 }
 
@@ -367,3 +341,4 @@ extension THNotificationSettingsView {
         }
     }
 }
+

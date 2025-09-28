@@ -311,3 +311,50 @@
 "feature_data_export" = "多种格式数据导出";
 "feature_professional_export" = "专业导出";
 "feature_professional_export_desc" = "支持多格式导出，生成专业医疗报告";
+
+// 通知功能相关的本地化字符串
+// Localizable.strings
+
+/* 通知设置界面 */
+"notification_settings" = "通知设置";
+"checkup_reminders" = "复查提醒";
+"daily_reminders" = "日常提醒";
+"enable_checkup_reminders" = "启用复查提醒";
+"advance_reminder" = "提前提醒";
+"1_day" = "1天";
+"3_days" = "3天";
+"7_days" = "7天";
+"14_days" = "14天";
+"30_days" = "30天";
+"checkup_reminder_description" = "将在您下次复查日期前的指定天数提醒您";
+
+"daily_medication_reminder" = "每日用药提醒";
+"reminder_time" = "提醒时间";
+"daily_reminder_description" = "每天在指定时间提醒您按时用药";
+
+/* 权限相关 */
+"notification_permission_required" = "需要通知权限";
+"notification_permission_description" = "请允许应用发送通知，以便及时提醒您复查和用药";
+"enable_notifications" = "开启通知";
+"permission_denied" = "权限被拒绝";
+"permission_denied_message" = "请在系统设置中允许通知权限，以便接收提醒";
+"go_to_settings" = "前往设置";
+"cancel" = "取消";
+
+/* 说明信息 */
+"notification_settings_info" = "通知设置将保存在本地，确保您能及时收到复查和用药提醒。";
+"notification_permission_note" = "请在系统设置中允许通知权限。";
+
+/* 通知内容 */
+"checkup_reminder_title" = "复查提醒";
+"checkup_reminder_body_format" = "您的%@检查即将到期，建议在%@前完成复查";
+"daily_medication_reminder_title" = "用药提醒";
+"daily_medication_reminder_body" = "记得按时服用您的甲状腺药物";
+"test_notification_title" = "测试通知";
+"test_notification_body" = "通知功能正常工作！";
+"postponed_reminder_title" = "延期提醒";
+"postponed_reminder_body" = "您的复查提醒已延期7天";
+
+/* 通知动作按钮 */
+"view_checkup_reminder" = "查看";
+"postpone_reminder" = "延期";
