@@ -28,6 +28,7 @@
 		2FD5F6562E824CDA001CAED5 /* THBottomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F6552E824CD7001CAED5 /* THBottomActionSheet.swift */; };
 		2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */; };
 		2FED69672E8A3373000640D7 /* THDeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69662E8A336B000640D7 /* THDeviceInfo.swift */; };
+		2FED69692E8A5CC4000640D7 /* THKeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */; };
 		68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */; };
 		68426F7B2E5D7FF5008B17BA /* THPanelOCRResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */; };
 		68426F7D2E5D8040008B17BA /* THPanelOCRResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */; };
@@ -78,6 +79,7 @@
 		2FD5F6552E824CD7001CAED5 /* THBottomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THBottomActionSheet.swift; sourceTree = "<group>"; };
 		2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDatabaseManager.swift; sourceTree = "<group>"; };
 		2FED69662E8A336B000640D7 /* THDeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDeviceInfo.swift; sourceTree = "<group>"; };
+		2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THKeychainHelper.swift; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THIndicatorOCRService.swift; sourceTree = "<group>"; };
 		68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultView.swift; sourceTree = "<group>"; };
 		68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultsSection.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 		2F8752B22E6BC2BA00F210C9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */,
 				2FED69662E8A336B000640D7 /* THDeviceInfo.swift */,
 			);
 			path = Utils;
@@ -431,6 +434,7 @@
 				689F16F32E5C9D720047ABAB /* THLoginView.swift in Sources */,
 				68426F7D2E5D8040008B17BA /* THPanelOCRResultsSection.swift in Sources */,
 				68426F7B2E5D7FF5008B17BA /* THPanelOCRResultView.swift in Sources */,
+				2FED69692E8A5CC4000640D7 /* THKeychainHelper.swift in Sources */,
 				68426F812E5D8084008B17BA /* THPanelOCRRawTextView.swift in Sources */,
 				2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */,
 				689F17062E5C9E7C0047ABAB /* THNotificationSettingsView.swift in Sources */,
@@ -493,6 +497,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThyroidHelper/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "用于拍照识别检查报告";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问您的相册";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -528,6 +533,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThyroidHelper/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "用于拍照识别检查报告";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "访问您的相册";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

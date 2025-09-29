@@ -149,6 +149,7 @@ struct THProfileView: View {
         }
         .onAppear {
             cloudManager.checkiCloudStatus()
+            print(">>> authManager.user = \(String(describing: authManager.user))")
         }
     }
     
