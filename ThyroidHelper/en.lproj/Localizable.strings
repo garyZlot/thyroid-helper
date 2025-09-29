@@ -301,3 +301,14 @@
 "icloud_signin_required" = "iCloud Sign-in Required";
 "icloud_signin_message" = "To use data synchronization features, please sign in to your iCloud account in Settings first.";
 "go_to_settings" = "Go to Settings";
+
+/* Email Feedback Related */
+"mail_not_available" = "Mail Not Available";
+"mail_not_configured_message" = "Your device hasn't been configured with a mail account. Please copy the email address to send feedback manually";
+"support_email_label" = "Support Email";
+"copy_email" = "Copy Email";
+"feedback_email_subject" = "Thyroid Helper v%@ - User Feedback";
+"feedback_email_info_header" = "Please write your feedback below";
+"app_version_label" = "App Version";
+"ios_version_label" = "iOS Version";
+"device_model_label" = "Device Model";

@@ -301,3 +301,14 @@
 "icloud_signin_required" = "需要登录 iCloud";
 "icloud_signin_message" = "要使用数据同步功能，请先在设置中登录您的 iCloud 账户。";
 "go_to_settings" = "前往设置";
+
+/* 邮件反馈相关 */
+"mail_not_available" = "邮件不可用";
+"mail_not_configured_message" = "您的设备未配置邮件账户，请复制邮箱地址手动发送反馈";
+"support_email_label" = "支持邮箱";
+"copy_email" = "复制邮箱";
+"feedback_email_subject" = "甲状腺助手 v%@ - 用户反馈";
+"feedback_email_info_header" = "请在下方填写您的反馈内容";
+"app_version_label" = "应用版本";
+"ios_version_label" = "系统版本";
+"device_model_label" = "设备型号";
