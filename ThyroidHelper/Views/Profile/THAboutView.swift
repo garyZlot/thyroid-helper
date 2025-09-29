@@ -84,12 +84,12 @@ struct THAboutView: View {
                         .foregroundColor(.primary)
                 }
                 
-                NavigationLink(destination: EmptyView()) {
+                NavigationLink(destination: THWebDocumentView(documentType: .privacyPolicy)) {
                     Label("privacy_policy".localized, systemImage: "hand.raised")
                         .foregroundColor(.primary)
                 }
                 
-                NavigationLink(destination: EmptyView()) {
+                NavigationLink(destination: THWebDocumentView(documentType: .termsOfService)) {
                     Label("terms_of_service".localized, systemImage: "doc.text")
                         .foregroundColor(.primary)
                 }
@@ -154,16 +154,16 @@ struct THAboutView: View {
         
         return """
         \("feedback_email_info_header".localized)
-                
-                
         
         
-                
+        
+        
         
         ──────────────────
         \("app_version_label".localized): \(deviceInfo.appVersion) (\(deviceInfo.buildNumber))
         \("ios_version_label".localized): \(deviceInfo.systemName) \(deviceInfo.systemVersion)
         \("device_model_label".localized): \(deviceInfo.modelName)
+        \("device_identifier_label".localized): \(deviceInfo.identifier)
         ──────────────────
         """
     }

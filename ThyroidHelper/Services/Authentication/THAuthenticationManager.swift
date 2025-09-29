@@ -65,8 +65,8 @@ class THAuthenticationManager: NSObject, ObservableObject {
             self.isAuthenticated = true
             self.user = AuthenticatedUser(
                 userID: userID,
-                fullName: KeychainHelper.read(key: "fullName"),
-                email: KeychainHelper.read(key: "email")
+                fullName: THKeychainHelper.read(key: "fullName"),
+                email: THKeychainHelper.read(key: "email")
             )
         }
         #else

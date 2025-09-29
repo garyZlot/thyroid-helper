@@ -312,3 +312,6 @@
 "app_version_label" = "应用版本";
 "ios_version_label" = "系统版本";
 "device_model_label" = "设备型号";
+
+"terms_of_service" = "服务条款";
+"device_identifier_label" = "设备标识符";

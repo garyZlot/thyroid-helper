@@ -29,6 +29,11 @@
 		2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */; };
 		2FED69672E8A3373000640D7 /* THDeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69662E8A336B000640D7 /* THDeviceInfo.swift */; };
 		2FED69692E8A5CC4000640D7 /* THKeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */; };
+		2FED696B2E8A6F3E000640D7 /* THWebDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED696A2E8A6F2D000640D7 /* THWebDocumentView.swift */; };
+		2FED69712E8A7069000640D7 /* privacy_policy_zh.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED696E2E8A7069000640D7 /* privacy_policy_zh.html */; };
+		2FED69722E8A7069000640D7 /* terms_of_service_zh.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED69702E8A7069000640D7 /* terms_of_service_zh.html */; };
+		2FED69732E8A7069000640D7 /* terms_of_service_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED696F2E8A7069000640D7 /* terms_of_service_en.html */; };
+		2FED69742E8A7069000640D7 /* privacy_policy_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED696D2E8A7069000640D7 /* privacy_policy_en.html */; };
 		68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */; };
 		68426F7B2E5D7FF5008B17BA /* THPanelOCRResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */; };
 		68426F7D2E5D8040008B17BA /* THPanelOCRResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */; };
@@ -80,6 +85,11 @@
 		2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDatabaseManager.swift; sourceTree = "<group>"; };
 		2FED69662E8A336B000640D7 /* THDeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDeviceInfo.swift; sourceTree = "<group>"; };
 		2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THKeychainHelper.swift; sourceTree = "<group>"; };
+		2FED696A2E8A6F2D000640D7 /* THWebDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THWebDocumentView.swift; sourceTree = "<group>"; };
+		2FED696D2E8A7069000640D7 /* privacy_policy_en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy_policy_en.html; sourceTree = "<group>"; };
+		2FED696E2E8A7069000640D7 /* privacy_policy_zh.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy_policy_zh.html; sourceTree = "<group>"; };
+		2FED696F2E8A7069000640D7 /* terms_of_service_en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = terms_of_service_en.html; sourceTree = "<group>"; };
+		2FED69702E8A7069000640D7 /* terms_of_service_zh.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = terms_of_service_zh.html; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THIndicatorOCRService.swift; sourceTree = "<group>"; };
 		68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultView.swift; sourceTree = "<group>"; };
 		68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultsSection.swift; sourceTree = "<group>"; };
@@ -163,6 +173,7 @@
 		2F7823802E697F6100CDEF24 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				2FED696A2E8A6F2D000640D7 /* THWebDocumentView.swift */,
 				2FD5F6552E824CD7001CAED5 /* THBottomActionSheet.swift */,
 				2F4D6A732E77B856000BF954 /* THImageZoomViewer.swift */,
 				2FBB78CA2E6BC10B00360A3E /* PanelOCR */,
@@ -264,6 +275,17 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		2FED696C2E8A6FE9000640D7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2FED696D2E8A7069000640D7 /* privacy_policy_en.html */,
+				2FED696E2E8A7069000640D7 /* privacy_policy_zh.html */,
+				2FED696F2E8A7069000640D7 /* terms_of_service_en.html */,
+				2FED69702E8A7069000640D7 /* terms_of_service_zh.html */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		689F16BB2E5C97B50047ABAB = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +306,7 @@
 		689F16E02E5C9C670047ABAB /* ThyroidHelper */ = {
 			isa = PBXGroup;
 			children = (
+				2FED696C2E8A6FE9000640D7 /* Resources */,
 				689F16EA2E5C9CEC0047ABAB /* Services */,
 				2FDF3F6D2E7D37D2008B080B /* Data */,
 				2F8752B22E6BC2BA00F210C9 /* Utils */,
@@ -411,6 +434,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */,
+				2FED69712E8A7069000640D7 /* privacy_policy_zh.html in Resources */,
+				2FED69722E8A7069000640D7 /* terms_of_service_zh.html in Resources */,
+				2FED69732E8A7069000640D7 /* terms_of_service_en.html in Resources */,
+				2FED69742E8A7069000640D7 /* privacy_policy_en.html in Resources */,
 				2F1D7E4F2E795B68009F5096 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,6 +449,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FED696B2E8A6F3E000640D7 /* THWebDocumentView.swift in Sources */,
 				689F17082E5C9E860047ABAB /* THDataExportView.swift in Sources */,
 				2F7823792E695A5E00CDEF24 /* THHistoryRecord.swift in Sources */,
 				2FD5F6542E7EA4E7001CAED5 /* THAddHistoryView.swift in Sources */,

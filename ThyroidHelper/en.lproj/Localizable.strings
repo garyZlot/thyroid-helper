@@ -312,3 +312,6 @@
 "app_version_label" = "App Version";
 "ios_version_label" = "iOS Version";
 "device_model_label" = "Device Model";
+
+"terms_of_service" = "Terms of Service";
+"device_identifier_label" = "Device Identifier";
