@@ -90,7 +90,7 @@ struct THAboutView: View {
                 }
                 
                 NavigationLink(destination: EmptyView()) {
-                    Label("user_agreement".localized, systemImage: "doc.text")
+                    Label("terms_of_service".localized, systemImage: "doc.text")
                         .foregroundColor(.primary)
                 }
             }

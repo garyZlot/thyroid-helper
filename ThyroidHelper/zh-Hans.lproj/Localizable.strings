@@ -162,7 +162,7 @@
 "technical_support" = "技术支持";
 "user_feedback" = "用户反馈";
 "privacy_policy" = "隐私政策";
-"user_agreement" = "用户协议";
+"terms_of_service" = "服务条款";
 "medical_disclaimer" = "本应用仅用于健康数据记录，不提供医疗建议。如有健康问题，请咨询专业医生。";
 "about" = "关于";
 "medical_disclaimer_title" = "医疗免责声明";
