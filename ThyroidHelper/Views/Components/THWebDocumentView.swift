@@ -61,7 +61,7 @@ struct WebView: UIViewRepresentable {
     
     private func loadHTML(into webView: WKWebView) {
         // 判断语言
-        let language = "en"
+        let language = locale.language.languageCode?.identifier ?? "en"
         let isChineseUser = language.hasPrefix("zh")
         
         // 获取 HTML 文件名

@@ -34,6 +34,7 @@
 		2FED69722E8A7069000640D7 /* terms_of_service_zh.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED69702E8A7069000640D7 /* terms_of_service_zh.html */; };
 		2FED69732E8A7069000640D7 /* terms_of_service_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED696F2E8A7069000640D7 /* terms_of_service_en.html */; };
 		2FED69742E8A7069000640D7 /* privacy_policy_en.html in Resources */ = {isa = PBXBuildFile; fileRef = 2FED696D2E8A7069000640D7 /* privacy_policy_en.html */; };
+		2FED69772E8A765D000640D7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2FED69752E8A765D000640D7 /* InfoPlist.strings */; };
 		68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */; };
 		68426F7B2E5D7FF5008B17BA /* THPanelOCRResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */; };
 		68426F7D2E5D8040008B17BA /* THPanelOCRResultsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */; };
@@ -90,6 +91,8 @@
 		2FED696E2E8A7069000640D7 /* privacy_policy_zh.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy_policy_zh.html; sourceTree = "<group>"; };
 		2FED696F2E8A7069000640D7 /* terms_of_service_en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = terms_of_service_en.html; sourceTree = "<group>"; };
 		2FED69702E8A7069000640D7 /* terms_of_service_zh.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = terms_of_service_zh.html; sourceTree = "<group>"; };
+		2FED69762E8A765D000640D7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2FED69782E8A7667000640D7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		68426F762E5D7EA4008B17BA /* THIndicatorOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THIndicatorOCRService.swift; sourceTree = "<group>"; };
 		68426F7A2E5D7FF3008B17BA /* THPanelOCRResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultView.swift; sourceTree = "<group>"; };
 		68426F7C2E5D803D008B17BA /* THPanelOCRResultsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPanelOCRResultsSection.swift; sourceTree = "<group>"; };
@@ -319,6 +322,7 @@
 				689F16DE2E5C9C670047ABAB /* ThyroidHelper.entitlements */,
 				689F16DF2E5C9C670047ABAB /* ThyroidHelperApp.swift */,
 				2F1D7E4D2E795B68009F5096 /* Localizable.strings */,
+				2FED69752E8A765D000640D7 /* InfoPlist.strings */,
 			);
 			path = ThyroidHelper;
 			sourceTree = "<group>";
@@ -434,6 +438,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				689F16E12E5C9C670047ABAB /* Assets.xcassets in Resources */,
+				2FED69772E8A765D000640D7 /* InfoPlist.strings in Resources */,
 				2FED69712E8A7069000640D7 /* privacy_policy_zh.html in Resources */,
 				2FED69722E8A7069000640D7 /* terms_of_service_zh.html in Resources */,
 				2FED69732E8A7069000640D7 /* terms_of_service_en.html in Resources */,
@@ -507,6 +512,15 @@
 				2F1D7E502E795BA2009F5096 /* zh-Hans */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		2FED69752E8A765D000640D7 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2FED69762E8A765D000640D7 /* en */,
+				2FED69782E8A7667000640D7 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

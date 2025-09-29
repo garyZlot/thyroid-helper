@@ -1,0 +1,10 @@
+/* 
+  InfoPlist.strings
+  ThyroidHelper
+
+  Created by gdliu on 2025/9/29.
+  
+*/
+
+"NSCameraUsageDescription" = "需要访问相机以拍摄检查报告照片";
+"NSNotificationAlwaysAndWhenInUseUsageDescription" = "需要通知权限，以便及时向您推送检查提醒。";

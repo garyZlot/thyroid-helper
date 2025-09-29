@@ -1,0 +1,10 @@
+/* 
+  InfoPlist.strings
+  ThyroidHelper
+
+  Created by gdliu on 2025/9/29.
+  
+*/
+
+"NSCameraUsageDescription" = "Need access to the camera to take photos of inspection reports";
+"NSNotificationAlwaysAndWhenInUseUsageDescription" = "Notification permission is required to promptly push a check reminders to you.";
