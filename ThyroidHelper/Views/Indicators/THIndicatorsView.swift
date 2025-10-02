@@ -13,6 +13,7 @@ struct THIndicatorsView: View {
     @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
     @State private var recordToEdit: THCheckupRecord?
+    @State private var showLimitAlert = false
     
     var body: some View {
         NavigationView {
@@ -67,6 +68,7 @@ struct THIndicatorsView: View {
         .sheet(item: $recordToEdit) { record in
             THEditIndicatorView(record: record)
         }
+        .limitReachedAlert(isPresented: $showLimitAlert, limitType: .records)
     }
     
     private func deleteRecords(offsets: IndexSet) {

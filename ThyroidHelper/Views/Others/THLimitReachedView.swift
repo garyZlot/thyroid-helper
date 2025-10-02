@@ -117,11 +117,3 @@ extension View {
     }
 }
 
-// MARK: - Preview
-#Preview("Records Limit") {
-    THLimitReachedView(limitType: .records)
-}
-
-#Preview("Exports Limit") {
-    THLimitReachedView(limitType: .exports)
-}

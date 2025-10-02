@@ -12,6 +12,7 @@ import UserNotifications
 @main
 struct ThyroidHelperApp: App {
     @StateObject private var purchaseManager = THPurchaseManager.shared
+    @StateObject private var usageManager = THUsageManager.shared
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -36,8 +37,10 @@ struct ThyroidHelperApp: App {
         WindowGroup {
             THContentView()
                 .environmentObject(purchaseManager)
+                .environmentObject(usageManager)
                 .onAppear {
                     setupNotifications()
+                    usageManager.injectModelContext(sharedModelContainer.mainContext)
                 }
         }
         .modelContainer(sharedModelContainer)

@@ -10,6 +10,7 @@ import StoreKit
 
 struct THPremiumView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var usageManager = THUsageManager.shared
     @StateObject private var purchaseManager = THPurchaseManager.shared
     
     @State private var selectedProduct: Product?
@@ -212,7 +213,7 @@ struct THPremiumView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text(purchaseManager.remainingRecords())
+                    Text(usageManager.remainingRecords())
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
@@ -224,7 +225,7 @@ struct THPremiumView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    Text(purchaseManager.remainingExports())
+                    Text(usageManager.remainingExports())
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
