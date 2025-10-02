@@ -11,6 +11,8 @@ import UserNotifications
 
 @main
 struct ThyroidHelperApp: App {
+    @StateObject private var purchaseManager = THPurchaseManager.shared
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             THCheckupRecord.self,
@@ -33,7 +35,7 @@ struct ThyroidHelperApp: App {
     var body: some Scene {
         WindowGroup {
             THContentView()
-                .environment(\.locale, Locale(identifier: "zh_CN"))
+                .environmentObject(purchaseManager)
                 .onAppear {
                     setupNotifications()
                 }

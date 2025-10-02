@@ -12,10 +12,13 @@ struct THProfileView: View {
     @EnvironmentObject var authManager: THAuthenticationManager
     @EnvironmentObject var cloudManager: THCloudKitManager
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var purchaseManager: THPurchaseManager
+    
     @Query private var records: [THCheckupRecord]
     
     @State private var showingDeleteAlert = false
     @State private var showingCloudAlert = false
+    @State private var showPremiumView = false
     
     var body: some View {
         NavigationStack {
@@ -55,6 +58,16 @@ struct THProfileView: View {
                         Spacer()
                     }
                     .padding(.vertical, 8)
+                }
+                
+                if !purchaseManager.isPremiumUser {
+                    Section {
+                        Button {
+                            showPremiumView = true
+                        } label: {
+                            // 升级按钮
+                        }
+                    }
                 }
                 
                 // 数据管理
@@ -151,6 +164,10 @@ struct THProfileView: View {
             cloudManager.checkiCloudStatus()
             print(">>> authManager.user = \(String(describing: authManager.user))")
         }
+        .sheet(isPresented: $showPremiumView) {
+            THPremiumView()
+        }
+        
     }
     
     private var lastCheckupText: String {

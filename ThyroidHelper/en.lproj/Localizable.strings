@@ -315,3 +315,50 @@
 
 "terms_of_service" = "Terms of Service";
 "device_identifier_label" = "Device Identifier";
+
+// Product names
+"premium_version" = "Premium Version";
+"unlock_premium" = "Unlock Premium";
+"premium_subtitle" = "Unlimited access to all features";
+
+// Feature descriptions
+"unlimited_records" = "Unlimited Records";
+"unlimited_records_desc" = "Create unlimited checkup records";
+"unlimited_exports" = "Unlimited Exports";
+"unlimited_exports_desc" = "Export your health data anytime";
+"icloud_sync" = "iCloud Sync";
+"icloud_sync_desc" = "Sync data across all devices";
+"future_features" = "Future Features";
+"future_features_desc" = "Early access to upcoming features";
+
+// Purchase related
+"one_time_purchase" = "One-Time Purchase";
+"lifetime_access" = "Lifetime Access";
+"no_subscription_required" = "No subscription, pay once use forever";
+"unlock_now" = "Unlock Now";
+"restore" = "Restore";
+
+// Limits
+"unlimited" = "Unlimited";
+"current_usage" = "Current Usage";
+"records_limit" = "Records";
+"exports_limit" = "Exports";
+
+// Limit alerts
+"record_limit_reached" = "Record Limit Reached";
+"record_limit_message" = "Free users can add up to 10 records. Upgrade to Premium for unlimited records.";
+"export_limit_reached" = "Export Limit Reached";
+"export_limit_message" = "Free users can export 3 times per month. Upgrade to Premium for unlimited exports.";
+"upgrade_to_premium" = "Upgrade to Premium";
+
+// Status messages
+"purchase_success" = "Purchase Successful";
+"purchase_success_message" = "Thank you for your support! You can now use all premium features.";
+"purchase_error" = "Purchase Failed";
+"purchase_cancelled" = "Purchase Cancelled";
+"purchase_pending" = "Purchase pending, please check later";
+"restore_failed" = "Failed to restore purchases";
+"failed_to_load_products" = "Failed to load product information";
+
+// Footer
+"one_time_payment_note" = "One-time payment for lifetime access to all premium features. Works on all your signed-in devices.";

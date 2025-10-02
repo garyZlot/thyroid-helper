@@ -27,6 +27,9 @@
 		2FD5F6542E7EA4E7001CAED5 /* THAddHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F6532E7EA4DD001CAED5 /* THAddHistoryView.swift */; };
 		2FD5F6562E824CDA001CAED5 /* THBottomActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FD5F6552E824CD7001CAED5 /* THBottomActionSheet.swift */; };
 		2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */; };
+		2FE1711C2E8E684A009266A7 /* THPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE1711B2E8E6846009266A7 /* THPurchaseManager.swift */; };
+		2FE1711E2E8E6890009266A7 /* THPremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE1711D2E8E688A009266A7 /* THPremiumView.swift */; };
+		2FE171212E8E690F009266A7 /* THLimitReachedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FE171202E8E690A009266A7 /* THLimitReachedView.swift */; };
 		2FED69672E8A3373000640D7 /* THDeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69662E8A336B000640D7 /* THDeviceInfo.swift */; };
 		2FED69692E8A5CC4000640D7 /* THKeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */; };
 		2FED696B2E8A6F3E000640D7 /* THWebDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FED696A2E8A6F2D000640D7 /* THWebDocumentView.swift */; };
@@ -84,6 +87,9 @@
 		2FD5F6532E7EA4DD001CAED5 /* THAddHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THAddHistoryView.swift; sourceTree = "<group>"; };
 		2FD5F6552E824CD7001CAED5 /* THBottomActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THBottomActionSheet.swift; sourceTree = "<group>"; };
 		2FDF3F6E2E7D37DB008B080B /* THDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDatabaseManager.swift; sourceTree = "<group>"; };
+		2FE1711B2E8E6846009266A7 /* THPurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPurchaseManager.swift; sourceTree = "<group>"; };
+		2FE1711D2E8E688A009266A7 /* THPremiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THPremiumView.swift; sourceTree = "<group>"; };
+		2FE171202E8E690A009266A7 /* THLimitReachedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THLimitReachedView.swift; sourceTree = "<group>"; };
 		2FED69662E8A336B000640D7 /* THDeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THDeviceInfo.swift; sourceTree = "<group>"; };
 		2FED69682E8A5CB3000640D7 /* THKeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THKeychainHelper.swift; sourceTree = "<group>"; };
 		2FED696A2E8A6F2D000640D7 /* THWebDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = THWebDocumentView.swift; sourceTree = "<group>"; };
@@ -245,6 +251,7 @@
 				689F17092E5C9E8C0047ABAB /* THAboutView.swift */,
 				689F17072E5C9E850047ABAB /* THDataExportView.swift */,
 				689F17052E5C9E7A0047ABAB /* THNotificationSettingsView.swift */,
+				2FE1711D2E8E688A009266A7 /* THPremiumView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -278,6 +285,22 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		2FE1711A2E8E683B009266A7 /* Purchase */ = {
+			isa = PBXGroup;
+			children = (
+				2FE1711B2E8E6846009266A7 /* THPurchaseManager.swift */,
+			);
+			path = Purchase;
+			sourceTree = "<group>";
+		};
+		2FE1711F2E8E68FC009266A7 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				2FE171202E8E690A009266A7 /* THLimitReachedView.swift */,
+			);
+			path = Others;
+			sourceTree = "<group>";
+		};
 		2FED696C2E8A6FE9000640D7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,6 +332,7 @@
 		689F16E02E5C9C670047ABAB /* ThyroidHelper */ = {
 			isa = PBXGroup;
 			children = (
+				2FE1711A2E8E683B009266A7 /* Purchase */,
 				2FED696C2E8A6FE9000640D7 /* Resources */,
 				689F16EA2E5C9CEC0047ABAB /* Services */,
 				2FDF3F6D2E7D37D2008B080B /* Data */,
@@ -352,6 +376,7 @@
 		689F16EF2E5C9D480047ABAB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2FE1711F2E8E68FC009266A7 /* Others */,
 				2FBB78C92E6BC09200360A3E /* History */,
 				2FBB78C82E6BBFF400360A3E /* Profile */,
 				2FBB78C72E6BBFB200360A3E /* Indicators */,
@@ -472,12 +497,14 @@
 				2F4B1DF62E63EB7A000EE005 /* THDoubleExtension.swift in Sources */,
 				689F17062E5C9E7C0047ABAB /* THNotificationSettingsView.swift in Sources */,
 				689F16EE2E5C9D1F0047ABAB /* THAuthenticationManager.swift in Sources */,
+				2FE171212E8E690F009266A7 /* THLimitReachedView.swift in Sources */,
 				689F16F72E5C9DB00047ABAB /* THHomeView.swift in Sources */,
 				689F16EC2E5C9CF80047ABAB /* THCloudKitManager.swift in Sources */,
 				2F6AB4472E8816A000426DA1 /* THNotificationManager.swift in Sources */,
 				689F16FF2E5C9E220047ABAB /* THProfileView.swift in Sources */,
 				2F1D7E4A2E77C3BA009F5096 /* THUIApplicationExtension.swift in Sources */,
 				2F78237B2E695A7500CDEF24 /* THHistoryView.swift in Sources */,
+				2FE1711E2E8E6890009266A7 /* THPremiumView.swift in Sources */,
 				2F1D7E522E79AB33009F5096 /* THStringExtension.swift in Sources */,
 				2F4D6A742E77B860000BF954 /* THImageZoomViewer.swift in Sources */,
 				2F78237F2E697EF000CDEF24 /* THHistoryCheckupOCRService.swift in Sources */,
@@ -490,6 +517,7 @@
 				2FD5F6562E824CDA001CAED5 /* THBottomActionSheet.swift in Sources */,
 				689F16E62E5C9C670047ABAB /* ThyroidHelperApp.swift in Sources */,
 				68426F772E5D7EB2008B17BA /* THIndicatorOCRService.swift in Sources */,
+				2FE1711C2E8E684A009266A7 /* THPurchaseManager.swift in Sources */,
 				689F16F92E5C9DCE0047ABAB /* THTrendsView.swift in Sources */,
 				2FDF3F6F2E7D37EA008B080B /* THDatabaseManager.swift in Sources */,
 				68426F7F2E5D8063008B17BA /* THIndicatorAdjustmentRow.swift in Sources */,

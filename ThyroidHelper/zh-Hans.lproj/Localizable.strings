@@ -315,3 +315,50 @@
 
 "terms_of_service" = "服务条款";
 "device_identifier_label" = "设备标识符";
+
+// 产品名称
+"premium_version" = "高级版";
+"unlock_premium" = "解锁高级版";
+"premium_subtitle" = "无限制使用所有功能";
+
+// 功能描述
+"unlimited_records" = "无限记录";
+"unlimited_records_desc" = "创建无限数量的检查记录";
+"unlimited_exports" = "无限导出";
+"unlimited_exports_desc" = "随时导出您的健康数据";
+"icloud_sync" = "iCloud 同步";
+"icloud_sync_desc" = "在所有设备间同步数据";
+"future_features" = "未来功能";
+"future_features_desc" = "优先体验即将推出的新功能";
+
+// 购买相关
+"one_time_purchase" = "一次性付费";
+"lifetime_access" = "永久使用";
+"no_subscription_required" = "无需订阅，买断即用";
+"unlock_now" = "立即解锁";
+"restore" = "恢复购买";
+
+// 限制相关
+"unlimited" = "无限";
+"current_usage" = "当前使用情况";
+"records_limit" = "记录数量";
+"exports_limit" = "导出次数";
+
+// 限制提示
+"record_limit_reached" = "记录数量已达上限";
+"record_limit_message" = "免费用户最多可添加 10 条记录。升级到高级版即可无限添加记录。";
+"export_limit_reached" = "本月导出次数已用完";
+"export_limit_message" = "免费用户每月最多导出 3 次数据。升级到高级版即可无限导出。";
+"upgrade_to_premium" = "升级到高级版";
+
+// 状态消息
+"purchase_success" = "购买成功";
+"purchase_success_message" = "感谢您的支持！现在您可以使用所有高级功能了。";
+"purchase_error" = "购买失败";
+"purchase_cancelled" = "已取消购买";
+"purchase_pending" = "购买待处理，请稍后查看";
+"restore_failed" = "恢复购买失败";
+"failed_to_load_products" = "无法加载产品信息";
+
+// 底部说明
+"one_time_payment_note" = "一次性付费，永久使用所有高级功能。支持在所有已登录的设备上使用。";
