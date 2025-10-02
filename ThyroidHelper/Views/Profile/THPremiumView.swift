@@ -13,7 +13,6 @@ struct THPremiumView: View {
     @StateObject private var usageManager = THUsageManager.shared
     @StateObject private var purchaseManager = THPurchaseManager.shared
     
-    @State private var selectedProduct: Product?
     @State private var showingError = false
     @State private var showingSuccess = false
     
@@ -27,9 +26,9 @@ struct THPremiumView: View {
                     // 功能列表
                     featuresSection
                     
-                    // 产品选择
+                    // 升级按钮
                     if !purchaseManager.isPremiumUser {
-                        productsSection
+                        upgradeButtonSection
                     }
                     
                     // 当前状态
@@ -160,24 +159,10 @@ struct THPremiumView: View {
         }
     }
     
-    // MARK: - Products Section
-    private var productsSection: some View {
+    // MARK: - Upgrade Button Section
+    private var upgradeButtonSection: some View {
         VStack(spacing: 16) {
-            Text("choose_plan".localized)
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            ForEach(purchaseManager.allProducts, id: \.id) { product in
-                ProductCard(
-                    product: product,
-                    isSelected: selectedProduct?.id == product.id,
-                    isPopular: product.id == THPurchaseManager.ProductID.premiumLifetime.rawValue
-                ) {
-                    selectedProduct = product
-                }
-            }
-            
-            if let product = selectedProduct {
+            if let product = purchaseManager.allProducts.first {
                 Button {
                     Task {
                         do {
@@ -187,15 +172,42 @@ struct THPremiumView: View {
                         }
                     }
                 } label: {
-                    Text("purchase_now".localized)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(product.displayName)
+                                .font(.headline)
+                                .foregroundColor(.white)
+                            
+                            Text(product.description)
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                        }
+                        
+                        Spacer()
+                        
+                        Text(product.displayPrice)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [.blue, .purple],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .cornerRadius(16)
                 }
                 .disabled(purchaseManager.isLoading)
+            } else {
+                ProgressView("loading_products".localized)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(16)
             }
         }
     }
@@ -207,39 +219,62 @@ struct THPremiumView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
+            VStack(spacing: 16) {
+                // Records Progress
+                usageProgressView(
+                    title: "records_limit".localized,
+                    current: usageManager.currentRecordCount,
+                    max: THUsageManager.FreeLimits.maxRecords,
+                    unlimited: purchaseManager.isPremiumUser,
+                    color: .blue
+                )
+                
+                // Exports Progress
+                usageProgressView(
+                    title: "exports_limit".localized,
+                    current: usageManager.currentExportCount,
+                    max: THUsageManager.FreeLimits.maxExports,
+                    unlimited: purchaseManager.isPremiumUser,
+                    color: .orange
+                )
+            }
+        }
+    }
+    
+    private func usageProgressView(title: String, current: Int, max: Int, unlimited: Bool, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("records_limit".localized)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    Text(usageManager.remainingRecords())
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                }
+                Text(title)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                 
                 Spacer()
                 
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("exports_limit".localized)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    Text(usageManager.remainingExports())
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                }
+                Text(unlimited ? "unlimited".localized : "\(current)/\(max)")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(unlimited ? .green : (current >= max ? .red : .primary))
             }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            
+            if !unlimited {
+                ProgressView(value: Double(current), total: Double(max))
+                    .progressViewStyle(LinearProgressViewStyle(tint: color))
+                    .frame(height: 8)
+                    .scaleEffect(x: 1, y: 2, anchor: .center)
+            } else {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.title3)
+            }
         }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
     }
     
     // MARK: - Footer Section
     private var footerSection: some View {
         VStack(spacing: 8) {
-            
             HStack(spacing: 16) {
                 NavigationLink {
                     THWebDocumentView(documentType: .termsOfService)
@@ -260,78 +295,5 @@ struct THPremiumView: View {
             }
         }
         .padding(.top)
-    }
-}
-
-// MARK: - Product Card
-struct ProductCard: View {
-    let product: Product
-    let isSelected: Bool
-    let isPopular: Bool
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(product.displayName)
-                            .font(.headline)
-                        
-                        if isPopular {
-                            Text("popular".localized)
-                                .font(.caption2)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(Color.orange)
-                                .cornerRadius(4)
-                        }
-                    }
-                    
-                    Text(product.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text(product.displayPrice)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    
-                    if let subscription = product.subscription {
-                        Text(periodDescription(for: subscription.subscriptionPeriod))
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            .padding()
-            .background(isSelected ? Color.blue.opacity(0.1) : Color(.systemGray6))
-            .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
-            )
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-    
-    private func periodDescription(for period: Product.SubscriptionPeriod) -> String {
-        switch period.unit {
-        case .day:
-            return "per_day".localized
-        case .week:
-            return "per_week".localized
-        case .month:
-            return "per_month".localized
-        case .year:
-            return "per_year".localized
-        @unknown default:
-            return ""
-        }
     }
 }

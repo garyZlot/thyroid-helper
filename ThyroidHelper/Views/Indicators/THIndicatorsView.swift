@@ -10,8 +10,10 @@ import _SwiftData_SwiftUI
 
 struct THIndicatorsView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var usageManager: THUsageManager
     @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
+    @State private var showingPremium = false
     @State private var recordToEdit: THCheckupRecord?
     @State private var showLimitAlert = false
     
@@ -28,7 +30,7 @@ struct THIndicatorsView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, -8)
                         
-                        Button(action: { showingAddRecord = true }) {
+                        Button(action: addNewRecordAction) {
                             Text("add_checkup_indicator".localized)
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -56,7 +58,7 @@ struct THIndicatorsView: View {
             .navigationTitle("checkup_indicators_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingAddRecord = true }) {
+                    Button(action: addNewRecordAction) {
                         Image(systemName: "plus")
                     }
                 }
@@ -64,11 +66,28 @@ struct THIndicatorsView: View {
         }
         .sheet(isPresented: $showingAddRecord) {
             THAddIndicatorView()
+                .onDisappear {
+                    usageManager.syncRecordCount()
+                }
+        }
+        .sheet(isPresented: $showingPremium) {
+            THPremiumView()
         }
         .sheet(item: $recordToEdit) { record in
             THEditIndicatorView(record: record)
+                .onDisappear {
+                    usageManager.syncRecordCount()
+                }
         }
         .limitReachedAlert(isPresented: $showLimitAlert, limitType: .records)
+    }
+    
+    private func addNewRecordAction() {
+        if usageManager.canAddNewRecord() {
+            showingAddRecord = true
+        } else {
+            showingPremium = true
+        }
     }
     
     private func deleteRecords(offsets: IndexSet) {
@@ -78,6 +97,7 @@ struct THIndicatorsView: View {
             }
             try? modelContext.save()
         }
+        usageManager.syncRecordCount()
     }
 }
 

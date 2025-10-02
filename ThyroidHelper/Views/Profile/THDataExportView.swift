@@ -10,10 +10,12 @@ import SwiftData
 import UIKit
 
 struct THDataExportView: View {
+    @EnvironmentObject private var usageManager: THUsageManager
     @Query private var checkupRecords: [THCheckupRecord]
     @Query private var historyRecords: [THHistoryRecord]
     @State private var exportFormat = "CSV"
     @State private var showingShareSheet = false
+    @State private var showingPremium = false
     @State private var exportURL: URL?
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -51,7 +53,7 @@ struct THDataExportView: View {
                     }
                 }
                 
-                Button(action: exportCheckupData) {
+                Button(action: exportCheckupDataAction) {
                     if isExportingCheckup {
                         HStack {
                             ProgressView()
@@ -85,7 +87,7 @@ struct THDataExportView: View {
                         .foregroundColor(.secondary)
                 }
                 
-                Button(action: exportHistoryData) {
+                Button(action: exportHistoryDataAction) {
                     if isExportingHistory {
                         HStack {
                             ProgressView()
@@ -114,6 +116,9 @@ struct THDataExportView: View {
                 ShareSheet(items: [url])
             }
         }
+        .sheet(isPresented: $showingPremium) {
+            THPremiumView()
+        }
         .alert("export_failed".localized, isPresented: $showingError) {
             Button("ok".localized, role: .cancel) { }
         } message: {
@@ -122,6 +127,14 @@ struct THDataExportView: View {
     }
     
     // MARK: - 检查记录导出
+    private func exportCheckupDataAction() {
+        if usageManager.canExportData() {
+            exportCheckupData()
+        } else {
+            showingPremium = true
+        }
+    }
+    
     private func exportCheckupData() {
         guard !checkupRecords.isEmpty else {
             errorMessage = "no_data_to_export".localized
@@ -155,6 +168,7 @@ struct THDataExportView: View {
                 
                 if FileManager.default.fileExists(atPath: fileURL.path) {
                     await MainActor.run {
+                        usageManager.incrementExportCount()
                         exportURL = fileURL
                         showingShareSheet = true
                         isExportingCheckup = false
@@ -174,6 +188,14 @@ struct THDataExportView: View {
     }
     
     // MARK: - 历史记录导出
+    private func exportHistoryDataAction() {
+        if usageManager.canExportData() {
+            exportHistoryData()
+        } else {
+            showingPremium = true
+        }
+    }
+    
     private func exportHistoryData() {
         guard !historyRecords.isEmpty else {
             errorMessage = "no_history_data_to_export".localized
@@ -198,6 +220,7 @@ struct THDataExportView: View {
                 
                 if FileManager.default.fileExists(atPath: fileURL.path) {
                     await MainActor.run {
+                        usageManager.incrementExportCount()
                         exportURL = fileURL
                         showingShareSheet = true
                         isExportingHistory = false

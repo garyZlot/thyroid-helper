@@ -11,9 +11,11 @@ import PhotosUI
 
 struct THHistoryView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var usageManager: THUsageManager
     @Query(sort: \THHistoryRecord.date, order: .reverse) private var records: [THHistoryRecord]
     @State private var showingAddOptions = false
     @State private var showingManualAddHistory = false
+    @State private var showingPremium = false
     @State private var selectedImageItems: [PhotosPickerItem] = []
     @State private var showingImagePicker = false
     @State private var showingBatchProgress = false
@@ -34,10 +36,10 @@ struct THHistoryView: View {
                             systemImage: "doc.text",
                             description: Text("no_history_description".localized)
                         )
-                        .fixedSize(horizontal: false, vertical: true) 
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, -8)
                         
-                        Button(action: { showingAddOptions = true }) {
+                        Button(action: addNewRecordAction) {
                             Text("add_history_record".localized)
                                 .font(.headline)
                                 .foregroundColor(.white)
@@ -72,7 +74,7 @@ struct THHistoryView: View {
             .navigationTitle("history_nav_title".localized)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingAddOptions = true }) {
+                    Button(action: addNewRecordAction) {
                         Image(systemName: "plus")
                     }
                 }
@@ -102,9 +104,18 @@ struct THHistoryView: View {
             )
             .sheet(isPresented: $showingManualAddHistory) {
                 THAddHistoryView()
+                    .onDisappear {
+                        usageManager.syncRecordCount()
+                    }
+            }
+            .sheet(isPresented: $showingPremium) {
+                THPremiumView()
             }
             .sheet(item: $recordToEdit) { record in
                 THEditHistoryView(record: record)
+                    .onDisappear {
+                        usageManager.syncRecordCount()
+                    }
             }
             .sheet(isPresented: $showingBatchProgress) {
                 BatchProgressView(service: batchOCRService)
@@ -124,6 +135,7 @@ struct THHistoryView: View {
                         modelContext: modelContext
                     ) {
                         selectedImageItems.removeAll()
+                        usageManager.syncRecordCount()
                     }
                 }
             }
@@ -133,6 +145,14 @@ struct THHistoryView: View {
                     isLoading = false
                 }
             }
+        }
+    }
+    
+    private func addNewRecordAction() {
+        if usageManager.canAddNewRecord() {
+            showingAddOptions = true
+        } else {
+            showingPremium = true
         }
     }
     
@@ -192,6 +212,7 @@ struct THHistoryView: View {
                 print("删除记录失败: \(error)")
             }
         }
+        usageManager.syncRecordCount()
     }
     
     // 导航到手动添加页面
@@ -313,29 +334,6 @@ struct TimelineRowView: View {
                 }
             }
         }
-        // 轻量底部弹窗实现
-        .sheet(isPresented: $showingImageViewer) {
-            // 底部弹窗内容
-            VStack(spacing: 0) {
-                // 顶部工具栏
-                HStack {
-                    Spacer()
-                    Button("close".localized) {
-                        showingImageViewer = false
-                    }
-                    .padding()
-                }
-                
-                // 图片查看器
-                THImagesViewer(
-                    imageDatas: images,
-                    initialIndex: selectedImageIndex
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            .presentationDetents([.medium, .large]) // 轻量级底部弹窗支持中等和全屏尺寸
-            .presentationBackgroundInteraction(.enabled) // 允许背景交互
-        }
     }
     
     // 备注部分
@@ -369,10 +367,4 @@ struct TimelineRowView: View {
         }
         .padding(.horizontal, 2)
     }
-}
-
-// 预览
-#Preview {
-    THHistoryView()
-        .modelContainer(for: THHistoryRecord.self)
 }

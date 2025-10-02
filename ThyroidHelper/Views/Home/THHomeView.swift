@@ -10,8 +10,10 @@ import SwiftData
 
 struct THHomeView: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var usageManager: THUsageManager
     @Query(sort: \THCheckupRecord.date, order: .reverse) private var records: [THCheckupRecord]
     @State private var showingAddRecord = false
+    @State private var showingPremium = false
     
     // 修改为返回最近一天的所有记录
     var latestDayRecords: [THCheckupRecord] {
@@ -47,14 +49,28 @@ struct THHomeView: View {
                     }
                     
                     // 快速操作按钮
-                    QuickActionButtons(showingAddRecord: $showingAddRecord)
+                    QuickActionButtons(showingAddRecord: $showingAddRecord, onAddRecord: addNewRecordAction)
                 }
                 .padding()
             }
             .navigationTitle("app_title".localized)
             .sheet(isPresented: $showingAddRecord) {
                 THAddIndicatorView()
+                    .onDisappear {
+                        usageManager.syncRecordCount()
+                    }
             }
+            .sheet(isPresented: $showingPremium) {
+                THPremiumView()
+            }
+        }
+    }
+    
+    private func addNewRecordAction() {
+        if usageManager.canAddNewRecord() {
+            showingAddRecord = true
+        } else {
+            showingPremium = true
         }
     }
 }
@@ -412,10 +428,11 @@ struct EmptyStateCard: View {
 
 struct QuickActionButtons: View {
     @Binding var showingAddRecord: Bool
+    let onAddRecord: () -> Void
     
     var body: some View {
         HStack(spacing: 16) {
-            Button(action: { showingAddRecord = true }) {
+            Button(action: onAddRecord) {
                 Label("add_checkup_indicator".localized, systemImage: "plus.circle.fill")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

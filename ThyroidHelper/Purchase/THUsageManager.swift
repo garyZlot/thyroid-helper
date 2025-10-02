@@ -21,8 +21,8 @@ class THUsageManager: ObservableObject {
     
     // MARK: - Free User Limits
     struct FreeLimits {
-        static let maxRecords = 10          // 免费用户最多10条记录
-        static let maxExports = 5           // 总共最多导出5次
+        static let maxRecords = 30           // 免费用户最多10条记录
+        static let maxExports = 20           // 总共最多导出5次
     }
     
     // MARK: - Database Context
