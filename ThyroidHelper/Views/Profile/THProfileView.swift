@@ -65,7 +65,36 @@ struct THProfileView: View {
                         Button {
                             showPremiumView = true
                         } label: {
-                            // 升级按钮
+                            HStack {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Image(systemName: "crown.fill")
+                                            .foregroundColor(.yellow)
+                                        Text("upgrade_to_premium".localized)
+                                            .font(.headline)
+                                    }
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 8)
+                        }
+                        .foregroundColor(.primary)
+                    }
+                } else {
+                    // 已购买状态
+                    Section {
+                        HStack {
+                            Image(systemName: "crown.fill")
+                                .foregroundColor(.yellow)
+                            Text("premium_user".localized)
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
                         }
                     }
                 }

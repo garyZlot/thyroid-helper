@@ -238,24 +238,24 @@ struct THPremiumView: View {
     // MARK: - Footer Section
     private var footerSection: some View {
         VStack(spacing: 8) {
-            Text("premium_footer".localized)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
             
             HStack(spacing: 16) {
-                Button("terms_of_service".localized) {
-                    // 打开服务条款
+                NavigationLink {
+                    THWebDocumentView(documentType: .termsOfService)
+                } label: {
+                    Text("terms_of_service".localized)
+                        .font(.caption)
                 }
-                .font(.caption)
                 
                 Text("•")
                     .foregroundColor(.secondary)
                 
-                Button("privacy_policy".localized) {
-                    // 打开隐私政策
+                NavigationLink {
+                    THWebDocumentView(documentType: .privacyPolicy)
+                } label: {
+                    Text("privacy_policy".localized)
+                        .font(.caption)
                 }
-                .font(.caption)
             }
         }
         .padding(.top)

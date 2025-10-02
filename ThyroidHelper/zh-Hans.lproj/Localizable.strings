@@ -337,6 +337,8 @@
 "no_subscription_required" = "无需订阅，买断即用";
 "unlock_now" = "立即解锁";
 "restore" = "恢复购买";
+"choose_plan" = "选择套餐";
+"purchase_now" = "立即购买";
 
 // 限制相关
 "unlimited" = "无限";
@@ -362,3 +364,5 @@
 
 // 底部说明
 "one_time_payment_note" = "一次性付费，永久使用所有高级功能。支持在所有已登录的设备上使用。";
+
+"premium_user" = "高级用户";

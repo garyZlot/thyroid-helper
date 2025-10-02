@@ -337,6 +337,8 @@
 "no_subscription_required" = "No subscription, pay once use forever";
 "unlock_now" = "Unlock Now";
 "restore" = "Restore";
+"choose_plan" = "Choose a Plan";
+"purchase_now" = "Purchase Now";
 
 // Limits
 "unlimited" = "Unlimited";
@@ -362,3 +364,5 @@
 
 // Footer
 "one_time_payment_note" = "One-time payment for lifetime access to all premium features. Works on all your signed-in devices.";
+
+"premium_user" = "Premium User";
