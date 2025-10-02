@@ -7,7 +7,7 @@
 */
 
 /* 主页面 */
-"app_title" = "甲状腺助手";
+"app_title" = "甲状腺复查助手";
 "latest_examination_results" = "最新检查结果";
 "examination_count_format" = "%@ · 共 %d 项检查";
 "next_checkup_reminder" = "下次复查提醒";
@@ -194,7 +194,7 @@
 "export_checkup_data" = "导出检查数据";
 "export_history_records" = "导出历史记录";
 "no_history_data_to_export" = "没有历史记录可导出";
-"history_records_pdf_title" = "甲状腺助手 - 历史记录";
+"history_records_pdf_title" = "甲状腺复查助手 - 历史记录";
 "exporting" = "导出中...";
 "pdf_image_label_format" = "图片 %d";
 "pdf_notes_title" = "备注：";
@@ -307,7 +307,7 @@
 "mail_not_configured_message" = "您的设备未配置邮件账户，请复制邮箱地址手动发送反馈";
 "support_email_label" = "支持邮箱";
 "copy_email" = "复制邮箱";
-"feedback_email_subject" = "甲状腺助手 v%@ - 用户反馈";
+"feedback_email_subject" = "甲状腺复查助手 v%@ - 用户反馈";
 "feedback_email_info_header" = "请在下方填写您的反馈内容";
 "app_version_label" = "应用版本";
 "ios_version_label" = "系统版本";

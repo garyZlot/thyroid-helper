@@ -6,5 +6,6 @@
   
 */
 
+"CFBundleDisplayName" = "ThyroidCare";
 "NSCameraUsageDescription" = "Need access to the camera to take photos of inspection reports";
 "NSNotificationAlwaysAndWhenInUseUsageDescription" = "Notification permission is required to promptly push a check reminders to you.";

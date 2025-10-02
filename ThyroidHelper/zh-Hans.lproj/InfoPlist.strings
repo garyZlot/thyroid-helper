@@ -6,5 +6,6 @@
   
 */
 
+"CFBundleDisplayName" = "甲状腺复查助手";
 "NSCameraUsageDescription" = "需要访问相机以拍摄检查报告照片";
 "NSNotificationAlwaysAndWhenInUseUsageDescription" = "需要通知权限，以便及时向您推送检查提醒。";
